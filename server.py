@@ -8,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, connect_to_db, db
 
+from utility import *
 
 app = Flask(__name__)
 
@@ -26,6 +27,14 @@ def index():
     return render_template("homepage.html")
 
 
+@app.route('/check_artist')
+def check_artist():
+    """List artists found that closely match artist entered by user."""
+
+
+    return render_template("check_artist.html")
+
+
 @app.route('/<artist_id>')
 def list_artist_events():
     """Artist event details page."""
@@ -33,12 +42,30 @@ def list_artist_events():
 
     return render_template("artist_events.html")
 
+
+@app.route('/check')
+def check_venue_event():
+    """List events then list venues found that closely match 
+        event/venue entered by user."""
+
+
+    return render_template("check_.html")
+
+
 @app.route('/<venue_id>')
 def list_venue_events():
     """Venue event details page."""
     
 
     return render_template("venue_events.html")
+
+
+@app.route('/<event_id>')
+def find_events():
+    """List events based on date and location selected/entered by user."""
+    
+
+    return render_template("find_events.html")
 
 
 if __name__ == "__main__":
