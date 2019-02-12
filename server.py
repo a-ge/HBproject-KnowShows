@@ -26,7 +26,19 @@ def index():
     return render_template("homepage.html")
 
 
+@app.route('/<artist_id>')
+def list_artist_events():
+    """Artist event details page."""
 
+
+    return render_template("artist_events.html")
+
+@app.route('/<venue_id>')
+def list_venue_events():
+    """Venue event details page."""
+    
+
+    return render_template("venue_events.html")
 
 
 if __name__ == "__main__":
