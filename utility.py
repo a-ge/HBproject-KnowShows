@@ -23,9 +23,11 @@ import ticketpy
 # which iterates through API response pages (as ticketpy.Page)
 tm_client = ticketpy.ApiClient(CONSUMER_KEY)
 
+from model import *
 
 def get_artist():
-
+    """ Search in Artists table for artist_name that matches user's request"""
+    
     name = 'Radiohead'
 
     results = spotify.search(q='artist:' + name, type='artist')
@@ -36,35 +38,52 @@ def get_artist():
         artist = items[0]
         print("Spotify_id=", artist['id'],"\n"
             "Artist="+artist['name'],"\n"
-            "Artist_URL=", artist['external_urls'],"\n"
+            "Artist_URL=","\n"
             "Images=",artist['images'],"\n"
             "Genres=",artist['genres'],"\n"
-            "Bio=",artist['href']
+            "Bio=", artist['external_urls']
             )
 
-# get_artist()
+#get_artist()
 
 
 def get_venue():
+    """ Search in Venues table for venue_name that matches user's request"""
 
     venues = tm_client.venues.find(keyword="Tabernacle").all()
 
     for v in venues:
-        print("Name: {} / City: {}".format(v.name, v.city))
+        print("Id=", v.id,"\n"
+            "Name=", v.name,"\n"
+            "Loc=", v.location,"\n"
+            "Venue_URL=", v.url
+            )
 
 # get_venue()
 
 
 def get_events():
+    """ Search in Events table for event_name that matches user's request"""
 
     pages = tm_client.events.find(
-        classification_name='Hip-Hop',
-        state_code='GA',
-        start_date_time='2019-02-14T20:00:00Z',
-        end_date_time='2019-02-17T20:00:00Z')
+        keyword="Valentine",
+        segment='Music',
+        state_code='CA',
+        start_date_time='2019-02-14T21:00:00Z',
+        end_date_time='2019-02-15T21:00:00Z')
 
+    ## Need to figure out query to venue table
     for page in pages:
         for event in page:
-            print(event)
+            print("Id=", event.id,"\nName=", event.name,"\n", "Venues=", event.venues)
+            #event = Event(event_id=event.id, event_title=event.name)
+    #         db.session.add(event)
+    # db.session.commit()
+    # print(type(pages))
+    # print(type(page))
+    # print(type(event))
+#     <class 'ticketpy.client.PagedResponse'>
+#     <class 'ticketpy.model.Page'>
+#     <class 'ticketpy.model.Event'>
 
 get_events()

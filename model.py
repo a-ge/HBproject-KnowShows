@@ -75,7 +75,7 @@ class Artist(db.Model):
     __tablename__ = "artists"
 
     artist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    spotify_id = db.Column(db.Integer)
+    spotify_id = db.Column(db.String(100))
     ticket_id = db.Column(db.Integer)
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(200))
