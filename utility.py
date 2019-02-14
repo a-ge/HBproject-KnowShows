@@ -16,14 +16,72 @@ from spotipy.oauth2 import SpotifyClientCredentials
 client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+import requests
 
-# Ticketpy is a Python wrapper/SDK for the Ticketmaster Discovery API
-import ticketpy
-# Calling ApiClient.find() returns a ticketpy.PagedResponse object,
-# which iterates through API response pages (as ticketpy.Page)
-tm_client = ticketpy.ApiClient(CONSUMER_KEY)
+TM_URL = "https://app.ticketmaster.com/discovery/v2/"
 
 from model import *
+
+import pprint
+
+
+def get_venue():
+    """ Search in Venues table for venue_name that matches user's request"""
+
+    venue_query = "Slim's"
+
+    payload = {'apikey': CONSUMER_KEY,
+                'keyword': venue_query}
+
+
+    response = requests.get(TM_URL + 'venues',
+                            params=payload)
+
+    data = response.json()
+
+    venues = data['_embedded']['venues']
+
+    for i in range(len(venues)):
+        print("*****************************\n")
+        print(venues[i]['address']['line1'],"\n")
+        print(venues[i]['id'],"\n")
+        if 'url' in venues[i]:
+            print(venues[i]['url'],"\n")
+        else:
+            print('No url')
+            
+
+get_venue()
+
+
+
+
+# def get_events():
+#     """ Search in Events table for event_name that matches user's request"""
+#     event_query = "Valentine"
+
+#     payload = {'apikey': CONSUMER_KEY,
+#                 'keyword': event_query}
+
+
+#     response = requests.get(TM_URL + 'events',
+#                             params=payload)
+
+#     data = response.json()
+
+#     events = data['_embedded']['events']
+
+#     for i in range(len(events)):
+#         print("*****************************\n")
+#         pprint.pprint(events[i]['name'],"\n"
+#                         events[i]['name'],"\n")
+
+# get_events()
+
+
+
+
+
 
 def get_artist():
     """ Search in Artists table for artist_name that matches user's request"""
@@ -47,43 +105,6 @@ def get_artist():
 #get_artist()
 
 
-def get_venue():
-    """ Search in Venues table for venue_name that matches user's request"""
-
-    venues = tm_client.venues.find(keyword="Tabernacle").all()
-
-    for v in venues:
-        print("Id=", v.id,"\n"
-            "Name=", v.name,"\n"
-            "Loc=", v.location,"\n"
-            "Venue_URL=", v.url
-            )
-
-# get_venue()
 
 
-def get_events():
-    """ Search in Events table for event_name that matches user's request"""
 
-    pages = tm_client.events.find(
-        keyword="Valentine",
-        segment='Music',
-        state_code='CA',
-        start_date_time='2019-02-14T21:00:00Z',
-        end_date_time='2019-02-15T21:00:00Z')
-
-    ## Need to figure out query to venue table
-    for page in pages:
-        for event in page:
-            print("Id=", event.id,"\nName=", event.name,"\n", "Venues=", event.venues)
-            #event = Event(event_id=event.id, event_title=event.name)
-    #         db.session.add(event)
-    # db.session.commit()
-    # print(type(pages))
-    # print(type(page))
-    # print(type(event))
-#     <class 'ticketpy.client.PagedResponse'>
-#     <class 'ticketpy.model.Page'>
-#     <class 'ticketpy.model.Event'>
-
-get_events()
