@@ -25,8 +25,8 @@ from model import *
 import pprint
 
 
-def get_venue():
-    """ Search in Venues table for venue_name that matches user's request"""
+def find_venue():
+    """ Query to Ticketmaster for possible matches to what user entered in Search Venue/Event"""
 
     venue_query = "Slim's"
 
@@ -42,41 +42,66 @@ def get_venue():
     venues = data['_embedded']['venues']
 
     for i in range(len(venues)):
-        print("*****************************\n")
-        print(venues[i]['address']['line1'],"\n")
+        print("*****************************")
+        for key in venues[i]['address']:
+            print(venues[i]['address'][key],"\n")
+        for key in venues[i]['city']:
+            print(venues[i]['city'][key],"\n")
+        for key in venues[i]['country']:
+            print(venues[i]['country'][key],"\n")
+        print(venues[i]['postalCode'],"\n")
         print(venues[i]['id'],"\n")
         if 'url' in venues[i]:
             print(venues[i]['url'],"\n")
         else:
             print('No url')
+        print()
             
 
-get_venue()
+# find_venue()
 
 
 
 
-# def get_events():
-#     """ Search in Events table for event_name that matches user's request"""
-#     event_query = "Valentine"
+def get_events():
+    """ Search in Events table for event_name that matches user's request"""
 
-#     payload = {'apikey': CONSUMER_KEY,
-#                 'keyword': event_query}
+    payload = {'apikey': CONSUMER_KEY,
+                'city': 'San Francisco',
+                'classificationName': 'concert'}
 
 
-#     response = requests.get(TM_URL + 'events',
-#                             params=payload)
+    response = requests.get(TM_URL + 'events',
+                            params=payload)
 
-#     data = response.json()
+    data = response.json()
 
-#     events = data['_embedded']['events']
+    pages = data['page']['totalPages']
 
-#     for i in range(len(events)):
-#         print("*****************************\n")
-#         pprint.pprint(events[i]['name'],"\n"
-#                         events[i]['name'],"\n")
+    for j in range(pages):
 
-# get_events()
+        payload = {'apikey': CONSUMER_KEY,
+                    'city': 'San Francisco',
+                    'page': j,
+                    'classificationName': 'concert'}
+
+        response = requests.get(TM_URL + 'events',
+                            params=payload)
+
+        data = response.json()
+
+        events = data['_embedded']['events']
+
+
+        for i in range(len(events)):
+            print("*****************************")
+            print("Name=",events[i]['name'])
+            print("Event_id=",events[i]['id'])
+            print("Venue_id=",events[i]['_embedded']['venues'][0]['id'])
+
+        print(data['page'])
+
+get_events()
 
 
 
