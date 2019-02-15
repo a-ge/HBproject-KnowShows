@@ -6,7 +6,7 @@ from flask import (Flask, render_template, redirect, request, flash, session)
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import Event, Artist, Lineup, connect_to_db, db
+from model import Event, Artist, Lineup, Venue, connect_to_db, db
 
 
 app = Flask(__name__)
@@ -40,9 +40,9 @@ def check_artist():
     return render_template("check_artist.html", artist_options=artist_options)
 
 
-@app.route('/<artist_id>')
+@app.route('/artist/<artist_id>')
 def list_artist_events(artist_id):
-    """Artist event details page."""
+    """List all events for artist selected."""
 
     # Find events that have lineups that match the artist_id
     artist_events = Event.query.filter(Lineup.artist_id == artist_id).all()
@@ -57,19 +57,29 @@ def check_venue_event():
     """List events then list venues found that closely match 
         event/venue entered by user."""
 
+    check_input = 'UC'
 
-    return render_template("check.html")
+    # Need to check if found exact event/venue match???
+
+    event_options = Event.query.filter(Event.event_title.like('%' + check_input + '%')).all()
+    venue_options = Venue.query.filter(Venue.venue_name.like('%' + check_input + '%')).all()
+    print("******************************\n", venue_options)
+    return render_template("check.html", event_options=event_options, venue_options=venue_options)
 
 
-@app.route('/<venue_id>')
-def list_venue_events():
+@app.route('/venue/<venue_id>')
+def list_venue_events(venue_id):
     """Venue event details page."""
     
+    # Find events for the venue_id
+    venue_events = Event.query.filter(Event.venue_id == venue_id).all()
+    # Find event object of venue_id
+    venue = Venue.query.filter(Venue.venue_id == venue_id).one()
 
-    return render_template("venue_events.html")
+    return render_template("venue_events.html", venue_events=venue_events, venue=venue)
 
 
-@app.route('/<event_id>')
+@app.route('/event/<event_id>')
 def find_events():
     """List events based on date and location selected/entered by user."""
     
