@@ -57,7 +57,7 @@ class Lineup(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.artist_id'))
 
     # Define relationship to event
-    users = db.relationship("Event", backref=db.backref("lineups"))
+    events = db.relationship("Event", backref=db.backref("lineups"))
 
     # Define relationship to artist
     artists = db.relationship("Artist", backref=db.backref("lineups"))

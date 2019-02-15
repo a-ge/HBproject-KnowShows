@@ -8,7 +8,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, connect_to_db, db
 
-from utility import *
 
 app = Flask(__name__)
 
@@ -24,6 +23,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
+
     return render_template("homepage.html")
 
 
@@ -31,16 +31,25 @@ def index():
 def check_artist():
     """List artists found that closely match artist entered by user."""
 
+    artist_input = 'Avett'
 
-    return render_template("check_artist.html")
+    # Need to check if found exact artist_name match???
+
+    artist_options = Artist.query.filter(Artist.artist_name.like('%' + artist_input + '%')).all()
+
+    return render_template("check_artist.html", artist_options=artist_options)
 
 
 @app.route('/<artist_id>')
-def list_artist_events():
+def list_artist_events(artist_id):
     """Artist event details page."""
 
+    # Find events that have lineups that match the artist_id
+    artist_events = Event.query.filter(Lineup.artist_id == artist_id).all()
+    # Find artist object of artist_id
+    artist = Artist.query.filter(Artist.artist_id == artist_id).one()
 
-    return render_template("artist_events.html")
+    return render_template("artist_events.html", artist_events=artist_events, artist=artist)
 
 
 @app.route('/check')
@@ -49,7 +58,7 @@ def check_venue_event():
         event/venue entered by user."""
 
 
-    return render_template("check_.html")
+    return render_template("check.html")
 
 
 @app.route('/<venue_id>')
