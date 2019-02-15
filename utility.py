@@ -1,9 +1,4 @@
-# Note to remember info needed
-# artist id, name, website, photo, genre, bio, **song
-# event id, event title, event date, event time, event url
-# venue name, venue location, venue url?
-
-# To grab keys from sh file
+# Grab keys from sh file
 import os
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
@@ -22,11 +17,8 @@ TM_URL = "https://app.ticketmaster.com/discovery/v2/"
 
 from model import *
 
-import pprint
-
 
 def find_venue():
-    """ Query to Ticketmaster for possible matches to what user entered in Search Venue/Event"""
 
     venue_query = "Slim's"
 
@@ -55,24 +47,56 @@ def find_venue():
             print(venues[i]['url'],"\n")
         else:
             print('No url')
-        print()
-            
+        print() 
 
 # find_venue()
 
+def get_artist_detail(attraction_id):
+
+    art_payload = {'apikey': CONSUMER_KEY}
+
+    response = requests.get(TM_URL + 'attractions/' + attraction_id, params=art_payload)
+
+    data = response.json()
 
 
+    print('name=', data['name'])
+    print('type=', data['type'])
+    print('url=', data['url'])
 
-def get_events():
-    """ Search in Events table for event_name that matches user's request"""
+def get_event_detail(event_id):
+    
+    ev_payload = {'apikey': CONSUMER_KEY}
+
+    response = requests.get(TM_URL + 'events/' + event_id, params=ev_payload)
+
+    data = response.json()
+
+    print('Event_name=', data['name'])
+    print('Event_url=', data['url'])
+
+    attractions = data['_embedded']['attractions']
+    for i, attraction in enumerate(attractions):
+        attraction_id = attraction['id']
+        get_artist_detail(attraction_id)
+        
+
+    # attraction_id = data['_embedded']['attractions'][0]['id']
+    # get_artist_detail(attraction_id)
+
+def get_tm_events():
+    """Request to Ticketmaster API for all events."""
+    # Will modify later to be able to clean/update db
+    # For now, trying to seed db with some events in order to test and build other parts of webapp
 
     payload = {'apikey': CONSUMER_KEY,
                 'city': 'San Francisco',
-                'classificationName': 'concert'}
+                'startDateTime': '2019-02-14T11:00:00z',
+                'endDateTime': '2019-02-15T11:00:00z'}
+                #'keyword': 'Copeland'}
 
 
-    response = requests.get(TM_URL + 'events',
-                            params=payload)
+    response = requests.get(TM_URL + 'events', params=payload)
 
     data = response.json()
 
@@ -81,9 +105,11 @@ def get_events():
     for j in range(pages):
 
         payload = {'apikey': CONSUMER_KEY,
-                    'city': 'San Francisco',
-                    'page': j,
-                    'classificationName': 'concert'}
+                   'city': 'San Francisco',
+                   #'keyword': 'Copeland',
+                    'startDateTime': '2019-02-14T11:00:00z',
+                    'endDateTime': '2019-02-15T11:00:00z',
+                    'page': j}
 
         response = requests.get(TM_URL + 'events',
                             params=payload)
@@ -95,21 +121,18 @@ def get_events():
 
         for i in range(len(events)):
             print("*****************************")
-            print("Name=",events[i]['name'])
             print("Event_id=",events[i]['id'])
             print("Venue_id=",events[i]['_embedded']['venues'][0]['id'])
+            event_id = events[i]['id']
+            get_event_detail(event_id)
+            
 
         print(data['page'])
 
-get_events()
-
-
-
-
+get_tm_events()
 
 
 def get_artist():
-    """ Search in Artists table for artist_name that matches user's request"""
     
     name = 'Radiohead'
 
@@ -128,8 +151,3 @@ def get_artist():
             )
 
 #get_artist()
-
-
-
-
-
