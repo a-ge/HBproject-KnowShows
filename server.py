@@ -63,13 +63,12 @@ def check_venue_event():
 
     event_options = Event.query.filter(Event.event_title.like('%' + check_input + '%')).all()
     venue_options = Venue.query.filter(Venue.venue_name.like('%' + check_input + '%')).all()
-    print("******************************\n", venue_options)
     return render_template("check.html", event_options=event_options, venue_options=venue_options)
 
 
 @app.route('/venue/<venue_id>')
 def list_venue_events(venue_id):
-    """Venue event details page."""
+    """List all events for venue selected."""
     
     # Find events for the venue_id
     venue_events = Event.query.filter(Event.venue_id == venue_id).all()
@@ -80,11 +79,14 @@ def list_venue_events(venue_id):
 
 
 @app.route('/event/<event_id>')
-def find_events():
-    """List events based on date and location selected/entered by user."""
+def display_event(event_id):
+    """Display event information."""
     
+    artists = Artist.query.filter(Lineup.event_id == event_id).all()
 
-    return render_template("find_events.html")
+    event = Event.query.filter(Event.event_id == event_id).one()
+
+    return render_template("event.html", event=event, artists=artists)
 
 
 if __name__ == "__main__":
