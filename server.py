@@ -1,8 +1,10 @@
 """Concert Lineups."""
 
+from utility import *
+
 from jinja2 import StrictUndefined
 
-from flask import (Flask, render_template, redirect, request, flash, session)
+from flask import Flask, render_template, redirect, request, flash, session, jsonify
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -33,7 +35,10 @@ def check_artist():
 
     artist_input = 'Avett'
 
-    # Need to check if found exact artist_name match???
+    # Call API for all artist closely matched,
+    # if an artist_id in db, pull artist details
+    # if not, call API to get artist info, insert into db
+    # and make other calls to fill rest
 
     artist_options = Artist.query.filter(Artist.artist_name.like('%' + artist_input + '%')).all()
 
@@ -52,6 +57,16 @@ def list_artist_events(artist_id):
     return render_template("artist_events.html", artist_events=artist_events, artist=artist)
 
 
+@app.route('/test')
+def test():
+
+    response = get_sg_event()
+
+    return jsonify(response)
+
+
+
+
 @app.route('/check')
 def check_venue_event():
     """List events then list venues found that closely match 
@@ -59,11 +74,31 @@ def check_venue_event():
 
     check_input = 'UC'
 
-    # Need to check if found exact event/venue match???
+    # Call API for all events closely matched,
+    # User will select an event
+    # if event_id in db
+    # if not, call API to get event info, insert into db
+    # and make other calls to fill rest
 
-    event_options = Event.query.filter(Event.event_title.like('%' + check_input + '%')).all()
-    venue_options = Venue.query.filter(Venue.venue_name.like('%' + check_input + '%')).all()
-    return render_template("check.html", event_options=event_options, venue_options=venue_options)
+    event_ids = find_sg_events()
+    print("*********************\n", event_ids)
+
+    event_options = []
+
+    for event in event_ids:
+        if Event.query.filter(Event.event_id == event).one():
+            event_object = Event.query.filter(Event.event_id == event_id).one()
+            event_options.append(event_object)
+        else:
+            # Call to get that event's info
+            add_event = get_sg_event(4630010) 
+            # Add to event to db
+            
+            # Append to event_options
+
+    
+    # venue_options = Venue.query.filter(Venue.venue_name.like('%' + check_input + '%')).all()
+    return render_template("check.html", event_options=event_options)
 
 
 @app.route('/venue/<venue_id>')
