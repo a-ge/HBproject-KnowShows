@@ -1,11 +1,12 @@
-"""Seed concerts database from xxxxx"""
+"""Functions API requests"""
+
+import requests
+import json
 
 # Grab keys from sh file
 import os
 # SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 # SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
-# CONSUMER_KEY = os.getenv('CONSUMER_KEY')
-SK_KEY = os.getenv('SK_KEY')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 CLIENT_ID = os.getenv('CLIENT_ID')
 
@@ -16,39 +17,48 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 # client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
 # spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-import requests
-import json
-
-
-#from model import *
-#from server import *
-
 SG_URL = "https://api.seatgeek.com/2/"
-SK_URL = "https://api.songkick.com/api/3.0/"
 
-def find_sg_events():
+
+def find_sg_events(event_query):
     """Call to SeatGeek API for all events."""
     # Will modify later to be able to clean/update db
     # For now, trying to seed db with some events in order to test and build other parts of webapp
-    event_query = "Avett"
 
-    payload = {'client_id': CLIENT_ID,
+    # Need to get info from all pages!!
+    
+
+    pg_payload = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'q': event_query,
                 'type': "concert"}
 
+    pg_response = requests.get(SG_URL + 'events', params=pg_payload)
 
-    response = requests.get(SG_URL + 'events', params=payload)
+    pg_data = pg_response.json()
 
-    data = response.json()
+    pages = pg_data['meta']['page'] + 1
 
-    events = []
+    event_ids = []
 
-    for i in range(len(data)):
-        event_id = data['events'][i]['id']
-        events.append(event_id)
+    for j in range(pages):
 
-    return events
+        payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'q': event_query,
+            'type': "concert",
+            'per_page': 100,
+            'page': j}
+
+        response = requests.get(SG_URL + 'events', params=payload)
+
+        data = response.json()
+
+        for i in range(len(data['events'])):
+            event_id = data['events']
+            event_ids.append(event_id)
+
+    return set(event_ids)
 
 
 def get_sg_event(event_id):
@@ -62,124 +72,149 @@ def get_sg_event(event_id):
 
     data = response.json()
 
-    return data
+    event = {}
+    # include short_title of event??
+    event['event_title'] = data['events'][0]['title']
+    event['event_datetime'] = data['events'][0]['datetime_utc']
+    event['event_url'] = data['events'][0]['url']
+    event['venue_sg_id'] = data['events'][0]['venue']['id']
 
-    # for j in range(pages):
+    artist_ids = []
+    event['artist_ids'] = artist_ids
 
-    #     payload = {'apikey': CONSUMER_KEY,
-    #                'city': 'San Francisco',
-    #                #'keyword': 'Copeland',
-    #                 'startDateTime': '2019-02-14T11:00:00z',
-    #                 'endDateTime': '2019-02-15T11:00:00z',
-    #                 'page': j}
+    for i in range(len(data['events'][0]['performers'])):
+        artist_id = data['events'][0]['performers'][i]['id']
+        artist_ids.append(artist_id)
 
-    #     response = requests.get(TM_URL + 'events',
-    #                         params=payload)
-
-    #     data = response.json()
-
-    #     events = data['_embedded']['events']
+    return event
 
 
-    #     for i in range(len(events)):
-    #         print("*****************************")
-    #         print("Event_id=",events[i]['id'])
-    #         print("Venue_id=",events[i]['_embedded']['venues'][0]['id'])
-    #         event_id = events[i]['id']
-    #         get_event_detail(event_id)
-            
+def find_sg_venue(venue_query):
 
-    #     print(data['page'])
+    pg_payload = {'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+                'q': venue_query}
 
-#get_tm_events()
+    pg_response = requests.get(SG_URL + 'venues', params=pg_payload)
 
-def find_venue():
+    pg_data = pg_response.json()
 
-    venue_query = "a"
+    pages = pg_data['meta']['page'] + 1
 
-    payload = {'apikey': "SK_KEY",
-                'query': venue_query}
+    for j in range(pages):
+
+        payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'q': venue_query,
+            'per_page': 100,
+            'page': j}
+
+        response = requests.get(SG_URL + 'venues', params=payload)
+
+        data = response.json()
+
+        venue_ids = []
+
+        for i in range(len(data['venues'])):
+            venue_id = data['venues'][i]['id']
+            venue_ids.append(venue_id)
+
+    return set(venue_ids)
 
 
-    response = requests.get(SK_URL + 'search/venues',
-                            params=payload)
+def get_sg_venue(venue_id):
+    """Call to SeatGeek API for a particular event's information. """
 
-    data = response.json()
+    payload = {'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+                'id': venue_id}
 
-    return data
-
-    # venues = data['resultsPage']['results']
-
-    # for i in range(len(venues)):
-    #     print("*****************************")
-    #     for key in venues[i]['address']:
-    #         print(venues[i]['address'][key],"\n")
-    #     for key in venues[i]['city']:
-    #         print(venues[i]['city'][key],"\n")
-    #     for key in venues[i]['country']:
-    #         print(venues[i]['country'][key],"\n")
-    #     print(venues[i]['postalCode'],"\n")
-    #     print(venues[i]['id'],"\n")
-    #     if 'url' in venues[i]:
-    #         print(venues[i]['url'],"\n")
-    #     else:
-    #         print('No url')
-    #     print() 
-
-#find_venue()
-
-def get_artist_detail(attraction_id):
-
-    art_payload = {'apikey': CONSUMER_KEY}
-
-    response = requests.get(TM_URL + 'attractions/' + attraction_id, params=art_payload)
+    response = requests.get(SG_URL + 'venues', params=payload)
 
     data = response.json()
 
+    # event = {}
+    # # include short_title of event??
+    # event['event_title'] = data['events'][0]['title']
+    # event['event_datetime'] = data['events'][0]['datetime_utc']
+    # event['event_url'] = data['events'][0]['url']
+    # event['venue_sg_id'] = data['events'][0]['venue']['id']
 
-    print('name=', data['name'])
-    print('type=', data['type'])
-    print('url=', data['url'])
+    # artist_ids = []
+    # event['artist_ids'] = artist_ids
 
-def get_event_detail(event_id):
-    
-    ev_payload = {'apikey': CONSUMER_KEY}
+    # for i in range(len(data['events'][0]['performers'])):
+    #     artist_id = data['events'][0]['performers'][i]['id']
+    #     artist_ids.append(artist_id)
 
-    response = requests.get(TM_URL + 'events/' + event_id, params=ev_payload)
+    return venue
+
+
+def find_sg_artists(artist_query):
+    """Call to SeatGeek API for all events."""  
+
+    pg_payload = {'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+                'q': artist_query}
+
+    pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
+
+    pg_data = pg_response.json()
+
+    pages = pg_data['meta']['page'] + 1
+
+    artist_ids = []
+
+    for j in range(pages):
+
+        payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'q': artist_query,
+            'per_page': 100,
+            'page': j}
+
+        response = requests.get(SG_URL + 'performers', params=payload)
+
+        data = response.json()
+
+        for i in range(len(data['performers'])):
+            artist_id = data['performers'][i]['id']
+            artist_ids.append(artist_id)
+
+    return set(artist_ids)
+
+
+def get_sg_artist(artist_id):
+    """Call to SeatGeek API for a particular artist's information. """
+
+    payload = {'client_id': CLIENT_ID,
+                'client_secret': CLIENT_SECRET,
+                'id': artist_id}
+
+    response = requests.get(SG_URL + 'performers', params=payload)
 
     data = response.json()
 
-    print('Event_name=', data['name'])
-    print('Event_url=', data['url'])
+    artist = {}
 
-    attractions = data['_embedded']['attractions']
-    for i, attraction in enumerate(attractions):
-        attraction_id = attraction['id']
-        get_artist_detail(attraction_id)
-        
+    artist['artist_name'] = data['performers'][0]['name']
+    artist['artist_photo'] = data['performers'][0]['image']
+    artist['artist_spotify_url'] = data['performers'][0]['links'][0]['url']
 
-    # attraction_id = data['_embedded']['attractions'][0]['id']
-    # get_artist_detail(attraction_id)
+    spotify_id_str = data['performers'][0]['links'][0]['id']
+    spot, art, spot_id = spotify_id_str.split(":")
+    artist['artist_spotify_id'] = spot_id
+
+    artist_genres = []
+    artist['artist_genre'] = artist_genres
+
+    for i in range(len(data['performers'][0]['genres'])):
+        genre = data['performers'][0]['genres'][i]['name']
+        artist_genres.append(genre)
+
+    return artist
 
 
+def create_lineup(event_id, artist_id):
 
-
-# def get_sk_artist():
-    
-#     name = 'Radiohead'
-
-#     results = spotify.search(q='artist:' + name, type='artist')
-
-#     items = results['artists']['items']
-
-#     if len(items) > 0:
-#         artist = items[0]
-#         print("Spotify_id=", artist['id'],"\n"
-#             "Artist="+artist['name'],"\n"
-#             "Artist_URL=","\n"
-#             "Images=",artist['images'],"\n"
-#             "Genres=",artist['genres'],"\n"
-#             "Bio=", artist['external_urls']
-#             )
-
-#get_artist()
+    pass
