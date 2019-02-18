@@ -1,6 +1,4 @@
-"""Concert Lineups."""
-
-from utility import *
+"""View functions for Fill Concert webapp."""
 
 from jinja2 import StrictUndefined
 
@@ -10,6 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 
+from utility import *
 
 app = Flask(__name__)
 
@@ -22,6 +21,18 @@ app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 
+
+@app.route('/test')
+def test():
+
+    response = get_sg_venue(1291)
+
+    return jsonify(response)
+
+
+
+
+
 @app.route('/')
 def index():
     """Homepage."""
@@ -30,96 +41,89 @@ def index():
 
 
 @app.route('/check_artist')
-def check_artist():
+def check_artist(artist_input):
     """List artists found that closely match artist entered by user."""
 
-    artist_input = 'Avett'
+    # Call API for all artists closely matched, response is list of artist_ids
+    artist_options = find_sg_artists(artist_input)
 
-    # Call API for all artist closely matched,
-    # if an artist_id in db, pull artist details
-    # if not, call API to get artist info, insert into db
-    # and make other calls to fill rest
-
-    artist_options = Artist.query.filter(Artist.artist_name.like('%' + artist_input + '%')).all()
-
+    ## What happens when none found???
+    
+    # Add each artist to db if not already in db
+    insert_artists(artist_options)
+    
     return render_template("check_artist.html", artist_options=artist_options)
 
 
 @app.route('/artist/<artist_id>')
 def list_artist_events(artist_id):
-    """List all events for artist selected."""
+    """List all events for artist entered."""
 
-    # Find events that have lineups that match the artist_id
-    artist_events = Event.query.filter(Lineup.artist_id == artist_id).all()
     # Find artist object of artist_id
     artist = Artist.query.filter(Artist.artist_id == artist_id).one()
 
-    return render_template("artist_events.html", artist_events=artist_events, artist=artist)
+    # Call API for all events of a particular artist, response is a list of artist_ids
+    artist_events = find_artist_events(artist_id)
 
+    ## What happens when none found???
 
-@app.route('/test')
-def test():
+    # Add each event to db if not already in db
+    insert_events(artist_events)
 
-    response = get_sg_event()
-
-    return jsonify(response)
-
-
+    return render_template("artist_events.html", artist=artist, artist_events=artist_events)
 
 
 @app.route('/check')
-def check_venue_event():
-    """List events then list venues found that closely match 
-        event/venue entered by user."""
+def check_venue_and_event(user_input):
+    """List events then list venues found that closely match event/venue entered by user."""
 
-    check_input = 'UC'
+    # Call API for all events closely matched, response is list of event_ids
+    event_options = find_sg_events(user_input)
 
-    # Call API for all events closely matched,
-    # User will select an event
-    # if event_id in db
-    # if not, call API to get event info, insert into db
-    # and make other calls to fill rest
+    ## What happens when none found???
 
-    event_ids = find_sg_events()
-    print("*********************\n", event_ids)
+    # Add event to db if not already in db
+    insert_events(event_options)
 
-    event_options = []
+    # Call API for all venues closely matched, response is list of venue_ids
+    venue_options = find_sg_venues(user_input)
 
-    for event in event_ids:
-        if Event.query.filter(Event.event_id == event).one():
-            event_object = Event.query.filter(Event.event_id == event_id).one()
-            event_options.append(event_object)
-        else:
-            # Call to get that event's info
-            add_event = get_sg_event(4630010) 
-            # Add to event to db
-            
-            # Append to event_options
+    ## What happens when none found???
 
+    insert_venues(venue_options)
     
-    # venue_options = Venue.query.filter(Venue.venue_name.like('%' + check_input + '%')).all()
-    return render_template("check.html", event_options=event_options)
+    return render_template("check.html", event_options=event_options, venue_options=venue_options)
 
-
+ 
 @app.route('/venue/<venue_id>')
 def list_venue_events(venue_id):
     """List all events for venue selected."""
     
-    # Find events for the venue_id
-    venue_events = Event.query.filter(Event.venue_id == venue_id).all()
-    # Find event object of venue_id
+    # Find venue object
     venue = Venue.query.filter(Venue.venue_id == venue_id).one()
 
-    return render_template("venue_events.html", venue_events=venue_events, venue=venue)
+    # Call API for all events for particular venue, response is list of event_ids
+    venue_events = find_venue_events(venue_id)
+
+    ## What happens when none found???
+
+    insert_events(venue_events)
+
+    return render_template("venue_events.html", venue=venue, venue_events=venue_events)
 
 
 @app.route('/event/<event_id>')
 def display_event(event_id):
     """Display event information."""
     
-    artists = Artist.query.filter(Lineup.event_id == event_id).all()
-
+    # Find event object of event_id
     event = Event.query.filter(Event.event_id == event_id).one()
+
+    event_artists = find_event_artists(event_id)
+
+    ## What happens when none found???
+
+    insert_events(event_artists)
 
     return render_template("event.html", event=event, artists=artists)
 

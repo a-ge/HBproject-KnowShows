@@ -1,4 +1,4 @@
-"""Models and database functions for Full Concert webapp."""
+"""Models for Full Concert webapp."""
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -8,13 +8,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-
 class Venue(db.Model):
     """Venue information."""
 
     __tablename__ = "venues"
 
     venue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    venue_sg_id = db.Column(db.Integer)
     venue_name = db.Column(db.String(100))
     venue_loc = db.Column(db.String(100))
     venue_url = db.Column(db.String(200))
@@ -36,9 +36,11 @@ class Event(db.Model):
 
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'))
+    event_sg_id = db.Column(db.Integer)
     event_title = db.Column(db.String(100))
-    event_date = db.Column(db.Date)
+    event_datetime = db.Column(db.DateTime)
     event_url = db.Column(db.String(200))
+    venue_sg_id = db.Column(db.Integer)
 
     def __repr__(self):
         """Print helpful event information"""
@@ -68,7 +70,7 @@ class Lineup(db.Model):
         return "<Lineup lineup_id={} event_id={} artist_id={}>".format(self.lineup_id,
             self.event_id, self.artist_id)
 
-
+## Need song???
 class Artist(db.Model):
     """Artist infomation."""
 
@@ -76,7 +78,7 @@ class Artist(db.Model):
 
     artist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     spotify_id = db.Column(db.String(100))
-    ticket_id = db.Column(db.Integer)
+    artist_sg_id = db.Column(db.Integer)
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(200))
     artist_photo = db.Column(db.String(200))
@@ -88,7 +90,6 @@ class Artist(db.Model):
 
         return "<Artist artist_id={} artist_name={}>".format(self.artist_id,
             self.artist_name)
-
 
 
 def connect_to_db(app):
