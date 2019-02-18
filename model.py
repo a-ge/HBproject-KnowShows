@@ -14,7 +14,7 @@ class Venue(db.Model):
     __tablename__ = "venues"
 
     venue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    venue_sg_id = db.Column(db.Integer)
+    venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
     venue_loc = db.Column(db.String(100))
     venue_url = db.Column(db.String(200))
@@ -36,11 +36,10 @@ class Event(db.Model):
 
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'))
-    event_sg_id = db.Column(db.Integer)
+    event_sg_id = db.Column(db.Integer, unique=True)
     event_title = db.Column(db.String(100))
     event_datetime = db.Column(db.DateTime)
     event_url = db.Column(db.String(200))
-    venue_sg_id = db.Column(db.Integer)
 
     def __repr__(self):
         """Print helpful event information"""
@@ -78,7 +77,7 @@ class Artist(db.Model):
 
     artist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     spotify_id = db.Column(db.String(100))
-    artist_sg_id = db.Column(db.Integer)
+    artist_sg_id = db.Column(db.Integer, unique=True)
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(200))
     artist_photo = db.Column(db.String(200))

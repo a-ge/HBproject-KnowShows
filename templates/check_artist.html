@@ -5,13 +5,13 @@
 <h2>Found a few artists that match your search. Which artist are you looking for?</h2>
 
     <ul>
-    {% for artist_option in artist_options %}
+    {% for artist in artist_options %}
 
       <li>
-        <a href="/artist/{{ artist_option.artist_id }}">
-          {{ artist_option.artist_name }}
-        </a>
-        
+        <a href="/artist/{{ artist.artist_id }}">
+          {{ artist.artist_name }}</a><br>
+        {{ artist.artist_genre }}
+            
       </li>
 
     {% endfor %}
