@@ -2,6 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 
+from datetime import datetime
+
 # Connection to the PostgreSQL database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
 # object, where we do most of our interactions (like committing, etc.)
@@ -16,7 +18,7 @@ class Venue(db.Model):
     venue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
-    venue_loc = db.Column(db.String(100))
+    venue_loc = db.Column(db.JSON)
     venue_url = db.Column(db.String(200))
 
     # Define relationship to events
@@ -28,7 +30,6 @@ class Venue(db.Model):
         return "<Venue venue_id={} venue_name={}>".format(self.venue_id,
             self.venue_name)
 
-
 class Event(db.Model):
     """Event information."""
 
@@ -38,14 +39,14 @@ class Event(db.Model):
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'))
     event_sg_id = db.Column(db.Integer, unique=True)
     event_title = db.Column(db.String(100))
-    event_datetime = db.Column(db.DateTime)
+    event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
     event_url = db.Column(db.String(200))
 
     def __repr__(self):
         """Print helpful event information"""
 
-        return "<Event event_id={} event_title={} event_date={}>".format(self.event_id,
-            self.event_title, self.event_date)
+        return "<Event event_id={} event_title={} event_datetime={}>".format(self.event_id,
+            self.event_title, self.event_datetime)
 
 
 class Lineup(db.Model):

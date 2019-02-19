@@ -65,7 +65,7 @@ def list_artist_events(artist_id):
     """List all events for artist entered."""
 
     # Find artist object of artist_id
-    artist = Artist.query.filter(Artist.artist_sg_id == artist_id).one()
+    artist = Artist.query.filter(Artist.artist_id == artist_id).one()
 
     # Call API for all events of a particular artist, response is a list of event_sg_ids
     artist_sg_events = find_artist_events(artist_id)
@@ -82,9 +82,9 @@ def list_artist_events(artist_id):
 
 
 @app.route('/check')
-def check_venue_and_event(user_query):
+def check_venue_and_event():
     """List events then list venues found that closely match event/venue entered by user."""
-
+    user_query = "Slim"
     # Call API for all events closely matched, response is list of event_ids
     event_options = list_event_ids(user_query)
 
@@ -99,6 +99,7 @@ def check_venue_and_event(user_query):
     ## What happens when none found???
 
     insert_venues(venue_options)
+
     
     return render_template("check.html", event_options=event_options, venue_options=venue_options)
 
