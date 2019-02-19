@@ -87,7 +87,6 @@ def find_sg_artists(artist_query):
 
         results.append(data)
 
-
     return results
 
 def list_artist_ids(query):
@@ -104,6 +103,8 @@ def list_artist_ids(query):
             for i in range(len(result['performers'])):
                 artist_id = result['performers'][i]['id']
                 artist_ids.append(artist_id)
+
+    insert_artists(artist_ids)
 
     return set(artist_ids)
 
@@ -198,6 +199,8 @@ def list_event_ids(query):
         except:
             print("oh no*****")
 
+    insert_events(event_ids)
+
     return set(event_ids)
 
 
@@ -250,6 +253,8 @@ def list_venue_ids(query):
         except:
             print("oh no*****")
 
+    insert_venues(venue_ids)
+
     return set(venue_ids)
 
 
@@ -298,6 +303,9 @@ def list_venue_event_ids(venue_id):
                 event_ids.append(event_id)
         except:
             print("oh no*****")
+    # Add event to db if not already in db
+    insert_events(event_ids)
+
     return set(event_ids)
 
 
