@@ -25,7 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_artist_events(1768)
+    response = find_artist_events(4630010)
 
     return jsonify(response)
 
@@ -49,18 +49,18 @@ def check_artist():
     # Call API for all artists closely matched, response is list of artist_sg_ids
     artist_sg_ids = list_artist_ids(artist_query)
 
+    ## What happens when none found???
+
     if artist_sg_ids != []:
-        
         # Get each artist object for each artist_sg_id
         artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
-
         return render_template("check_artist.html", artist_options=artist_options)
     else:
 
         return "Sorry"
 
 @app.route('/artist/<artist_id>')
-def list_artist_events(artist_id):
+def display_artist(artist_id):
     """List all events for artist entered."""
 
     # Find artist object of artist_id
@@ -71,46 +71,72 @@ def list_artist_events(artist_id):
 
     ## What happens when none found???
 
-    # Get each event object for each event_sg_id
-    artist_events = [Event.query.filter(Event.event_sg_id == event).one() for event in artist_sg_events]
+    if artist_sg_events == "":
+        return "Sorry"
 
-    return render_template("artist_events.html", artist=artist_select, artist_events=artist_events)
+    else:
+        # Get each event object for each event_sg_id
+        artist_events = [Event.query.filter(Event.event_sg_id == event).one() for event in artist_sg_events]
+
+        ##### Get all events and their artists
+        ##### Or link to event page???
+        
+        return render_template("artist.html", artist=artist_select, artist_events=artist_events)
 
 
-@app.route('/check')
-def check_venue_and_event():
+@app.route('/check_venue')
+def check_venue():
     """List events then list venues found that closely match event/venue entered by user."""
-    user_query = "Avett"
-
-    # Call API for all events closely matched, response is list of event_ids
-    event_sg_ids = list_event_ids(user_query)
-
-    event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
-    ## What happens when none found???
+    user_query = "Greek"
 
     # Call API for all venues closely matched, response is list of venue_ids
     venue_sg_ids = list_venue_ids(user_query)
 
-    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
     ## What happens when none found???
-    
-    return render_template("check.html", event_options=event_options, venue_options=venue_options)
 
- 
+    if venue_sg_ids != []:
+        venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
+        return render_template("check_venue.html", venue_options=venue_options)
+
+    else:
+        return "Sorry"
+     
 @app.route('/venue/<venue_id>')
-def list_venue_events(venue_id):
+def display_venue(venue_id):
     """List all events for venue selected."""
     
     # Find venue object
     venue_select = Venue.query.filter(Venue.venue_id == venue_id).one()
 
     # Call API for all events for particular venue, response is list of event_ids
-    venue_sg_events = list_venue_event_ids(venue_id)
+    venue_sg_events = list_venue_event_ids(venue_select.venue_sg_id)
 
-    venue_events = [Event.query.filter(Event.event_sg_id == event).one() for event in venue_sg_events]
     ## What happens when none found???
 
-    return render_template("venue_events.html", venue=venue_select, venue_events=venue_events)
+    if venue_sg_events == "":
+        return "Sorry"
+
+    else:
+        venue_events = [Event.query.filter(Event.event_sg_id == event).one() for event in venue_sg_events]
+        return render_template("venue.html", venue=venue_select, venue_events=venue_events)
+
+
+@app.route('/check_event')
+def check_event():
+    """List events then list venues found that closely match event/venue entered by user."""
+    user_query = "Avett"
+
+    # Call API for all events closely matched, response is list of event_ids
+    event_sg_ids = list_event_ids(user_query)
+
+    ## What happens when none found???
+
+    if event_sg_ids != []:
+        event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
+        return render_template("check_event.html", event_options=event_options)
+
+    else:
+        return "Sorry"
 
 
 @app.route('/event/<event_id>')
@@ -120,13 +146,16 @@ def display_event(event_id):
     # Find event object of event_id
     event_select = Event.query.filter(Event.event_id == event_id).one()
 
-    event_sg_artists = list_artist_ids(event_id)
+    event_sg_artists = list_event_artists(event_id)
 
-    event_artists = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in event_sg_artists]
+    ## What happens when none found??? ## Maybe return page with just the event info and venue info??
 
-    ## What happens when none found???
+    if event_sg_artists == "":
+        return "Sorry"
 
-    return render_template("event.html", event=event_select, artists=artists)
+    else:
+        event_artists = [artist for artist in event_sg_artists]
+        return render_template("event.html", event=event_select, event_artists=event_artists)
 
 
 if __name__ == "__main__":

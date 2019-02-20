@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Found a few events that match your search. Which one are you looking for?</h2>
+
+<h3>Events</h3>
+    <ul>
+    {% for event in event_options %}
+
+      <li>
+        <a href="/event/{{ event.event_id }}">
+          {{ event.event_title }}
+        </a>
+      </li>
+
+    {% endfor %}
+    </ul>
+
+
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Found a few venues that match your search. Which one are you looking for?</h2>
+
+<h3>Venues</h3>
+    <ul>
+    {% for venue in venue_options %}
+
+      <li>
+        <a href="/venue/{{ venue.venue_id }}">
+          {{ venue.venue_name }}
+        </a>
+      </li>
+
+    {% endfor %}
+    </ul>
+{% endblock %}
+

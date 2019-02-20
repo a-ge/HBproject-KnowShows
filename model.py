@@ -22,7 +22,7 @@ class Venue(db.Model):
     venue_url = db.Column(db.String(1000))
 
     # Define relationship to events
-    events = db.relationship("Event", backref=db.backref("venues"))
+    events = db.relationship("Event", backref=db.backref("venue"))
 
     def __repr__(self):
         """Print helpful venue information"""
@@ -38,7 +38,7 @@ class Event(db.Model):
     event_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'))
     event_sg_id = db.Column(db.Integer, unique=True)
-    event_title = db.Column(db.String(100))
+    event_title = db.Column(db.String(500))
     event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
     event_url = db.Column(db.String(1000))
 
@@ -59,10 +59,10 @@ class Lineup(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('artists.artist_id'))
 
     # Define relationship to event
-    events = db.relationship("Event", backref=db.backref("lineups"))
+    event = db.relationship("Event", backref=db.backref("lineups"))
 
     # Define relationship to artist
-    artists = db.relationship("Artist", backref=db.backref("lineups"))
+    artist = db.relationship("Artist", backref=db.backref("lineups"))
 
     def __repr__(self):
         """Print helpful lineup information."""
@@ -83,7 +83,7 @@ class Artist(db.Model):
     artist_url = db.Column(db.String(1000))
     artist_photo = db.Column(db.String(1000))
     artist_song = db.Column(db.String(100))
-    artist_genre = db.Column(db.String(100))
+    artist_genre = db.Column(db.String(200))
 
     def __repr__(self):
         """Print helpful artist information."""
