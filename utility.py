@@ -3,6 +3,8 @@
 import requests
 import json
 
+import pprint
+
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 
 
@@ -24,290 +26,6 @@ SG_URL = "https://api.seatgeek.com/2/"
 
 # Will modify later to be able to clean/update db
 # For now, trying to seed db with some events in order to test and build other parts of webapp
-
-
-def find_event_artists(event_id):
-    """Call to SeatGeek API for all artists for given event."""
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'q': event_id}
-
-    pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
-
-    pg_data = pg_response.json()
-    # Need to fix!!!!
-    total_artists = pg_data['meta']['total'] + 1
-    
-    results = []
-    
-    for j in range(1, total_artists):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'q': event_id,
-                'per_page': 20}
-
-        response = requests.get(SG_URL + 'performers', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-        
-    return set(results)
-
-def find_sg_artists(artist_query):
-    """Call to SeatGeek API for all artists given user's artist input."""  
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'q': artist_query}
-
-    pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
-
-    pg_data = pg_response.json()
-
-    total_artists = pg_data['meta']['total'] + 1
-
-    # Put each page altogether in one list
-    results = []
-
-    for j in range(1, total_artists):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'q': artist_query,
-                'per_page': 100}
-
-        response = requests.get(SG_URL + 'performers', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-
-    return results
-
-def list_artist_ids(query):
-
-    if type(query) == 'int':
-        results = find_event_artists(query)
-    else:
-        results = find_sg_artists(query)
-
-    artist_ids = []
-
-    for result in results:
-        if result['performers'] != []:
-            for i in range(len(result['performers'])):
-                artist_id = result['performers'][i]['id']
-                artist_ids.append(artist_id)
-
-    insert_artists(artist_ids)
-
-    return set(artist_ids)
-
-
-def find_artist_events(artist_id):
-    """Call to SeatGeek API for all events for given artist.""" 
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.country': 'US',
-                'performers.id': artist_id}
-
-    pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    pg_data = pg_response.json()
-
-    total_events = pg_data['meta']['total'] + 1
-
-    results = []
-
-    for j in range(1, total_events):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.country': 'US',
-                'performers.id': artist_id,
-                'per_page': 10}
-
-        response = requests.get(SG_URL + 'events', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-    return results
-
-def find_sg_events(query):
-    """Call to SeatGeek API for all events given user's event/venue input."""
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.country': 'US',
-                'q': query,
-                'type': "concert"}
-
-    pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    pg_data = pg_response.json()
-
-    total_events = pg_data['meta']['total'] + 1
-
-    # Put each page altogether in one list
-    results = []
-
-    for j in range(1, total_events):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.country': 'US',
-                'q': query,
-                'type': "concert",
-                'per_page': 100}
-
-        response = requests.get(SG_URL + 'events', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-
-    return results
-
-def list_event_ids(query):
-
-    if type(query) == 'int':
-        results = find_artist_events(query)
-    else:
-        results = find_sg_events(query)
-
-    event_ids = []
-
-    for result in results:
-        try:
-            result['events']
-            
-            for i in range(len(results['events'])):
-                try:
-                    event_id = results['events'][i]['id']
-                    event_ids.append(event_id)
-                except:
-                    event_id = None
-        except:
-            print("oh no*****")
-
-    insert_events(event_ids)
-
-    return set(event_ids)
-
-
-def find_sg_venues(query):
-    """Call to SeatGeek API for all venues given user's event/venue input."""
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'country': 'US',
-                'q': query}
-
-    pg_response = requests.get(SG_URL + 'venues', params=pg_payload)
-
-    pg_data = pg_response.json()
-
-    total_venues = pg_data['meta']['total'] + 1
-
-    # Get all venue_ids that closely match user's input
-    results = []
-
-    for j in range(1, total_venues):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'country': 'US',
-                'q': query,
-                'per_page': 100}
-
-        response = requests.get(SG_URL + 'venues', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-
-    return results
-
-def list_venue_ids(query):
-
-    results = find_sg_venues(query)
-
-    venue_ids = []
-
-    for result in results:
-        try:
-            result['venues']
-            for i in range(len(result['venues'])):
-                venue_id = result['venues'][i]['id']
-                venue_ids.append(venue_id)
-        except:
-            print("oh no*****")
-
-    insert_venues(venue_ids)
-
-    return set(venue_ids)
-
-
-def find_venue_events(venue_id):
-    """Call to SeatGeek API for all events for given venue."""
-
-    # Pagination
-    pg_payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.id': venue_id}
-
-    pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    pg_data = pg_response.json()
-
-    total_events = pg_data['meta']['total'] + 1
-
-    results = []
-
-    for j in range(1, total_events):
-
-        payload = {'client_id': CLIENT_ID,
-                'client_secret': CLIENT_SECRET,
-                'venue.id': venue_id,
-                'per_page': 100}
-
-        response = requests.get(SG_URL + 'events', params=payload)
-
-        data = response.json()
-
-        results.append(data)
-
-    return results
-
-def list_venue_event_ids(venue_id):  
-
-    results = find_venue_events(venue_id)
-
-    event_ids = []
-
-    for result in results:
-        try:
-            result['events']
-            for i in range(len(result['events'])):
-                event_id = result['events'][i]['id']
-                event_ids.append(event_id)
-        except:
-            print("oh no*****")
-    # Add event to db if not already in db
-    insert_events(event_ids)
-
-    return set(event_ids)
-
 
 def get_sg_event(event_id):
     """Call to SeatGeek API for a particular event's information. """
@@ -435,7 +153,7 @@ def insert_events(events):
                     venue_id = venue_obj.venue_id
 
             except:
-                venue_id = 1
+                venue_id = None
 
             
             # insert into db event
@@ -491,3 +209,296 @@ def insert_venues(venues):
                             venue_url=venue_url)
             db.session.add(new_venue)
             db.session.commit()
+
+
+def find_event_artists(event_id):
+    """Call to SeatGeek API for all artists for given event."""
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'q': event_id}
+
+    # pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
+
+    # pg_data = pg_response.json()
+    # # Need to fix!!!!
+    # total_artists = pg_data['meta']['total'] + 1
+    
+    # results = []
+    
+    # for j in range(1, total_artists):
+
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'q': event_id,
+            'per_page': 10}
+
+    response = requests.get(SG_URL + 'performers', params=payload)
+
+    data = response.json()
+
+    # results.append(data)
+        
+    return data
+
+def find_sg_artists(artist_query):
+    """Call to SeatGeek API for all artists given user's artist input."""  
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'q': artist_query}
+
+    # pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
+
+    # pg_data = pg_response.json()
+
+    # total_artists = pg_data['meta']['total'] + 1
+
+
+    # results = []
+
+    # for j in range(1, total_artists):
+
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'q': artist_query,
+            'per_page': 10}
+
+    response = requests.get(SG_URL + 'performers', params=payload)
+
+    data = response.json()
+
+        # results.append(data)
+
+    return data
+
+def list_artist_ids(query):
+
+    if type(query) == int:
+        results = find_event_artists(query)
+    else:
+        results = find_sg_artists(query)
+
+    artist_ids = []
+
+    # for result in results:
+    if results['performers'] != []:
+        for i in range(len(results['performers'])):
+            if results['performers'][0]['has_upcoming_events'] == True:
+                artist_id = results['performers'][i]['id']
+                artist_ids.append(artist_id)
+
+                insert_artists(artist_ids)
+
+                return set(artist_ids)
+    else:
+        return []
+
+
+def find_artist_events(artist_id):
+    """Call to SeatGeek API for all events for given artist.""" 
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'venue.country': 'US',
+    #             'performers.id': artist_id}
+
+    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
+
+    # pg_data = pg_response.json()
+
+    # total_events = pg_data['meta']['total'] + 1
+
+    
+
+    # for j in range(1, total_events):
+
+    # results = []
+    
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'venue.country': 'US',
+            'performers.id': artist_id,
+            'per_page': 10}
+
+    response = requests.get(SG_URL + 'events', params=payload)
+
+    data = response.json()
+
+    # results.append(data)
+
+    return data
+
+def find_sg_events(query):
+    """Call to SeatGeek API for all events given user's event/venue input."""
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'venue.country': 'US',
+    #             'q': query,
+    #             'type': "concert"}
+
+    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
+
+    # pg_data = pg_response.json()
+
+    # total_events = pg_data['meta']['total'] + 1
+
+    # # Put each page altogether in one list
+    # results = []
+
+    # for j in range(1, total_events):
+
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'venue.country': 'US',
+            'q': query,
+            'type': "concert",
+            'per_page': 10}
+
+    response = requests.get(SG_URL + 'events', params=payload)
+
+    data = response.json()
+
+        # results.append(data)
+
+    return data
+
+def list_event_ids(query):
+
+    if type(query) == int:
+        results = find_artist_events(query)
+    else:
+        results = find_sg_events(query)
+
+    event_ids = []
+
+    # for result in results:
+    if results['events']:
+        for i in range(len(results['events'])):
+
+            try:
+                event_id = results['events'][i]['id']
+            except:
+                event_id = None
+
+            event_ids.append(event_id)
+            insert_events(event_ids)
+
+        return set(event_ids)
+
+    else:
+        return []
+        
+
+   
+def find_sg_venues(query):
+    """Call to SeatGeek API for all venues given user's event/venue input."""
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'country': 'US',
+    #             'q': query}
+
+    # pg_response = requests.get(SG_URL + 'venues', params=pg_payload)
+
+    # pg_data = pg_response.json()
+
+    # total_venues = pg_data['meta']['total'] + 1
+
+    # # Get all venue_ids that closely match user's input
+    # results = []
+
+    # for j in range(1, total_venues):
+
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'country': 'US',
+            'q': query,
+            'per_page': 100}
+
+    response = requests.get(SG_URL + 'venues', params=payload)
+
+    data = response.json()
+
+        # results.append(data)
+
+    return data
+
+def list_venue_ids(query):
+
+    results = find_sg_venues(query)
+
+    venue_ids = []
+
+    # for result in results:
+    try:
+        results['venues']
+        for i in range(len(results['venues'])):
+            venue_id = results['venues'][i]['id']
+            venue_ids.append(venue_id)
+    except:
+        print("oh no*****")
+
+    insert_venues(venue_ids)
+
+    return set(venue_ids)
+
+
+def find_venue_events(venue_id):
+    """Call to SeatGeek API for all events for given venue."""
+
+    # Pagination
+    # pg_payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'venue.id': venue_id}
+
+    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
+
+    # pg_data = pg_response.json()
+
+    # total_events = pg_data['meta']['total'] + 1
+
+    # results = []
+
+    # for j in range(1, total_events):
+
+    payload = {'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
+            'venue.id': venue_id,
+            'per_page': 10}
+
+    response = requests.get(SG_URL + 'events', params=payload)
+
+    data = response.json()
+
+        # results.append(data)
+
+    return data
+
+def list_venue_event_ids(venue_id):  
+
+    results = find_venue_events(venue_id)
+
+    event_ids = []
+
+    # for result in results:
+    try:
+        results['events']
+        for i in range(len(results['events'])):
+            event_id = results['events'][i]['id']
+            event_ids.append(event_id)
+    except:
+        print("oh no*****")
+    # Add event to db if not already in db
+    insert_events(event_ids)
+
+    return set(event_ids)
+
+
+

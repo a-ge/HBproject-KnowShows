@@ -19,7 +19,7 @@ class Venue(db.Model):
     venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
     venue_loc = db.Column(db.JSON)
-    venue_url = db.Column(db.String(200))
+    venue_url = db.Column(db.String(1000))
 
     # Define relationship to events
     events = db.relationship("Event", backref=db.backref("venues"))
@@ -40,7 +40,7 @@ class Event(db.Model):
     event_sg_id = db.Column(db.Integer, unique=True)
     event_title = db.Column(db.String(100))
     event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
-    event_url = db.Column(db.String(200))
+    event_url = db.Column(db.String(1000))
 
     def __repr__(self):
         """Print helpful event information"""
@@ -80,8 +80,8 @@ class Artist(db.Model):
     spotify_id = db.Column(db.String(100))
     artist_sg_id = db.Column(db.Integer, unique=True)
     artist_name = db.Column(db.String(100))
-    artist_url = db.Column(db.String(200))
-    artist_photo = db.Column(db.String(200))
+    artist_url = db.Column(db.String(1000))
+    artist_photo = db.Column(db.String(1000))
     artist_song = db.Column(db.String(100))
     artist_genre = db.Column(db.String(100))
 

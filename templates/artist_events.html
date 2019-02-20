@@ -6,8 +6,10 @@
   <ul>
     {% for event in artist_events %}
       <li>
-        {{ event.event_title }}<br>
-        {{ event.event_url }}  
+        {{ event.venues.venue_name}} <br>
+        {{ event.event_url }}  <br>
+        {{ event.event_datetime }}  <br>
+
       </li>
     {% endfor %}
   </ul>

@@ -25,7 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = list_venue_event_ids(1291)
+    response = find_artist_events(1768)
 
     return jsonify(response)
 
@@ -49,13 +49,15 @@ def check_artist():
     # Call API for all artists closely matched, response is list of artist_sg_ids
     artist_sg_ids = list_artist_ids(artist_query)
 
-    ## What happens when none found???
+    if artist_sg_ids != []:
+        
+        # Get each artist object for each artist_sg_id
+        artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
 
-    # Get each artist object for each artist_sg_id
-    artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
+        return render_template("check_artist.html", artist_options=artist_options)
+    else:
 
-    return render_template("check_artist.html", artist_options=artist_options)
-
+        return "Sorry"
 
 @app.route('/artist/<artist_id>')
 def list_artist_events(artist_id):
@@ -65,7 +67,7 @@ def list_artist_events(artist_id):
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
 
     # Call API for all events of a particular artist, response is a list of event_sg_ids
-    artist_sg_events = list_event_ids(artist_id)
+    artist_sg_events = list_event_ids(artist_select.artist_sg_id)
 
     ## What happens when none found???
 
