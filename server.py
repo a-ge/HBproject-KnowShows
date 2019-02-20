@@ -61,7 +61,7 @@ def check_artist():
 
 @app.route('/artist/<artist_id>')
 def display_artist(artist_id):
-    """List all events for artist entered."""
+    """List all events with their lineup artists for artist selected."""
 
     # Find artist object of artist_id
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
@@ -78,10 +78,28 @@ def display_artist(artist_id):
         # Get each event object for each event_sg_id
         artist_events = [Event.query.filter(Event.event_sg_id == event).one() for event in artist_sg_events]
 
+        artist_event_dicts = []
+        
+        for event in artist_events:
+
+            eve = []
+            art = {}
+
+            eve.append(Event.query.filter(Event.event_id == event.event_id).one())
+
+            event_artists = list_event_artists(event.event_id)
+
+            for i, art_obj in enumerate(event_artists):
+                art_obj = Artist.query.filter(Artist.artist_id == art_obj.artist_id).one()
+                art['artist' + str(i + 1)] = art_obj
+            eve.append(art)
+        artist_event_dicts.append(eve)
+        print(artist_event_dicts)
+
         ##### Get all events and their artists
         ##### Or link to event page???
         
-        return render_template("artist.html", artist=artist_select, artist_events=artist_events)
+        return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
 
 
 @app.route('/check_venue')

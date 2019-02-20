@@ -219,22 +219,6 @@ def list_event_artists(event_id):
 def find_sg_artists(artist_query):
     """Call to SeatGeek API for all artists given user's artist input."""  
 
-    # Pagination
-    # pg_payload = {'client_id': CLIENT_ID,
-    #             'client_secret': CLIENT_SECRET,
-    #             'q': artist_query}
-
-    # pg_response = requests.get(SG_URL + 'performers', params=pg_payload)
-
-    # pg_data = pg_response.json()
-
-    # total_artists = pg_data['meta']['total'] + 1
-
-
-    # results = []
-
-    # for j in range(1, total_artists):
-
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'q': artist_query,
@@ -244,8 +228,6 @@ def find_sg_artists(artist_query):
 
     data = response.json()
 
-        # results.append(data)
-
     return data
 
 def list_artist_ids(query):
@@ -254,7 +236,6 @@ def list_artist_ids(query):
 
     artist_ids = []
 
-    # for result in results:
     if results['performers'] != []:
         for i in range(len(results['performers'])):
             if results['performers'][0]['has_upcoming_events'] == True:
@@ -273,24 +254,6 @@ def list_artist_ids(query):
 def find_artist_events(artist_id):
     """Call to SeatGeek API for all events for given artist.""" 
 
-    # Pagination
-    # pg_payload = {'client_id': CLIENT_ID,
-    #             'client_secret': CLIENT_SECRET,
-    #             'venue.country': 'US',
-    #             'performers.id': artist_id}
-
-    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    # pg_data = pg_response.json()
-
-    # total_events = pg_data['meta']['total'] + 1
-
-    
-
-    # for j in range(1, total_events):
-
-    # results = []
-    
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'venue.country': 'US',
@@ -301,30 +264,10 @@ def find_artist_events(artist_id):
 
     data = response.json()
 
-    # results.append(data)
-
     return data
 
 def find_sg_events(query):
     """Call to SeatGeek API for all events given user's event/venue input."""
-
-    # Pagination
-    # pg_payload = {'client_id': CLIENT_ID,
-    #             'client_secret': CLIENT_SECRET,
-    #             'venue.country': 'US',
-    #             'q': query,
-    #             'type': "concert"}
-
-    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    # pg_data = pg_response.json()
-
-    # total_events = pg_data['meta']['total'] + 1
-
-    # # Put each page altogether in one list
-    # results = []
-
-    # for j in range(1, total_events):
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
@@ -337,8 +280,6 @@ def find_sg_events(query):
 
     data = response.json()
 
-        # results.append(data)
-
     return data
 
 def list_event_ids(query):
@@ -350,7 +291,6 @@ def list_event_ids(query):
 
     event_ids = []
 
-    # for result in results:
     if results['events']:
         for i in range(len(results['events'])):
 
@@ -372,23 +312,6 @@ def list_event_ids(query):
 def find_sg_venues(query):
     """Call to SeatGeek API for all venues given user's event/venue input."""
 
-    # Pagination
-    # pg_payload = {'client_id': CLIENT_ID,
-    #             'client_secret': CLIENT_SECRET,
-    #             'country': 'US',
-    #             'q': query}
-
-    # pg_response = requests.get(SG_URL + 'venues', params=pg_payload)
-
-    # pg_data = pg_response.json()
-
-    # total_venues = pg_data['meta']['total'] + 1
-
-    # # Get all venue_ids that closely match user's input
-    # results = []
-
-    # for j in range(1, total_venues):
-
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'country': 'US',
@@ -399,8 +322,6 @@ def find_sg_venues(query):
 
     data = response.json()
 
-        # results.append(data)
-
     return data
 
 def list_venue_ids(query):
@@ -409,7 +330,6 @@ def list_venue_ids(query):
 
     venue_ids = []
 
-    # for result in results:
     if results['venues']:
         for i in range(len(results['venues'])):
 
@@ -426,21 +346,6 @@ def list_venue_ids(query):
 def find_venue_events(venue_id):
     """Call to SeatGeek API for all events for given venue."""
 
-    # Pagination
-    # pg_payload = {'client_id': CLIENT_ID,
-    #             'client_secret': CLIENT_SECRET,
-    #             'venue.id': venue_id}
-
-    # pg_response = requests.get(SG_URL + 'events', params=pg_payload)
-
-    # pg_data = pg_response.json()
-
-    # total_events = pg_data['meta']['total'] + 1
-
-    # results = []
-
-    # for j in range(1, total_events):
-    print(venue_id)
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'venue.id': venue_id,
@@ -450,8 +355,6 @@ def find_venue_events(venue_id):
 
     data = response.json()
 
-        # results.append(data)
-
     return data
 
 def list_venue_event_ids(venue_id):  
@@ -460,7 +363,6 @@ def list_venue_event_ids(venue_id):
 
     event_ids = []
 
-    # for result in results:
     if results['events']:
         for i in range(len(results['events'])):
 
@@ -470,6 +372,6 @@ def list_venue_event_ids(venue_id):
         return set(event_ids)
     else:
 
-        return []
+        return ""
 
 
