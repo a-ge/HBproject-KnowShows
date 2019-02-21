@@ -25,7 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_artist_events(4630010)
+    response = find_sg_events("Avett")
 
     return jsonify(response)
 
@@ -44,13 +44,15 @@ def index():
 def check_artist():
     """List artists found that closely match artist entered by user."""
     
-    artist_query = "Avett"
+    artist_query = "Beyonce"
 
     # Call API for all artists closely matched, response is list of artist_sg_ids
     artist_sg_ids = list_artist_ids(artist_query)
 
     ## What happens when none found???
 
+    ## If only one artist found, go directly to artist's page??
+    print(artist_sg_ids)
     if artist_sg_ids != []:
         # Get each artist object for each artist_sg_id
         artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
@@ -58,6 +60,7 @@ def check_artist():
     else:
 
         return "Sorry"
+
 
 @app.route('/artist/<artist_id>')
 def display_artist(artist_id):
@@ -70,6 +73,7 @@ def display_artist(artist_id):
     artist_sg_events = list_event_ids(artist_select.artist_sg_id)
 
     ## What happens when none found???
+    ## Should never happen because of request argument has_upcoming_events set to True in check_artist request
 
     if artist_sg_events == "":
         return "Sorry"
@@ -83,22 +87,22 @@ def display_artist(artist_id):
         for event in artist_events:
 
             eve = []
-            art = {}
 
             eve.append(Event.query.filter(Event.event_id == event.event_id).one())
 
             event_artists = list_event_artists(event.event_id)
 
+            art = {}
+
             for i, art_obj in enumerate(event_artists):
+
                 art_obj = Artist.query.filter(Artist.artist_id == art_obj.artist_id).one()
                 art['artist' + str(i + 1)] = art_obj
-            eve.append(art)
-        artist_event_dicts.append(eve)
-        print(artist_event_dicts)
 
-        ##### Get all events and their artists
-        ##### Or link to event page???
-        
+            eve.append(art)
+
+            artist_event_dicts.append(eve)
+
         return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
 
 
@@ -118,7 +122,8 @@ def check_venue():
 
     else:
         return "Sorry"
-     
+
+
 @app.route('/venue/<venue_id>')
 def display_venue(venue_id):
     """List all events for venue selected."""
@@ -174,6 +179,8 @@ def display_event(event_id):
     else:
         event_artists = [artist for artist in event_sg_artists]
         return render_template("event.html", event=event_select, event_artists=event_artists)
+
+
 
 
 if __name__ == "__main__":

@@ -5,8 +5,6 @@ import json
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 
-
-# Grab keys from sh file
 import os
 # SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 # SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
@@ -22,7 +20,7 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 
 SG_URL = "https://api.seatgeek.com/2/"
 
-### Will modify later to be able to clean/update db
+### To be added later: clean/update db
 
 def get_sg_event(event_id):
     """Call to SeatGeek API for a particular event's information. """
@@ -69,24 +67,22 @@ def insert_artists(artists):
     for artist in artists:
         
         try:
-            Artist.query.filter(Artist.artist_sg_id == artist).one() #????
-        # if artist_id not found in db, then insert 
+            Artist.query.filter(Artist.artist_sg_id == artist).one()
         except: 
-            # Call to get artist info
             artist_dict = get_sg_artist(artist)
 
-            # Parse for spotify_id
+            # Unpack spotify_id ((response == "spotify:artist:sdvbhfksderhv"))
             try:
-                # spotify_id_str = artist_dict['performers'][0]['links'][0]['id']
-                spot, art, spotify_id = artist_dict['performers'][0]['links'][0]['id'].split(":") # Can combine two lines??
+                spot, art, spotify_id = artist_dict['performers'][0]['links'][0]['id'].split(":")
             except:
                 spotify_id = None
 
-            # String genres
+            # String genres together for now
             artist_genres = ""
             
             if 'genres' in artist_dict['performers'][0]:
                 for i in range(len(artist_dict['performers'][0]['genres'])):
+
                     genre = artist_dict['performers'][0]['genres'][i]['name']
                     artist_genres = artist_genres + genre + ", "
 
@@ -99,6 +95,7 @@ def insert_artists(artists):
                 artist_photo = artist_dict['performers'][0]['image']
             except:
                 artist_photo = None
+
             # insert into db artist
             new_art = Artist(spotify_id=spotify_id,
                         artist_sg_id=artist,
@@ -107,20 +104,20 @@ def insert_artists(artists):
                         artist_photo=artist_photo,
                         artist_song="song",
                         artist_genre=artist_genres[:-2])
+
             db.session.add(new_art)
             db.session.commit()
+
     ## How to instantiate if pulling info from more than one API?
+    ## Possibly not needed since spotify id provided in SeatGeek
 
 def insert_venues(venues):
 
     for venue in venues:
         
         try:
-            Venue.query.filter(Venue.venue_sg_id == venue).one() #????
-            
-        # if venue_id not found in db, then instert
+            Venue.query.filter(Venue.venue_sg_id == venue).one()
         except:
-            # Call to get venue info
             venue_dict = get_sg_venue(venue)
 
             try:
@@ -138,11 +135,12 @@ def insert_venues(venues):
             except:
                 venue_url = None
 
-            # insert into db venue
+            # insert into db
             new_venue = Venue(venue_sg_id=venue,
                             venue_name=venue_name,
                             venue_loc=venue_loc,
                             venue_url=venue_url)
+
             db.session.add(new_venue)
             db.session.commit()
 
@@ -151,10 +149,8 @@ def insert_events(events):
     for event in events:
     
         try:
-            Event.query.filter(Event.event_sg_id == event).one() #????
-        # if event_id not found in db, then insert
+            Event.query.filter(Event.event_sg_id == event).one()
         except:
-            # Call to get event info
             event_dict = get_sg_event(event)
 
             try:
@@ -174,30 +170,35 @@ def insert_events(events):
 
             try:
                 venue_sg_id = event_dict['events'][0]['venue']['id']
+
                 try:
                     venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
                 except:
                     insert_venues([venue_sg_id])
                     venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
                 venue_id = venue_obj.venue_id
+
             except:
                 venue_id = None
 
             
-            # insert into db event
+            # insert into db
             new_event = Event(event_sg_id=event,
                             event_title=event_title,
                             event_datetime=event_datetime,
                             event_url=event_url,
                             venue_id=venue_id)
+
             db.session.add(new_event)
             db.session.commit()
             
             if event_dict['events'][0]['performers']:
                 for i in range(len(event_dict['events'][0]['performers'])):
+
                     artists = []
                     artists.append(event_dict['events'][0]['performers'][i]['id'])
                     insert_artists(artists)
+
                     eve_obj = Event.query.filter(Event.event_sg_id == event).one()
                     art_obj = Artist.query.filter(Artist.artist_sg_id == event_dict['events'][0]['performers'][i]['id']).one()
                     insert_lineup(eve_obj.event_id, art_obj.artist_id)
@@ -209,7 +210,9 @@ def list_event_artists(event_id):
     event_lineups = Lineup.query.filter(Lineup.event_id == event_id).all()
 
     event_artists = []
+
     for lineup in event_lineups:
+
         artist = Artist.query.filter(Artist.artist_id == lineup.artist_id).one()
         event_artists.append(artist)
                     
@@ -226,18 +229,17 @@ def find_sg_artists(artist_query):
 
     response = requests.get(SG_URL + 'performers', params=payload)
 
-    data = response.json()
-
-    return data
+    return response.json()
 
 def list_artist_ids(query):
 
     results = find_sg_artists(query)
-
+    print(results)
     artist_ids = []
 
     if results['performers'] != []:
         for i in range(len(results['performers'])):
+
             if results['performers'][0]['has_upcoming_events'] == True:
 
                 artist_id = results['performers'][i]['id']
@@ -262,9 +264,7 @@ def find_artist_events(artist_id):
 
     response = requests.get(SG_URL + 'events', params=payload)
 
-    data = response.json()
-
-    return data
+    return response.json()
 
 def find_sg_events(query):
     """Call to SeatGeek API for all events given user's event/venue input."""
@@ -278,14 +278,13 @@ def find_sg_events(query):
 
     response = requests.get(SG_URL + 'events', params=payload)
 
-    data = response.json()
-
-    return data
+    return response.json()
 
 def list_event_ids(query):
 
     if type(query) == int:
         results = find_artist_events(query)
+
     else:
         results = find_sg_events(query)
 
@@ -310,7 +309,7 @@ def list_event_ids(query):
 
    
 def find_sg_venues(query):
-    """Call to SeatGeek API for all venues given user's event/venue input."""
+    """Call to SeatGeek API for all venues given user's venue input."""
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
@@ -320,9 +319,7 @@ def find_sg_venues(query):
 
     response = requests.get(SG_URL + 'venues', params=payload)
 
-    data = response.json()
-
-    return data
+    return response.json()
 
 def list_venue_ids(query):
 
@@ -353,9 +350,7 @@ def find_venue_events(venue_id):
 
     response = requests.get(SG_URL + 'events', params=payload)
 
-    data = response.json()
-
-    return data
+    return response.json()
 
 def list_venue_event_ids(venue_id):  
 
@@ -369,9 +364,10 @@ def list_venue_event_ids(venue_id):
             event_id = results['events'][i]['id']
             event_ids.append(event_id)
             insert_events(event_ids)
-        return set(event_ids)
-    else:
 
+        return set(event_ids)
+
+    else:
         return ""
 
 
