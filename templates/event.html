@@ -2,17 +2,19 @@
 {% block content %}
 
 <h2>{{ event.event_title }}</h2>
-{{ event.venue.venue_loc }}
+{{ event.venue.venue_loc }}<br>
+
 <h3>Concert Lineup</h3>
+
     <ul>
-    {% for artist in event_artists %}
-
-      <li>
-        {{ artist.artist_name }}<br>
-        {{ artist.artist_url }}
-      </li>
-
-    {% endfor %}
+        {% for key in event_dicts %}
+        <li>
+            {{ event_dicts[key].artist_name }}<br>
+            {{ event_dicts[key].artist_genre }}<br>
+        </li>
+        <br>
+        {% endfor %}
     </ul>
+
 
 {% endblock %}

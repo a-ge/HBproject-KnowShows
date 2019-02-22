@@ -1,23 +1,20 @@
-"""View functions for Fill Concert webapp."""
+"""View functions for Full Concert webapp."""
 
 from jinja2 import StrictUndefined
-
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
-
 from utility import *
+
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "ABC"
 
-# Normally, if you use an undefined variable in Jinja2, it fails
-# silently. This is horrible. Fix this so that, instead, it raises an
-# error.
+# Normally, if you use an undefined variable in Jinja2, it fails silently.
+# This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
 
@@ -44,21 +41,23 @@ def index():
 def check_artist():
     """List artists found that closely match artist entered by user."""
     
-    artist_query = "Beyonce"
+    artist_query = "Avett"
 
-    # Call API for all artists closely matched, response is list of artist_sg_ids
+    # Search db, then if necessary, call API for artists, response is a list of artist_sg_ids
+        ## Currently have request argument has_upcoming_events set to True
+        ## This means artists with no upcoming events will not appear --change?? create flash message??
     artist_sg_ids = list_artist_ids(artist_query)
 
     ## What happens when none found???
 
     ## If only one artist found, go directly to artist's page??
-    print(artist_sg_ids)
+
     if artist_sg_ids != []:
         # Get each artist object for each artist_sg_id
         artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
         return render_template("check_artist.html", artist_options=artist_options)
-    else:
 
+    else:
         return "Sorry"
 
 
@@ -69,54 +68,49 @@ def display_artist(artist_id):
     # Find artist object of artist_id
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
 
-    # Call API for all events of a particular artist, response is a list of event_sg_ids
+    # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
     artist_sg_events = list_event_ids(artist_select.artist_sg_id)
 
     ## What happens when none found???
-    ## Should never happen because of request argument has_upcoming_events set to True in check_artist request
 
-    if artist_sg_events == "":
-        return "Sorry"
-
-    else:
-        # Get each event object for each event_sg_id
-        artist_events = [Event.query.filter(Event.event_sg_id == event).one() for event in artist_sg_events]
-
+    if artist_sg_events != "":
+        # Create a list with nested lists where event obj in index 0
+        # and following indexes are the artist objs for given event
         artist_event_dicts = []
         
-        for event in artist_events:
+        for event in artist_sg_events:
 
             eve = []
 
-            eve.append(Event.query.filter(Event.event_id == event.event_id).one())
+            eve_obj = Event.query.filter(Event.event_sg_id == event).one()
 
-            event_artists = list_event_artists(event.event_id)
+            # First add event object 
+            eve.append(eve_obj)
 
-            art = {}
-
-            for i, art_obj in enumerate(event_artists):
-
-                art_obj = Artist.query.filter(Artist.artist_id == art_obj.artist_id).one()
-                art['artist' + str(i + 1)] = art_obj
-
-            eve.append(art)
+            # Get dictionary with each artist object
+            eve.append(list_event_artists(eve_obj.event_id))
 
             artist_event_dicts.append(eve)
 
         return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
 
+    else:
+        return "Sorry"
+
 
 @app.route('/check_venue')
 def check_venue():
-    """List events then list venues found that closely match event/venue entered by user."""
+    """List venues found that closely match venue entered by user."""
+
     user_query = "Greek"
 
-    # Call API for all venues closely matched, response is list of venue_ids
+    # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
     venue_sg_ids = list_venue_ids(user_query)
 
     ## What happens when none found???
 
     if venue_sg_ids != []:
+        # Get each venue object for each venue_sg_id
         venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
         return render_template("check_venue.html", venue_options=venue_options)
 
@@ -126,35 +120,53 @@ def check_venue():
 
 @app.route('/venue/<venue_id>')
 def display_venue(venue_id):
-    """List all events for venue selected."""
+    """List all events with lineups artists for venue selected."""
     
     # Find venue object
     venue_select = Venue.query.filter(Venue.venue_id == venue_id).one()
 
-    # Call API for all events for particular venue, response is list of event_ids
+    # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
     venue_sg_events = list_venue_event_ids(venue_select.venue_sg_id)
 
     ## What happens when none found???
 
-    if venue_sg_events == "":
-        return "Sorry"
+    if venue_sg_events != "":
+
+        venue_event_dicts = []
+        
+        for event in venue_sg_events:
+
+            eve = []
+
+            eve_obj = Event.query.filter(Event.event_sg_id == event).one()
+
+            # First add event object 
+            eve.append(eve_obj)
+
+            # Get a list with each artist object
+            eve.append(list_event_artists(eve_obj.event_id))
+
+            venue_event_dicts.append(eve)
+
+        return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts)
 
     else:
-        venue_events = [Event.query.filter(Event.event_sg_id == event).one() for event in venue_sg_events]
-        return render_template("venue.html", venue=venue_select, venue_events=venue_events)
+        return "Sorry"
 
 
 @app.route('/check_event')
 def check_event():
-    """List events then list venues found that closely match event/venue entered by user."""
-    user_query = "Avett"
+    """List events found that closely match event entered by user."""
 
-    # Call API for all events closely matched, response is list of event_ids
+    user_query = "festival"
+
+    # Search db, then if necessary, call API for events, response is a list of event_sg_ids
     event_sg_ids = list_event_ids(user_query)
 
     ## What happens when none found???
 
     if event_sg_ids != []:
+        # Get each event object for each event_sg_id
         event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
         return render_template("check_event.html", event_options=event_options)
 
@@ -169,16 +181,11 @@ def display_event(event_id):
     # Find event object of event_id
     event_select = Event.query.filter(Event.event_id == event_id).one()
 
-    event_sg_artists = list_event_artists(event_id)
-
     ## What happens when none found??? ## Maybe return page with just the event info and venue info??
 
-    if event_sg_artists == "":
-        return "Sorry"
+    event_dicts = list_event_artists(event_id)
 
-    else:
-        event_artists = [artist for artist in event_sg_artists]
-        return render_template("event.html", event=event_select, event_artists=event_artists)
+    return render_template("event.html", event=event_select, event_dicts=event_dicts)
 
 
 

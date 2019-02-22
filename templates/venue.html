@@ -4,10 +4,19 @@
 <h1>{{ venue.venue_name }}</h1>
 
   <ul>
-    {% for event in venue_events %}
+    {% for item in venue_event_dicts %}
       <li>
-        {{ event.event_title }}<br>
-        {{ event.event_url }}  
+        {{ item[0].venue.venue_name}} <br>
+        {{ item[0].event_url }}  <br>
+        {{ item[0].event_datetime }}  <br>
+        <ul>
+            {% for key in item[1] %}
+            <li>
+                {{ item[1][key].artist_name }}<br>
+                {{ item[1][key].artist_genre }}<br>
+            </li>
+            {% endfor %}
+        </ul>
       </li>
     {% endfor %}
   </ul>

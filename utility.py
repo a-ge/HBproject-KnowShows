@@ -3,8 +3,6 @@
 import requests
 import json
 
-from model import Event, Artist, Lineup, Venue, connect_to_db, db
-
 import os
 # SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 # SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
@@ -19,6 +17,9 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 # spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 SG_URL = "https://api.seatgeek.com/2/"
+
+from model import Event, Artist, Lineup, Venue, connect_to_db, db
+
 
 ### To be added later: clean/update db
 
@@ -204,19 +205,22 @@ def insert_events(events):
                     insert_lineup(eve_obj.event_id, art_obj.artist_id)
 
 
+
 def list_event_artists(event_id):
-    """Call to SeatGeek API for all artists for given event."""
+
 
     event_lineups = Lineup.query.filter(Lineup.event_id == event_id).all()
+             
+    event_artists = [Artist.query.filter(Artist.artist_id == lineup.artist_id).one() for lineup in event_lineups]
+    
+    art = {}
 
-    event_artists = []
+    for i, art_obj in enumerate(event_artists):
 
-    for lineup in event_lineups:
+        art_obj = Artist.query.filter(Artist.artist_id == art_obj.artist_id).one()
+        art['artist' + str(i + 1)] = art_obj
 
-        artist = Artist.query.filter(Artist.artist_id == lineup.artist_id).one()
-        event_artists.append(artist)
-                    
-    return event_artists
+    return art
 
 
 def find_sg_artists(artist_query):
@@ -234,7 +238,7 @@ def find_sg_artists(artist_query):
 def list_artist_ids(query):
 
     results = find_sg_artists(query)
-    print(results)
+
     artist_ids = []
 
     if results['performers'] != []:
