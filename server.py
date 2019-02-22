@@ -22,7 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_sg_events("Avett")
+    response = find_venue_events(1291)
 
     return jsonify(response)
 
@@ -34,8 +34,25 @@ def test():
 def index():
     """Homepage."""
 
+
     return render_template("homepage.html")
 
+@app.route('/search')
+def search():
+
+    user_query = request.args.get('userSearchInput')
+    city = request.args.get('userCityInput')
+    query_type = request.args.get('searchType')
+    print("*************", user_query, city, query_type)
+
+    if query_type == "Artist":
+        return render_template("check_artist.html", user_query=user_query, city=city)
+
+    elif query_type == "Venue":
+        return render_template("check_venue.html", user_query=user_query, city=city)
+
+    elif query_type == "Event":
+        return render_template("check_event.html", user_query=user_query, city=city)
 
 @app.route('/check_artist')
 def check_artist():
@@ -172,6 +189,15 @@ def check_event():
 
     else:
         return "Sorry"
+
+
+
+@app.route('/suggest_event')
+def suggest_event():
+
+
+    return render_template("event_options.html", event_options=event_options)
+
 
 
 @app.route('/event/<event_id>')
