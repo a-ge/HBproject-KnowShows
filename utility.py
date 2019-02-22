@@ -57,6 +57,7 @@ def get_sg_artist(artist_id):
     return response.json()
 
 
+
 def insert_lineup(event_id, artist_id):
     # Check if lineup already in db??
     new_lineup = Lineup(event_id=event_id, artist_id=artist_id)
@@ -257,6 +258,7 @@ def list_artist_ids(query):
         return ""
 
 
+
 def find_artist_events(artist_id):
     """Call to SeatGeek API for all events for given artist.""" 
 
@@ -344,12 +346,15 @@ def list_venue_ids(query):
         return ""
 
 
-def find_venue_events(venue_id):
+# Need to determine how start_date and end_date will be set as arguments
+def find_venue_events(venue_id, start_date=None, end_date=None):
     """Call to SeatGeek API for all events for given venue."""
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'venue.id': venue_id,
+            'datetime_utc.gte': start_date,
+            'datetime_utc.lte': end_date,
             'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)
@@ -357,6 +362,7 @@ def find_venue_events(venue_id):
     return response.json()
 
 def list_venue_event_ids(venue_id):  
+
 
     results = find_venue_events(venue_id)
 
