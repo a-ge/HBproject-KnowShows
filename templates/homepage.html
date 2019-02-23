@@ -5,17 +5,11 @@
 <h2>Full concert to find artist information for entire lineup</h2>
 
 <!-- Will want to have form in nav/navbar/sidebar to give user accss on every page -->
-<form action="/search">
-
-  <div class="form-group">
-    <label for="userSearchInput">Search</label>
-    <input type="text" class="form-control" id="userSearchInput" aria-describedby="emailHelp" placeholder="Type search here" name="userSearchInput">
-    <small id="emailHelp" class="form-text text-muted">Are you looking for an arist or venue?</small>
-  </div>
+<form action="/search" method="POST">
 
     <div class="form-group">
-        <label for="exampleFormControlSelect1">Select</label>
-            <select class="form-control" id="exampleFormControlSelect1" name="searchType">
+        <label for="searchType">Select</label>
+            <select class="form-control" id="searchType" name="searchType">
             <option value="Artist">Artist</option>
             <option value="Venue">Venue</option>
             <option value="Event">Event</option>
@@ -23,11 +17,46 @@
     </div>
 
   <div class="form-group">
-    <label for="userCityInput">City</label>
-    <input type="text" class="form-control" id="userCityInput" name="userCityInput" placeholder="Optional">
+    <label for="userSearchInput">Search</label>
+    <input type="text" class="form-control" id="userSearchInput" aria-describedby="emailHelp" placeholder="Type search here" name="userSearchInput">
+    <small id="emailHelp" class="form-text text-muted">Please enter name</small>
   </div>
 
-  
+    <div class="form-group">
+        <label for="userCityInput">City</label>
+        <input type="text" class="form-control" id="userCityInput" name="userCityInput" placeholder="Optional">
+    </div>
+
+  <div class="form-group">
+        <label for="form-control">Select</label>
+            <select class="state" id="state" name="state">
+            <option value="CA">CA</option>
+            <option value="NY">NY</option>
+            <option value="WA">WA</option>
+            </select>
+  </div>
+
+<!--  <div>
+            <label for="start">Start date:</label>
+
+            <input type="date" id="start" name="start" value="2018-07-22" min="2018-01-01" max="2020-12-31">
+      </div>
+
+        <div>
+            <label for="end">End date:</label>
+
+            <input type="date" id="end" name="end" value="2018-07-22" min="2018-01-01" max="2020-12-31">
+        </div>
+
+      <div class="form-group">
+            <label for="genre">Select</label>
+                <select class="form-control" id="genre" name="genre">
+                <option value="Rock">Rock</option>
+                <option value="Pop">Pop</option>
+                <option value="Folk">Folk</option>
+                </select>
+      </div> -->
+
   <button type="submit" class="btn btn-primary">Search</button>
 </form>
 

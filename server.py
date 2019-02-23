@@ -37,33 +37,36 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/search')
+@app.route('/search', methods=['POST'])
 def search():
+    """ Retrieve user's search inputs and redirect to correct page."""
 
-    user_query = request.args.get('userSearchInput')
-    city = request.args.get('userCityInput')
-    query_type = request.args.get('searchType')
-    print("*************", user_query, city, query_type)
+    query_type = request.form.get('searchType')
+    session['user_query'] = request.form.get('userSearchInput')
+    session['city'] = request.form.get('userCityInput')
+    session['state'] = request.form.get('state')
+    
+    # start_date = '2019-03-21'
+    # end_date = '2019-03-23'
+    # genre = request.args.get('genre')
 
     if query_type == "Artist":
-        return render_template("check_artist.html", user_query=user_query, city=city)
+        return redirect("/check_artist")
 
     elif query_type == "Venue":
-        return render_template("check_venue.html", user_query=user_query, city=city)
+        return redirect("/check_venue")
 
     elif query_type == "Event":
-        return render_template("check_event.html", user_query=user_query, city=city)
+        return redirect("/check_event")
 
 @app.route('/check_artist')
 def check_artist():
     """List artists found that closely match artist entered by user."""
-    
-    artist_query = "Avett"
 
     # Search db, then if necessary, call API for artists, response is a list of artist_sg_ids
         ## Currently have request argument has_upcoming_events set to True
         ## This means artists with no upcoming events will not appear --change?? create flash message??
-    artist_sg_ids = list_artist_ids(artist_query)
+    artist_sg_ids = list_artist_ids(session['user_query'])
 
     ## What happens when none found???
 

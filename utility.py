@@ -19,7 +19,7 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 SG_URL = "https://api.seatgeek.com/2/"
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
-
+from server import session
 
 ### To be added later: clean/update db
 
@@ -266,6 +266,8 @@ def find_artist_events(artist_id):
             'client_secret': CLIENT_SECRET,
             'venue.country': 'US',
             'performers.id': artist_id,
+            'venue.city': session['city'],
+            'venue.state': session['state'],
             'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)
@@ -313,7 +315,7 @@ def list_event_ids(query):
         return ""
         
 
-   
+
 def find_sg_venues(query):
     """Call to SeatGeek API for all venues given user's venue input."""
 
