@@ -264,10 +264,10 @@ def find_artist_events(artist_id):
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
-            'venue.country': 'US',
             'performers.id': artist_id,
             'venue.city': session['city'],
             'venue.state': session['state'],
+            'venue.country': 'US',
             'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)
@@ -321,6 +321,8 @@ def find_sg_venues(query):
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
+            'city': session['city'],
+            'state': session['state'],            
             'country': 'US',
             'q': query,
             'per_page': 10}

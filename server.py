@@ -45,7 +45,7 @@ def search():
     session['user_query'] = request.form.get('userSearchInput')
     session['city'] = request.form.get('userCityInput')
     session['state'] = request.form.get('state')
-    
+
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
     # genre = request.args.get('genre')
@@ -122,10 +122,10 @@ def display_artist(artist_id):
 def check_venue():
     """List venues found that closely match venue entered by user."""
 
-    user_query = "Greek"
-
     # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
-    venue_sg_ids = list_venue_ids(user_query)
+        ## The Greek Berkeley has a few venue_ids, how to correct this??
+        ## Still import a venue if they have no upcoming events??
+    venue_sg_ids = list_venue_ids(session['user_query'])
 
     ## What happens when none found???
 
@@ -192,15 +192,6 @@ def check_event():
 
     else:
         return "Sorry"
-
-
-
-@app.route('/suggest_event')
-def suggest_event():
-
-
-    return render_template("event_options.html", event_options=event_options)
-
 
 
 @app.route('/event/<event_id>')
