@@ -279,8 +279,10 @@ def find_sg_events(query):
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
-            'venue.country': 'US',
             'q': query,
+            'venue.city': session['city'],
+            'venue.state': session['state'],
+            'venue.country': 'US',
             'type': "concert",
             'per_page': 10}
 

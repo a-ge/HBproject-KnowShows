@@ -45,10 +45,8 @@ def search():
     session['user_query'] = request.form.get('userSearchInput')
     session['city'] = request.form.get('userCityInput')
     session['state'] = request.form.get('state')
-
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
-    # genre = request.args.get('genre')
 
     if query_type == "Artist":
         return redirect("/check_artist")
@@ -178,10 +176,8 @@ def display_venue(venue_id):
 def check_event():
     """List events found that closely match event entered by user."""
 
-    user_query = "festival"
-
     # Search db, then if necessary, call API for events, response is a list of event_sg_ids
-    event_sg_ids = list_event_ids(user_query)
+    event_sg_ids = list_event_ids(session['user_query'])
 
     ## What happens when none found???
 
