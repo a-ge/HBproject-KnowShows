@@ -37,14 +37,28 @@ def index():
 
     return render_template("homepage.html")
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST', 'GET'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
 
     query_type = request.form.get('searchType')
+
     session['user_query'] = request.form.get('userSearchInput')
-    session['city'] = request.form.get('userCityInput')
-    session['state'] = request.form.get('state')
+
+    city = request.form.get('userCityInput')
+    if city == "":
+        session['city'] = None
+    else:
+        session['city'] = city
+
+    state = request.form.get('state')
+    if state == "":
+        session['state'] = None
+    else:
+        session['state'] = state
+    
+    session['lat'] = 37.6446976
+    session['lon'] = -122.454016
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
 

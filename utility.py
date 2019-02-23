@@ -104,7 +104,6 @@ def insert_artists(artists):
                         artist_name=artist_dict['performers'][0]['name'],
                         artist_url=artist_url,
                         artist_photo=artist_photo,
-                        artist_song="song",
                         artist_genre=artist_genres[:-2])
 
             db.session.add(new_art)
@@ -128,9 +127,14 @@ def insert_venues(venues):
                 venue_name = None
 
             try:
-                venue_loc = venue_dict['venues'][0]['location']
+                venue_lat = venue_dict['venues'][0]['location']['lat']
             except:
-                venue_loc = None
+                venue_lat = None
+
+            try:
+                venue_lng = venue_dict['venues'][0]['location']['lon']
+            except:
+                venue_lng = None
 
             try:
                 venue_url = venue_dict['venues'][0]['url']
@@ -140,7 +144,8 @@ def insert_venues(venues):
             # insert into db
             new_venue = Venue(venue_sg_id=venue,
                             venue_name=venue_name,
-                            venue_loc=venue_loc,
+                            venue_lat=venue_lat,
+                            venue_lng=venue_lng,
                             venue_url=venue_url)
 
             db.session.add(new_venue)
@@ -268,6 +273,8 @@ def find_artist_events(artist_id):
             'venue.city': session['city'],
             'venue.state': session['state'],
             'venue.country': 'US',
+            'lat': session['lat'],
+            'lon': session['lon'],
             'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)
@@ -283,9 +290,11 @@ def find_sg_events(query):
             'venue.city': session['city'],
             'venue.state': session['state'],
             'venue.country': 'US',
+            'lat': session['lat'],
+            'lon': session['lon'],
             'type': "concert",
             'per_page': 10}
-
+    
     response = requests.get(SG_URL + 'events', params=payload)
 
     return response.json()
@@ -324,11 +333,13 @@ def find_sg_venues(query):
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'city': session['city'],
-            'state': session['state'],            
+            'state': session['state'],          
             'country': 'US',
+            'lat': session['lat'],
+            'lon': session['lon'],
             'q': query,
             'per_page': 10}
-
+    print(payload)
     response = requests.get(SG_URL + 'venues', params=payload)
 
     return response.json()

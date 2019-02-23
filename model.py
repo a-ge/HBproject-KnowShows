@@ -18,6 +18,8 @@ class Venue(db.Model):
     venue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
+    venue_lat = db.Column(db.DECIMAL)
+    venue_lng = db.Column(db.DECIMAL)
     venue_loc = db.Column(db.JSON)
     venue_url = db.Column(db.String(1000))
 
@@ -29,6 +31,7 @@ class Venue(db.Model):
 
         return "<Venue venue_id={} venue_name={}>".format(self.venue_id,
             self.venue_name)
+
 
 class Event(db.Model):
     """Event information."""
@@ -82,7 +85,6 @@ class Artist(db.Model):
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(1000))
     artist_photo = db.Column(db.String(1000))
-    artist_song = db.Column(db.String(100))
     artist_genre = db.Column(db.String(200))
 
     def __repr__(self):

@@ -19,7 +19,7 @@
   <div class="form-group">
     <label for="userSearchInput">Search</label>
     <input type="text" class="form-control" id="userSearchInput" aria-describedby="emailHelp" placeholder="Type search here" name="userSearchInput">
-    <small id="emailHelp" class="form-text text-muted">Please enter name</small>
+    <small id="emailHelp" class="form-text text-muted"></small>
   </div>
 
     <div class="form-group">
@@ -28,15 +28,19 @@
     </div>
 
   <div class="form-group">
-        <label for="form-control">Select</label>
+        <label for="form-control">State</label>
             <select class="state" id="state" name="state">
+            <option value=""></option>
             <option value="CA">CA</option>
             <option value="NY">NY</option>
             <option value="WA">WA</option>
             </select>
   </div>
 
-<!--  <div>
+
+
+
+<!--       <div>
             <label for="start">Start date:</label>
 
             <input type="date" id="start" name="start" value="2018-07-22" min="2018-01-01" max="2020-12-31">
@@ -46,11 +50,12 @@
             <label for="end">End date:</label>
 
             <input type="date" id="end" name="end" value="2018-07-22" min="2018-01-01" max="2020-12-31">
-        </div>
-
-      <div class="form-group">
-            <label for="genre">Select</label>
+        </div> -->
+<!-- May want to keep list of genres as an option -->
+<!--       <div class="form-group">
+            <label for="genre">Genre</label>
                 <select class="form-control" id="genre" name="genre">
+                <option value="None"></option>
                 <option value="Rock">Rock</option>
                 <option value="Pop">Pop</option>
                 <option value="Folk">Folk</option>
@@ -60,4 +65,19 @@
   <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
+<div>
+    <button id="loc-button">Get User Location</button>
+    <div id="output"></div>
+
+</div>
+    <script>
+        $('#loc-button').click(function(){
+            if(navigator.geolocation)
+            navigator.geolocation.getCurrentPosition(function(position){
+                console.log(position);
+            });
+            else
+                console.log("geolocation is not supported");
+        })
+    </script>
 {% endblock %}
