@@ -9,8 +9,10 @@
 
       <li>
         <a href="/event/{{ event.event_id }}">
-          {{ event.event_title }}
-        </a>
+          {{ event.event_title }}</a><br>
+          {{ event.event_datetime }}<br>
+          {{ event.venue.venue_name }}
+        
       </li>
 
     {% endfor %}

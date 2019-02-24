@@ -9,8 +9,10 @@
     <ul>
         {% for key in event_dicts %}
         <li>
-            {{ event_dicts[key].artist_name }}<br>
-            {{ event_dicts[key].artist_genre }}<br>
+            <a href="/artist/{{ event_dicts[key].artist_id }}">
+            {{ event_dicts[key].artist_name }}</a><br>
+            {{ event_dicts[key].artist_genres }}<br>
+            <img src="{{ event_dicts[key].artist_photo }}">
         </li>
         <br>
         {% endfor %}

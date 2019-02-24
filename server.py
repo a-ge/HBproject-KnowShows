@@ -37,6 +37,7 @@ def index():
 
     return render_template("homepage.html")
 
+
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
@@ -70,6 +71,7 @@ def search():
 
     elif query_type == "Event":
         return redirect("/check_event")
+
 
 @app.route('/check_artist')
 def check_artist():

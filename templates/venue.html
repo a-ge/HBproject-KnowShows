@@ -4,7 +4,7 @@
 {% block content %}
 
 
-<!-- <h1>{{ venue.venue_name }}</h1>
+<h1>{{ venue.venue_name }}</h1>
 
   <ul>
     {% for item in venue_event_dicts %}
@@ -16,12 +16,12 @@
             {% for key in item[1] %}
             <li>
                 {{ item[1][key].artist_name }}<br>
-                {{ item[1][key].artist_genre }}<br>
+                {{ item[1][key].artist_genres }}<br>
             </li>
             {% endfor %}
         </ul>
       </li>
     {% endfor %}
-  </ul> -->
+  </ul>
 {% endblock %}
 

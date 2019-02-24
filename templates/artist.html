@@ -6,19 +6,21 @@
   <ul>
     {% for item in artist_event_dicts %}
       <li>
-        {{ item[0].venue.venue_name}} <br>
-        {{ item[0].event_url }}  <br>
-        {{ item[0].event_datetime }}  <br>
+        <a href="{{ item[0].event_url }}">
+        {{ item[0].venue.venue_name}}</a><br>
+        {{ item[0].venue.venue_loc }}<br>
+        {{ item[0].event_datetime }} <br>
         <ul>
             {% for key in item[1] %}
             <li>
-                {{ item[1][key].artist_name }}<br>
-                {{ item[1][key].artist_genre }}<br>
+              <a href="/artist/{{ artist.artist_id }}">
+                {{ item[1][key].artist_name }}</a><br>
+                {{ item[1][key].artist_genres }}<br>
+              <img src="{{ item[1][key].artist_photo }}">
             </li>
             {% endfor %}
         </ul>
       </li>
     {% endfor %}
   </ul>
-
 {% endblock %}

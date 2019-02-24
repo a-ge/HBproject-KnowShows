@@ -104,7 +104,7 @@ def insert_artists(artists):
                         artist_name=artist_dict['performers'][0]['name'],
                         artist_url=artist_url,
                         artist_photo=artist_photo,
-                        artist_genre=artist_genres[:-2])
+                        artist_genres=artist_genres[:-2])
 
             db.session.add(new_art)
             db.session.commit()
@@ -171,7 +171,7 @@ def insert_events(events):
                 event_title = None
 
             try:
-                event_datetime = event_dict['events'][0]['datetime_utc']
+                event_datetime = event_dict['events'][0]['datetime_local']
             except:
                 event_datetime = None
 
@@ -229,6 +229,7 @@ def list_event_artists(event_id):
     return art
 
 
+
 def find_sg_artists(artist_query):
     """Call to SeatGeek API for all artists given user's artist input."""  
 
@@ -282,7 +283,7 @@ def find_artist_events(artist_id):
     return response.json()
 
 def find_sg_events(query):
-    """Call to SeatGeek API for all events given user's event/venue input."""
+    """Call to SeatGeek API for all events given user's event input."""
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,

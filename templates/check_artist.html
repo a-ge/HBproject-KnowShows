@@ -10,8 +10,8 @@
       <li>
         <a href="/artist/{{ artist.artist_id }}">
           {{ artist.artist_name }}</a><br>
-        {{ artist.artist_photo }}
-            
+          {{ artist.artist_genres }}<br>
+        <img src="{{ artist.artist_photo }}">
       </li>
 
     {% endfor %}
