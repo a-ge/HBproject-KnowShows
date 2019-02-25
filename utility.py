@@ -289,14 +289,14 @@ def list_artist_ids(query):
     if results['performers'] != []:
         for i in range(len(results['performers'])):
 
-            if results['performers'][0]['has_upcoming_events'] == True:
+            if results['performers'][i]['has_upcoming_events'] == True:
 
                 artist_id = results['performers'][i]['id']
                 artist_ids.append(artist_id)
 
                 insert_artists(artist_ids)
 
-                return set(artist_ids)
+        return set(artist_ids)
 
     else:
         return ""
@@ -392,9 +392,12 @@ def list_venue_ids(query):
     if results['venues']:
         for i in range(len(results['venues'])):
 
-            venue_id = results['venues'][i]['id']
-            venue_ids.append(venue_id)
-            insert_venues(venue_ids)
+            if results['venues'][i]['has_upcoming_events'] == True:
+
+                venue_id = results['venues'][i]['id']
+                venue_ids.append(venue_id)
+
+                insert_venues(venue_ids)
 
         return set(venue_ids)
 
