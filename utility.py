@@ -4,17 +4,17 @@ import requests
 import json
 
 import os
-# SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
-# SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
+SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
+SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 CLIENT_ID = os.getenv('CLIENT_ID')
 
-# # Spotipy is a Python client library for the Spotify Web API
-# import spotipy
-# # Spotipy provides a class SpotifyClientCredentials that can be used to authenticate requests
-# from spotipy.oauth2 import SpotifyClientCredentials
-# client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
-# spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+# Spotipy is a Python client library for the Spotify Web API
+import spotipy
+# Spotipy provides a class SpotifyClientCredentials that can be used to authenticate requests
+from spotipy.oauth2 import SpotifyClientCredentials
+client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
+spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 SG_URL = "https://api.seatgeek.com/2/"
 
@@ -22,6 +22,25 @@ from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
 
 ### To be added later: clean/update db
+
+
+
+
+def list_top_track(spotify_uri):
+    """Pull an artist's top track URIs from Spotify API"""
+
+    # Need to pull artist urn (spotify_id) from db
+    artist_uri = spotify.artist_top_tracks(spotify_uri, country='US')
+
+    tracks = []
+
+    for track in artist_uri['tracks']:
+        track_uri = track['uri']
+        tracks.append(track_uri)
+
+    return artist_top
+
+
 
 def get_sg_event(event_id):
     """Call to SeatGeek API for a particular event's information. """
@@ -73,20 +92,10 @@ def insert_artists(artists):
         except: 
             artist_dict = get_sg_artist(artist)
 
-            # Unpack spotify_id ((response == "spotify:artist:sdvbhfksderhv"))
             try:
-                spot, art, spotify_id = artist_dict['performers'][0]['links'][0]['id'].split(":")
+                spotify_uri = artist_dict['performers'][0]['links'][0]['id']
             except:
-                spotify_id = None
-
-            # String genres together for now
-            artist_genres = ""
-            
-            if 'genres' in artist_dict['performers'][0]:
-                for i in range(len(artist_dict['performers'][0]['genres'])):
-
-                    genre = artist_dict['performers'][0]['genres'][i]['name']
-                    artist_genres = artist_genres + genre + ", "
+                spotify_uri = None
 
             try:
                 artist_url = artist_dict['performers'][0]['links'][0]['url']
@@ -98,8 +107,17 @@ def insert_artists(artists):
             except:
                 artist_photo = None
 
+            # String genres together for now
+            artist_genres = ""
+            
+            if 'genres' in artist_dict['performers'][0]:
+                for i in range(len(artist_dict['performers'][0]['genres'])):
+
+                    genre = artist_dict['performers'][0]['genres'][i]['name']
+                    artist_genres = artist_genres + genre + ", "
+
             # insert into db artist
-            new_art = Artist(spotify_id=spotify_id,
+            new_art = Artist(spotify_uri=spotify_uri,
                         artist_sg_id=artist,
                         artist_name=artist_dict['performers'][0]['name'],
                         artist_url=artist_url,
@@ -127,6 +145,16 @@ def insert_venues(venues):
                 venue_name = None
 
             try:
+                venue_add = venue_dict['venues'][0]['address']
+            except:
+                venue_add = None
+
+            try:
+                venue_extend_add = venue_dict['venues'][0]['extended_address']
+            except:
+                venue_extend_add = None
+
+            try:
                 venue_lat = venue_dict['venues'][0]['location']['lat']
             except:
                 venue_lat = None
@@ -141,12 +169,20 @@ def insert_venues(venues):
             except:
                 venue_url = None
 
+            try:
+                venue_upcoming = venue_dict['venues'][0]['has_upcoming_events']
+            except:
+                venue_upcoming = None
+
             # insert into db
             new_venue = Venue(venue_sg_id=venue,
                             venue_name=venue_name,
+                            venue_add=venue_add,
+                            venue_extend_add=venue_extend_add,
                             venue_lat=venue_lat,
                             venue_lng=venue_lng,
-                            venue_url=venue_url)
+                            venue_url=venue_url,
+                            venue_upcoming=venue_upcoming)
 
             db.session.add(new_venue)
             db.session.commit()
@@ -155,6 +191,19 @@ def insert_events(events):
 
     for event in events:
     
+        try:
+            venue_sg_id = event_dict['events'][0]['venue']['id']
+
+            try:
+                venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
+            except:
+                insert_venues([venue_sg_id])
+                venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
+            venue_id = venue_obj.venue_id
+
+        except:
+            venue_id = None
+
         try:
             Event.query.filter(Event.event_sg_id == event).one()
         except:
@@ -175,26 +224,15 @@ def insert_events(events):
             except:
                 event_datetime = None
 
-            try:
-                venue_sg_id = event_dict['events'][0]['venue']['id']
 
-                try:
-                    venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
-                except:
-                    insert_venues([venue_sg_id])
-                    venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
-                venue_id = venue_obj.venue_id
-
-            except:
-                venue_id = None
 
             
             # insert into db
-            new_event = Event(event_sg_id=event,
+            new_event = Event(venue_id=venue_id,
+                            event_sg_id=event,
                             event_title=event_title,
                             event_datetime=event_datetime,
-                            event_url=event_url,
-                            venue_id=venue_id)
+                            event_url=event_url)
 
             db.session.add(new_event)
             db.session.commit()
@@ -397,5 +435,6 @@ def list_venue_event_ids(venue_id):
 
     else:
         return ""
+
 
 
