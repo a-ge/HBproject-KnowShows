@@ -4,17 +4,8 @@ import requests
 import json
 
 import os
-SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
-SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 CLIENT_ID = os.getenv('CLIENT_ID')
-
-# Spotipy is a Python client library for the Spotify Web API
-import spotipy
-# Spotipy provides a class SpotifyClientCredentials that can be used to authenticate requests
-from spotipy.oauth2 import SpotifyClientCredentials
-client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
-spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 SG_URL = "https://api.seatgeek.com/2/"
 
@@ -22,24 +13,6 @@ from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
 
 ### To be added later: clean/update db
-
-
-
-
-def list_top_track(spotify_uri):
-    """Pull an artist's top track URIs from Spotify API"""
-
-    # Need to pull artist urn (spotify_id) from db
-    artist_uri = spotify.artist_top_tracks(spotify_uri, country='US')
-
-    tracks = []
-
-    for track in artist_uri['tracks']:
-        track_uri = track['uri']
-        tracks.append(track_uri)
-
-    return artist_top
-
 
 
 def get_sg_event(event_id):
@@ -192,6 +165,7 @@ def insert_events(events):
     for event in events:
     
         try:
+            print("*************", event_dict['events'][0]['venue'])
             venue_sg_id = event_dict['events'][0]['venue']['id']
 
             try:
@@ -294,7 +268,7 @@ def list_artist_ids(query):
                 artist_id = results['performers'][i]['id']
                 artist_ids.append(artist_id)
 
-                insert_artists(artist_ids)
+        insert_artists(artist_ids)
 
         return set(artist_ids)
 
@@ -351,13 +325,12 @@ def list_event_ids(query):
     if results['events']:
         for i in range(len(results['events'])):
 
-            try:
-                event_id = results['events'][i]['id']
-            except:
-                event_id = None
+            if results['events'][i]['id']:
 
-            event_ids.append(event_id)
-            insert_events(event_ids)
+                event_id = results['events'][i]['id']
+                event_ids.append(event_id)
+
+        insert_events(event_ids)
 
         return set(event_ids)
 
@@ -397,7 +370,7 @@ def list_venue_ids(query):
                 venue_id = results['venues'][i]['id']
                 venue_ids.append(venue_id)
 
-                insert_venues(venue_ids)
+        insert_venues(venue_ids)
 
         return set(venue_ids)
 
@@ -432,7 +405,8 @@ def list_venue_event_ids(venue_id):
 
             event_id = results['events'][i]['id']
             event_ids.append(event_id)
-            insert_events(event_ids)
+
+        insert_events(event_ids)
 
         return set(event_ids)
 
