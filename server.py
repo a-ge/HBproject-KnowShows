@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-from utility_spotipy import auth_token
+from utility_spotipy import create_playlist
 
 app = Flask(__name__)
 
@@ -22,10 +22,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = auth_token()
+    response = create_playlist()
 
     return response.text
-
 
 
 
@@ -37,23 +36,16 @@ def index():
     if request.method == "POST":
         session['lat'] = request.json['lat']
         session['lng'] = request.json['lng']
-        print(session['lng'])
 
 
     return render_template("homepage.html")
-
-@app.route('/pos', methods=["GET", "POST"])
-def get_user_location():
-    pass
-    # if request.method == "POST":
-    #     session['position'] = json.dumps(request.form)
-    # print(session['position'])
 
 
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
 
+    session = {}
     query_type = request.form.get('searchType')
 
     session['user_query'] = request.form.get('userSearchInput')
@@ -70,12 +62,6 @@ def search():
     else:
         session['state'] = state
 
-    # session['lat'] = posi["lat"]
-    # session['lon'] = posi["lng"]
-    print("**********", session['position'])
-    print("session********", session)
-    # session['lat'] = 37.6446976
-    # session['lon'] = -122.454016
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
 

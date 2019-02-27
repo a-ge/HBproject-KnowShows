@@ -163,25 +163,21 @@ def insert_venues(venues):
 def insert_events(events):
 
     for event in events:
-    
-        try:
-            print("*************", event_dict['events'][0]['venue'])
-            venue_sg_id = event_dict['events'][0]['venue']['id']
-
-            try:
-                venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
-            except:
-                insert_venues([venue_sg_id])
-                venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
-            venue_id = venue_obj.venue_id
-
-        except:
-            venue_id = None
+        print(event)
 
         try:
             Event.query.filter(Event.event_sg_id == event).one()
         except:
             event_dict = get_sg_event(event)
+
+            try:
+                venue_sg_id = event_dict['events'][0]['venue']['id']
+                insert_venues([venue_sg_id])
+                venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
+                venue_id = venue_obj.venue_id
+
+            except:
+                venue_id = None
 
             try:
                 event_url = event_dict['events'][0]['url']
