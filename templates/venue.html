@@ -6,21 +6,25 @@
 
 <h1>{{ venue.venue_name }}</h1>
 
-  <ul>
+    {{ venue.venue_name }}<br>
+    {{ venue.venue_add }}<br>
+    {{ venue.venue_extend_add }}<br>
+
+<ul>
     {% for item in venue_event_dicts %}
       <li>
-        {{ item[0].venue.venue_name}} <br>
+        {{ item[0].event_title }} <br>
         {{ item[0].event_url }}  <br>
         {{ item[0].event_datetime }}  <br>
-        <ul>
-            {% for key in item[1] %}
-            <li>
-                {{ item[1][key].artist_name }}<br>
-                {{ item[1][key].artist_genres }}<br>
-            </li>
-            {% endfor %}
-        </ul>
-      </li>
+      <ul>
+          {% for key in item[1] %}
+          <li>
+              {{ item[1][key].artist_name }}<br>
+              {{ item[1][key].artist_genres }}<br>
+          </li>
+          {% endfor %}
+      </ul>
+    </li>
     {% endfor %}
   </ul>
 {% endblock %}

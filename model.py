@@ -18,13 +18,12 @@ class Venue(db.Model):
     venue_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
+    venue_add = db.Column(db.String(100))
+    venue_extend_add = db.Column(db.String(100))
     venue_lat = db.Column(db.DECIMAL)
     venue_lng = db.Column(db.DECIMAL)
-    venue_loc = db.Column(db.JSON)
     venue_url = db.Column(db.String(1000))
-
-    # Define relationship to events
-    events = db.relationship("Event", backref=db.backref("venue"))
+    venue_upcoming = db.Column(db.Boolean)
 
     def __repr__(self):
         """Print helpful venue information"""
@@ -44,6 +43,9 @@ class Event(db.Model):
     event_title = db.Column(db.String(500))
     event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
     event_url = db.Column(db.String(1000))
+
+    # Define relationship to venue
+    venue = db.relationship("Venue", backref="event")
 
     def __repr__(self):
         """Print helpful event information"""
@@ -80,7 +82,7 @@ class Artist(db.Model):
     __tablename__ = "artists"
 
     artist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    spotify_id = db.Column(db.String(100))
+    spotify_uri = db.Column(db.String(200))
     artist_sg_id = db.Column(db.Integer, unique=True)
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(1000))
@@ -92,6 +94,7 @@ class Artist(db.Model):
 
         return "<Artist artist_id={} artist_name={}>".format(self.artist_id,
             self.artist_name)
+
 
 
 def connect_to_db(app):

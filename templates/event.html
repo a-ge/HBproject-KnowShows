@@ -2,7 +2,9 @@
 {% block content %}
 
 <h2>{{ event.event_title }}</h2>
-{{ event.venue.venue_loc }}<br>
+{{ event.venue.venue_name }}<br>
+{{ event.venue.venue_add }}<br>
+{{ event.venue.venue_extend_add }}<br>
 
 <h3>Concert Lineup</h3>
 
@@ -18,5 +20,9 @@
         {% endfor %}
     </ul>
 
+<!--  For Spotify player-->
+<!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
+<!-- NEED TO INSERT /embed --> <!-- May want to concatinate playlist id to URL base -->
+<iframe src="https://open.spotify.com/embed/playlist/77HIZe1CYh9JfOzBhMQsWc" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
 {% endblock %}
