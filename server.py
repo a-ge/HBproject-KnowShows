@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-
+from utility_spotipy import auth_token
 
 app = Flask(__name__)
 
@@ -22,23 +22,35 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_venue_events(1291)
+    response = auth_token()
 
-    return jsonify(response)
-
-
+    return response.text
 
 
 
-@app.route('/')
+
+
+@app.route('/', methods=["GET", "POST"])
 def index():
     """Homepage."""
+
+    if request.method == "POST":
+        session['lat'] = request.json['lat']
+        session['lng'] = request.json['lng']
+        print(session['lng'])
 
 
     return render_template("homepage.html")
 
+@app.route('/pos', methods=["GET", "POST"])
+def get_user_location():
+    pass
+    # if request.method == "POST":
+    #     session['position'] = json.dumps(request.form)
+    # print(session['position'])
 
-@app.route('/search', methods=['POST', 'GET'])
+
+@app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
 
@@ -57,9 +69,13 @@ def search():
         session['state'] = None
     else:
         session['state'] = state
-    
-    session['lat'] = 37.6446976
-    session['lon'] = -122.454016
+
+    # session['lat'] = posi["lat"]
+    # session['lon'] = posi["lng"]
+    print("**********", session['position'])
+    print("session********", session)
+    # session['lat'] = 37.6446976
+    # session['lon'] = -122.454016
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
 

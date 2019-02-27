@@ -37,51 +37,6 @@
             </select>
   </div>
 
-<!-- https://formden.com/blog/date-picker -->
-<div class="form-group"> <!-- Date input -->
-        <label class="control-label" for="date">Start Date</label>
-        <input class="form-control" id="startDate" name="date" placeholder="MM/DD/YYY" type="text"/>
-      </div>
-<div class="form-group"> <!-- Date input -->
-        <label class="control-label" for="date">End Date</label>
-        <input class="form-control" id="endDate" name="date" placeholder="MM/DD/YYY" type="text"/>
-      </div>
-<script>
-    $(document).ready(function(){
-      var date_input=$('input[name="startDate"]'); //our date input has the name "date"
-      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-      var options={
-        format: 'mm/dd/yyyy',
-        container: container,
-        todayHighlight: true,
-        autoclose: true,
-      };
-      date_input.datepicker(options);
-    })
-    $(document).ready(function(){
-      var date_input=$('input[name="endDate"]'); //our date input has the name "date"
-      var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
-      var options={
-        format: 'mm/dd/yyyy',
-        container: container,
-        todayHighlight: true,
-        autoclose: true,
-      };
-      date_input.datepicker(options);
-    })
-</script>
-
-
-     <!--  <div>
-            <label for="start">Start date:</label>
-            <input type="date" id="start" name="start" value="2018-07-22" min="2018-01-01" max="2020-12-31">
-      </div>
-
-        <div>
-            <label for="end">End date:</label>
-            <input type="date" id="end" name="end" value="2018-07-22" min="2018-01-01" max="2020-12-31">
-        </div> -->
-
 <!-- May want to keep list of genres as an option -->
 <!--       <div class="form-group">
             <label for="genre">Genre</label>
@@ -96,28 +51,49 @@
   <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-
-
 <div>
     <button id="loc-button">Get User Location</button>
     <div id="output"></div>
 </div>
     <script>
         "use strict";
+            // declare pos here
 
+        var pos;
         // From Google Maps JavaScript API
         // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
         $('#loc-button').click(function(){
+
             if(navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position){
-                var pos = {
+                pos = {
               lat: position.coords.latitude,
               lng: position.coords.longitude
             };
-            })}
+
+                $.ajax({
+                    type : "POST",
+                    url : "{{url_for('index')}}",
+                    data: JSON.stringify(pos),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        console.log(result);
+                        }
+                        });
+                console.log(pos);
+                    });
+            }
             else {
                 console.log("geolocation is not supported");
-            }
-            })
+            }})
+            
     </script>
+
+<!-- <div id="root"> </div>
+ <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script> -->
+
+<!--   <script src="http://unpkg.com/babel-standalone"></script>
+
+  <script src="/static/search-form.jsx" type="text/jsx"></script> -->
 {% endblock %}
