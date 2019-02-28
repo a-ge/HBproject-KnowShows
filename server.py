@@ -7,7 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
 
-# For testing
+# For testing with /test
 from utility_spotify import *
 
 app = Flask(__name__)
@@ -35,12 +35,12 @@ def test():
 def index():
     """Homepage."""
 
-    if request.method == "POST":
-        session['lat'] = request.json['lat']
-        session['lng'] = request.json['lng']
-    else:
-        session['lat'] = None
-        session['lng'] = None
+    # if request.method == "POST":
+    #     session['lat'] = request.json['lat']
+    #     session['lng'] = request.json['lng']
+    # else:
+    #     session['lat'] = None
+    #     session['lng'] = None
 
 
     return render_template("homepage.html")
@@ -49,23 +49,29 @@ def index():
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
-    ## Check if key exists and if they do, pop out
-    session.clear()
-    query_type = request.form.get('searchType')
 
-    session['user_query'] = request.form.get('userSearchInput')
+    ## Check if key exists and if they do, pop out OR
+    # if session:
+    #     for key in session.keys():
+    #      session.pop(key)
 
-    city = request.form.get('userCityInput')
-    if city == "":
-        session['city'] = None
-    else:
-        session['city'] = city
+    if request.method == "POST":
 
-    state = request.form.get('state')
-    if state == "":
-        session['state'] = None
-    else:
-        session['state'] = state
+        query_type = request.form['searchType']
+
+        session['user_query'] = request.form['userSearchInput']
+
+        city = request.form['userCityInput']
+        if city == "":
+            session['city'] = None
+        else:
+            session['city'] = city
+
+        state = request.form['state']
+        if state == "":
+            session['state'] = None
+        else:
+            session['state'] = state
 
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'

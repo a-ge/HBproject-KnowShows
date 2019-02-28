@@ -17,19 +17,19 @@
         <form class="form-inline" action="/search" method="POST">
 
             <label for="searchType">Select</label>
-            <select class="form-control" id="searchType">
+            <select class="form-control" name="searchType" id="searchType">
             <option value="Artist">Artist</option>
             <option value="Venue">Venue</option>
             <option value="Event">Event</option>
             </select>
 
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="userSearchInput">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput">
 
             <label for="userCityInput">City</label>
-            <input type="text" class="form-control" id="userCityInput" placeholder="Optional">
+            <input type="text" class="form-control" name="userCityInput" id="userCityInput" placeholder="Optional">
 
             <label for="form-control">State</label>
-            <select class="form-control" id="state">
+            <select class="form-control" name="state" id="state">
             <option value=""></option>
             <option value="CA">CA</option>
             <option value="NY">NY</option>
