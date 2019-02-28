@@ -8,12 +8,91 @@
 
     <!-- For jQuery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <title>Full Concert</title>
-</head>
+    
+    <!-- Navigation bar to display on every page -->
+    <nav class="navbar sticky-top navbar-light bg-light">
+
+        <span class="navbar-title">Full Concert</span><br>
+
+        <form class="form-inline" action="/search" method="POST">
+
+            <label for="searchType">Select</label>
+            <select class="form-control" id="searchType">
+            <option value="Artist">Artist</option>
+            <option value="Venue">Venue</option>
+            <option value="Event">Event</option>
+            </select>
+
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="userSearchInput">
+
+            <label for="userCityInput">City</label>
+            <input type="text" class="form-control" id="userCityInput" placeholder="Optional">
+
+            <label for="form-control">State</label>
+            <select class="form-control" id="state">
+            <option value=""></option>
+            <option value="CA">CA</option>
+            <option value="NY">NY</option>
+            <option value="WA">WA</option>
+            </select>
+
+            <!-- May want to keep list of genres as an option -->
+<!--       <div class="form-group">
+            <label for="genre">Genre</label>
+                <select class="form-control" id="genre" name="genre">
+                <option value="None"></option>
+                <option value="Rock">Rock</option>
+                <option value="Pop">Pop</option>
+                <option value="Folk">Folk</option>
+                </select>
+      </div> -->
+
+      <!--       <div>
+                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Get User Location</button>
+                <div id="output"></div>
+            </div>
+            <script>
+                "use strict";
+                    // declare pos here
+
+                var pos;
+                // From Google Maps JavaScript API
+                // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
+                $('#loc-button').click(function(){
+
+                    if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position){
+                        pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+                        // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
+                        $.ajax({
+                            type : "POST",
+                            url : "{{url_for('index')}}",
+                            data: JSON.stringify(pos),
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function(result) {
+                                console.log(result);
+                                }});
+                                console.log(pos);
+                            });}
+                    else {
+                        console.log("geolocation is not supported");
+                    }})
+            </script> -->
+
+            <button class="btn btn-outline-success" type="submit">Search</button>
+
+        </form>
+
+    </nav>
+
+    </head>
 
 <body>
 
-    {% block content %} put your content here {% endblock %}
+    {% block content %}{% endblock %}
 
     <!-- For Google Maps API -->
     <!--Load the API from the specified URL
