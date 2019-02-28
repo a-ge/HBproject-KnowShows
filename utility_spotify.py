@@ -38,7 +38,7 @@ def add_tracks(playlist_id, artist_spot_ids):
     
     tracks = []
     for artist in artist_spot_ids:
-        artist_tracks = list_top_track('196lKsA13K3keVXMDFK66q')
+        artist_tracks = list_top_track(artist)
         tracks.extend(artist_tracks)
 
     data = {"uris": tracks}
