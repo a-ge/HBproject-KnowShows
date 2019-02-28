@@ -6,7 +6,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-from utility_spotipy import create_playlist
+
+# For testing
+from utility_spotify import *
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = create_playlist()
+    response = create_playlist(["196lKsA13K3keVXMDFK66q"])
 
     return response.text
 
@@ -36,6 +38,9 @@ def index():
     if request.method == "POST":
         session['lat'] = request.json['lat']
         session['lng'] = request.json['lng']
+    else:
+        session['lat'] = None
+        session['lng'] = None
 
 
     return render_template("homepage.html")
@@ -44,8 +49,8 @@ def index():
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
-
-    session = {}
+    ## Check if key exists and if they do, pop out
+    session.clear()
     query_type = request.form.get('searchType')
 
     session['user_query'] = request.form.get('userSearchInput')
@@ -219,7 +224,11 @@ def display_event(event_id):
 
     event_dicts = list_event_artists(event_id)
 
-    return render_template("event.html", event=event_select, event_dicts=event_dicts)
+    artist_spot_ids = [value.spotify_uri for key, value in event_dicts.items()]
+
+    playlist_id = create_playlist(artist_spot_ids)
+
+    return render_template("event.html", event=event_select, event_dicts=event_dicts, playlist_id=playlist_id)
 
 
 
