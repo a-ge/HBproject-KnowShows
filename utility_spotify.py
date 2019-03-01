@@ -23,22 +23,25 @@ token = util.prompt_for_user_token(USERNAME, scope)
 
 ### Check if playlist for an event already exists??
 
-def list_top_track(artist_spot_id):
+def list_top_tracks(artist_spot_ids):
     """Pull an artist's top track URIs from Spotify API"""
 
-    artist_uri = spotify.artist_top_tracks(artist_spot_id, country='US')
+    tracks = []
 
-    tracks = [artist_uri['tracks'][0]['uri'], artist_uri['tracks'][1]['uri'], artist_uri['tracks'][2]['uri']]
+    for artist in artist_spot_ids:
+        # Returns list of artist uri's
+        artist_uri = spotify.artist_top_tracks(artist, country='US')
+        # List only top three
+        artist_tracks = [artist_uri['tracks'][0]['uri'], artist_uri['tracks'][1]['uri'], artist_uri['tracks'][2]['uri']]
+        # Add all three to all tracks list
+        tracks.extend(artist_tracks)
 
     return tracks
 
 
 def add_tracks(playlist_id, artist_spot_ids):
     
-    tracks = []
-    for artist in artist_spot_ids:
-        artist_tracks = list_top_track(artist)
-        tracks.extend(artist_tracks)
+    tracks = list_top_tracks(artist_spot_ids)
 
     data = {"uris": tracks}
 
@@ -50,13 +53,12 @@ def add_tracks(playlist_id, artist_spot_ids):
     return results
 
 
-def create_playlist(artist_spot_ids):
+def create_playlist(event, artist_spot_ids):
 
     # https://developer.spotify.com/documentation/web-api/reference/playlists/create-playlist/
-    data = {'name': "Concert Artists",
+    data = {'name': event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime),
                 'public': True,
-                'collaborative': False,
-                'description': "Top tracks from each artist"}
+                'collaborative': False}
 
     headers = {'Authorization': "Bearer " + token,
                 'Content-Type': 'application/json'}
@@ -71,4 +73,14 @@ def create_playlist(artist_spot_ids):
     return playlist_id
 
 
+def update_playlist(playlist_id, artist_spot_ids):
 
+    tracks = list_top_tracks(artist_spot_ids)
+
+    data = {'uris': tracks}
+
+    headers = {'Authorization': "Bearer " + token,
+                'Content-Type': 'application/json'}
+
+    # Put will replace, vs post in add_tracks
+    results = requests.put("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", data=json.dumps(data), headers=headers)

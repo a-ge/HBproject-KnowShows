@@ -291,12 +291,13 @@ def list_venue_event_ids(venue_id):
 def modify_event_playlist_id(event, artist_spot_ids):
 
     if event.event_sp_playlist_id == None:
-        playlist_id = create_playlist(artist_spot_ids)
+        playlist_id = create_playlist(event, artist_spot_ids)
 
         Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
         db.session.commit()
 
     else:
         playlist_id = event.event_sp_playlist_id
-        
+        update_playlist(playlist_id, artist_spot_ids)
+
     return playlist_id
