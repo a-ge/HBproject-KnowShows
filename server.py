@@ -73,6 +73,7 @@ def search():
         else:
             session['state'] = state
 
+        print(session)
     # start_date = '2019-03-21'
     # end_date = '2019-03-23'
 
@@ -232,8 +233,8 @@ def display_event(event_id):
 
     artist_spot_ids = [value.spotify_uri for key, value in event_dicts.items()]
 
-    playlist_id = create_playlist(artist_spot_ids)
-
+    playlist_id = modify_event_playlist_id(event_select, artist_spot_ids)
+ 
     return render_template("event.html", event=event_select, event_dicts=event_dicts, playlist_id=playlist_id)
 
 

@@ -3,6 +3,7 @@
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
 from utility_seatgeek import *
+from utility_spotify import *
 
 ### To be added later: clean/update db
 
@@ -287,3 +288,15 @@ def list_venue_event_ids(venue_id):
 
 
 
+def modify_event_playlist_id(event, artist_spot_ids):
+
+    if event.event_sp_playlist_id == None:
+        playlist_id = create_playlist(artist_spot_ids)
+
+        Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
+        db.session.commit()
+
+    else:
+        playlist_id = event.event_sp_playlist_id
+        
+    return playlist_id

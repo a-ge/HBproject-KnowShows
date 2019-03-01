@@ -21,15 +21,14 @@ scope = 'playlist-modify-public playlist-modify-private'
 token = util.prompt_for_user_token(USERNAME, scope)
 
 
+### Check if playlist for an event already exists??
 
 def list_top_track(artist_spot_id):
     """Pull an artist's top track URIs from Spotify API"""
 
-    # Need to pull artist uri (spotify_id) from db
     artist_uri = spotify.artist_top_tracks(artist_spot_id, country='US')
 
     tracks = [artist_uri['tracks'][0]['uri'], artist_uri['tracks'][1]['uri'], artist_uri['tracks'][2]['uri']]
-
 
     return tracks
 

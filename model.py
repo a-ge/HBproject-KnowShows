@@ -43,6 +43,7 @@ class Event(db.Model):
     event_title = db.Column(db.String(500))
     event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
     event_url = db.Column(db.String(1000))
+    event_sp_playlist_id = db.Column(db.String(100), default=None)
 
     # Define relationship to venue
     venue = db.relationship("Venue", backref="event")
