@@ -89,6 +89,7 @@ class Artist(db.Model):
     artist_url = db.Column(db.String(1000))
     artist_photo = db.Column(db.String(1000))
     artist_genres = db.Column(db.String(200))
+    artist_bio = db.Column(db.String(2000), nullable=True)
 
     def __repr__(self):
         """Print helpful artist information."""
