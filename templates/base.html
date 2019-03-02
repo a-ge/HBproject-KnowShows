@@ -15,7 +15,7 @@
     <!-- Navigation bar to display on every page -->
     <nav class="navbar sticky-top navbar-light bg-light">
 
-        <span class="navbar-title">Full Concert</span><br>
+        <span class="navbar-title">KnowShows</span><br>
 
         <form class="form-inline" action="/search" method="POST">
 
@@ -43,44 +43,7 @@
 
         </form>
 
-            <div>
-                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Find my location</button>
-                <div id="output"></div>
-            </div>
-            <script>
-                "use strict";
-                    // declare pos here
-
-                var pos;
-                // From Google Maps JavaScript API
-                // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
-                $('#loc-button').click(function(){
-
-                    if(navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position){
-                        pos = {
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude
-                    };
-                        // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
-                        // $.ajax({
-                        //     type : "POST",
-                        //     url : "{{url_for('index')}}",
-                        //     data: JSON.stringify(pos),
-                        //     contentType: 'application/json;charset=UTF-8',
-                        //     success: function(result) {
-                        //         console.log(result);
-                        //         }});
-                        //         console.log(pos);
-                    var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en' + '&key=AIzaSyAojSNfH5eX_9n4V0B-Ah_ZM1Sogd2uVhk';
-
-                    $.getJSON(GEOCODING).done(function(location) {
-                        console.log(location)
-                    });})}
-                    else {
-                        console.log("geolocation is not supported");
-                    }})
-            </script>
+         
 
     </nav>
 
@@ -114,3 +77,45 @@
                 </select>
       </div> -->
 
+  <!--  <div>
+                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Find my location</button>
+                <div id="output"></div>
+            </div>
+            <script>
+                "use strict";
+                    // declare pos here
+
+                var pos;
+                // From Google Maps JavaScript API
+                // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
+                $('#loc-button').click(function(){
+
+                    if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position){
+                        pos = {
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude
+                    };
+                        // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
+                        // $.ajax({
+                        //     type : "POST",
+                        //     url : "{{url_for('index')}}",
+                        //     data: JSON.stringify(pos),
+                        //     contentType: 'application/json;charset=UTF-8',
+                        //     success: function(result) {
+                        //         console.log(result);
+                        //         }});
+                        //         console.log(pos);
+                    var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en' + '&key=AIzaSyAkptiAE4ZWb1gHEZjFGXB3MwyoaUWOmo0';
+
+                    $.getJSON(GEOCODING).done(function(location) {
+                        console.log(location)
+                        console.log(location.results[0].address_components[1].long_name)
+                        console.log(location.results[0].address_components[0].long_name)
+                        $('#state').html(location.results[0].address_components[4].long_name);
+                        $('#userCityInput').html(location.results[0].address_components[2].long_name);
+                    });})}
+                    else {
+                        console.log("geolocation is not supported");
+                    }})
+            </script> -->
