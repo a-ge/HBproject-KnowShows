@@ -8,7 +8,10 @@
 
     <!-- For jQuery -->
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    
+
+    </head>
+
+<body>
     <!-- Navigation bar to display on every page -->
     <nav class="navbar sticky-top navbar-light bg-light">
 
@@ -23,10 +26,10 @@
             <option value="Event">Event</option>
             </select>
 
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" required>
 
             <label for="userCityInput">City</label>
-            <input type="text" class="form-control" name="userCityInput" id="userCityInput" placeholder="Optional">
+            <input type="text" class="form-control" name="userCityInput" id="userCityInput" placeholder="San Fran">
 
             <label for="form-control">State</label>
             <select class="form-control" name="state" id="state">
@@ -36,19 +39,12 @@
             <option value="WA">WA</option>
             </select>
 
-            <!-- May want to keep list of genres as an option -->
-<!--       <div class="form-group">
-            <label for="genre">Genre</label>
-                <select class="form-control" id="genre" name="genre">
-                <option value="None"></option>
-                <option value="Rock">Rock</option>
-                <option value="Pop">Pop</option>
-                <option value="Folk">Folk</option>
-                </select>
-      </div> -->
+            <button type="submit">Search</button>
 
-      <!--       <div>
-                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Get User Location</button>
+        </form>
+
+            <div>
+                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Find my location</button>
                 <div id="output"></div>
             </div>
             <script>
@@ -67,30 +63,30 @@
                       lng: position.coords.longitude
                     };
                         // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
-                        $.ajax({
-                            type : "POST",
-                            url : "{{url_for('index')}}",
-                            data: JSON.stringify(pos),
-                            contentType: 'application/json;charset=UTF-8',
-                            success: function(result) {
-                                console.log(result);
-                                }});
-                                console.log(pos);
-                            });}
+                        // $.ajax({
+                        //     type : "POST",
+                        //     url : "{{url_for('index')}}",
+                        //     data: JSON.stringify(pos),
+                        //     contentType: 'application/json;charset=UTF-8',
+                        //     success: function(result) {
+                        //         console.log(result);
+                        //         }});
+                        //         console.log(pos);
+                    var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en' + '&key=AIzaSyAojSNfH5eX_9n4V0B-Ah_ZM1Sogd2uVhk';
+
+                    $.getJSON(GEOCODING).done(function(location) {
+                        console.log(location)
+                    });})}
                     else {
                         console.log("geolocation is not supported");
                     }})
-            </script> -->
-
-            <button class="btn btn-outline-success" type="submit">Search</button>
-
-        </form>
+            </script>
 
     </nav>
 
-    </head>
-
-<body>
+    <script type="text/javascript">
+        
+    </script>
 
     {% block content %}{% endblock %}
 
@@ -100,9 +96,21 @@
     * The key parameter will contain your own API key (which is not needed for this tutorial)
     * The callback parameter executes the initMap() function -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkptiAE4ZWb1gHEZjFGXB3MwyoaUWOmo0"></script>
-    
+
     <!-- For Bootstrap -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
+
+            <!-- May want to keep list of genres as an option -->
+<!--       <div class="form-group">
+            <label for="genre">Genre</label>
+                <select class="form-control" id="genre" name="genre">
+                <option value="None"></option>
+                <option value="Rock">Rock</option>
+                <option value="Pop">Pop</option>
+                <option value="Folk">Folk</option>
+                </select>
+      </div> -->
+
