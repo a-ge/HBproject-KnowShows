@@ -2,6 +2,7 @@
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
+from datetime import datetime
 from utility_seatgeek import *
 from utility_spotify import *
 
@@ -147,7 +148,10 @@ def insert_events(events):
                 event_title = None
 
             try:
-                event_datetime = event_dict['events'][0]['datetime_local']
+                print(event_dict['events'][0]['datetime_local'])
+                d = datetime.strptime(event_dict['events'][0]['datetime_local'], '%Y-%m-%dT%H:%M:%S')
+                event_datetime = d.strftime('%b %d, %Y   %H:%M')
+                print("****", event_datetime)
             except:
                 event_datetime = None
 

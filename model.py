@@ -41,7 +41,7 @@ class Event(db.Model):
     venue_id = db.Column(db.Integer, db.ForeignKey('venues.venue_id'))
     event_sg_id = db.Column(db.Integer, unique=True)
     event_title = db.Column(db.String(500))
-    event_datetime = db.Column(db.DateTime, default=datetime.utcnow)
+    event_datetime = db.Column(db.String(100))
     event_url = db.Column(db.String(1000))
     event_sp_playlist_id = db.Column(db.String(100), nullable=True)
 
