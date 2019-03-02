@@ -2,6 +2,7 @@
 
 import requests
 import json
+import pprint
 
 import os
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
@@ -64,13 +65,21 @@ def find_sg_artists(artist_query):
 def find_sg_venues(query):
     """Call to SeatGeek API for all venues given user's venue input."""
 
+    # if session['lat']:
+    #     payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,        
+    #             'country': 'US',
+    #             'lat': session['lat'],
+    #             'lon': session['lon'],
+    #             'q': query,
+    #             'per_page': 10}
+
+    # else:
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'city': session['city'],
             'state': session['state'],          
             'country': 'US',
-            'lat': session['lat'],
-            'lon': session['lon'],
             'q': query,
             'per_page': 10}
 
@@ -82,16 +91,26 @@ def find_sg_venues(query):
 
 def find_artist_events(artist_id):
     """Call to SeatGeek API for all events for given artist.""" 
-    print(session['city'], session['state'])
+
+
+    # if session['lat']:
+    #     payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'performers.id': artist_id,
+    #             'venue.country': 'US',
+    #             'lat': session['lat'],
+    #             'lon': session['lon'],
+    #             'per_page': 10}
+
+    # else:
     payload = {'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET,
-            'performers.id': artist_id,
-            'venue.city': session['city'],
-            'venue.state': session['state'],
-            'venue.country': 'US',
-            'lat': session['lat'],
-            'lon': session['lon'],
-            'per_page': 10}
+        'client_secret': CLIENT_SECRET,
+        'sort': 'datetime_local.asc',
+        'performers.id': artist_id,
+        'venue.city': session['city'],
+        'venue.state': session['state'],
+        'venue.country': 'US',
+        'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)
 
@@ -100,21 +119,28 @@ def find_artist_events(artist_id):
 def find_sg_events(query):
     """Call to SeatGeek API for all events given user's event input."""
 
+    # if session['lat']:
+    #     payload = {'client_id': CLIENT_ID,
+    #             'client_secret': CLIENT_SECRET,
+    #             'q': query,
+    #             'venue.country': 'US',
+    #             'lat': session['lat'],
+    #             'lon': session['lon'],
+    #             'type': "concert",
+    #             'per_page': 10}
+    # else:
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'q': query,
             'venue.city': session['city'],
             'venue.state': session['state'],
             'venue.country': 'US',
-            'lat': session['lat'],
-            'lon': session['lon'],
             'type': "concert",
             'per_page': 10}
     
     response = requests.get(SG_URL + 'events', params=payload)
 
     return response.json()
-
 # Need to determine how start_date and end_date will be set as arguments
 def find_venue_events(venue_id, start_date=None, end_date=None):
     """Call to SeatGeek API for all events for given venue."""
@@ -129,14 +155,3 @@ def find_venue_events(venue_id, start_date=None, end_date=None):
     response = requests.get(SG_URL + 'events', params=payload)
 
     return response.json()
-
-
-
-
-
-
-
-
-
-
-

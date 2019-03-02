@@ -8,7 +8,7 @@ from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
 
 # For testing with /test
-from utility_spotify import *
+# from utility_spotify import *
 
 app = Flask(__name__)
 
@@ -24,9 +24,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = create_playlist(["196lKsA13K3keVXMDFK66q"])
+    response = find_artist_events(1768)
 
-    return response.text
+    return jsonify(response)
 
 
 
@@ -103,7 +103,12 @@ def check_artist():
     if artist_sg_ids != []:
         # Get each artist object for each artist_sg_id
         artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
-        return render_template("check_artist.html", artist_options=artist_options)
+
+        if len(artist_options) == 1:
+            artist_id = artist_options[0].artist_id
+            return redirect("/artist/" + str(artist_id))
+        else:
+            return render_template("check_artist.html", artist_options=artist_options)
 
     else:
         return "Sorry"

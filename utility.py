@@ -202,14 +202,13 @@ def list_artist_ids(query):
     if results['performers'] != []:
         for i in range(len(results['performers'])):
 
-            if results['performers'][i]['has_upcoming_events'] == True:
-
-                artist_id = results['performers'][i]['id']
+            artist_id = results['performers'][i]['id']
+            if artist_id not in artist_ids:
                 artist_ids.append(artist_id)
 
         insert_artists(artist_ids)
 
-        return set(artist_ids)
+        return artist_ids
 
     else:
         return ""
@@ -232,11 +231,12 @@ def list_event_ids(query):
             if results['events'][i]['id']:
 
                 event_id = results['events'][i]['id']
-                event_ids.append(event_id)
+                if event_id not in event_ids:
+                    event_ids.append(event_id)
 
         insert_events(event_ids)
 
-        return set(event_ids)
+        return event_ids
 
     else:
         return ""
@@ -277,11 +277,12 @@ def list_venue_event_ids(venue_id):
         for i in range(len(results['events'])):
 
             event_id = results['events'][i]['id']
-            event_ids.append(event_id)
+            if event_id not in event_ids:
+                event_ids.append(event_id)
 
         insert_events(event_ids)
 
-        return set(event_ids)
+        return event_ids
 
     else:
         return ""
@@ -290,14 +291,14 @@ def list_venue_event_ids(venue_id):
 
 def modify_event_playlist_id(event, artist_spot_ids):
 
-    if event.event_sp_playlist_id == None:
-        playlist_id = create_playlist(event, artist_spot_ids)
-
-        Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
-        db.session.commit()
-
-    else:
+    if event.event_sp_playlist_id:
         playlist_id = event.event_sp_playlist_id
         update_playlist(playlist_id, artist_spot_ids)
+
+    else:
+        playlist_id = create_playlist(event, artist_spot_ids)
+        # Initial playlist created, so add/replace None playlist_id in db
+        Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
+        db.session.commit()
 
     return playlist_id
