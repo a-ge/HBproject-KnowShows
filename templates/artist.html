@@ -2,25 +2,30 @@
 {% block content %}
 
 <h1>{{ artist.artist_name }}</h1>
+<img src="{{ artist.artist_photo }}"><br>
+{{ artist.artist_bio }}
 
-  <ul>
-    {% for event in artist_event_dicts %}
-      <li>
-        <a href="{{ event[0].event_url }}">
-        {{ event[0].venue.venue_name }}</a><br>
-
-        {{ event[0].event_datetime }} <br>
-        <ul>
-            {% for key in event[1] %}
-            <li>
-              <a href="/artist/{{ artist.artist_id }}">
-                {{ event[1][key].artist_name }}</a><br>
-                {{ event[1][key].artist_genres }}<br>
-              <img src="{{ event[1][key].artist_photo }}">
-            </li>
-            {% endfor %}
-        </ul>
-      </li>
-    {% endfor %}
-  </ul>
+  {% if artist_event_dicts|length > 0 %}
+    <ul>
+      {% for event in artist_event_dicts %}
+        <li>
+          {{ event[0].event_datetime }}
+          <a href="/event/{{ event[0].event_id }}">
+          {{ event[0].venue.venue_name }}</a>
+           <br>
+          <ul>
+              {% for key in event[1] %}
+              <li>
+                <a href="/artist/{{ artist.artist_id }}">
+                  {{ event[1][key].artist_name }}</a><br>
+                  {{ event[1][key].artist_genres }}<br>
+              </li>
+              {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    Sorry, no events for this artist.
+  {% endif %}
 {% endblock %}

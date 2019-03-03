@@ -6,10 +6,10 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-
+import pprint
 # For testing with /test
 # from utility_spotify import *
-
+from utility_lastfm import *
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -24,9 +24,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_artist_events(1768)
+    response = get_artist_bio()
 
-    return jsonify(response)
+    return response.text
 
 
 
@@ -124,31 +124,25 @@ def display_artist(artist_id):
     # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
     artist_sg_events = list_event_ids(artist_select.artist_sg_id)
 
-    ## What happens when none found???
+    # Create a list with nested lists where event obj in index 0
+    # and following indexes are the artist objs for given event
+    artist_event_dicts = []
+    
+    for event in artist_sg_events:
 
-    if artist_sg_events != "":
-        # Create a list with nested lists where event obj in index 0
-        # and following indexes are the artist objs for given event
-        artist_event_dicts = []
-        
-        for event in artist_sg_events:
+        eve = []
 
-            eve = []
+        eve_obj = Event.query.filter(Event.event_sg_id == event).one()
 
-            eve_obj = Event.query.filter(Event.event_sg_id == event).one()
+        # First add event object 
+        eve.append(eve_obj)
 
-            # First add event object 
-            eve.append(eve_obj)
+        # Get dictionary with each artist object
+        eve.append(list_event_artists(eve_obj.event_id))
 
-            # Get dictionary with each artist object
-            eve.append(list_event_artists(eve_obj.event_id))
+        artist_event_dicts.append(eve)
 
-            artist_event_dicts.append(eve)
-
-        return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
-
-    else:
-        return "Sorry"
+    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
 
 
 @app.route('/check_venue')
