@@ -1,20 +1,21 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h2>Found a few venues that match your search. Which one are you looking for?</h2>
-
 <h3>Venues</h3>
+  {% if venue_options|length > 0 %}
+    <h2>Found a few venues that match your search. Which one are you looking for?</h2>
     <ul>
     {% for venue in venue_options %}
-
       <li>
         <a href="/venue/{{ venue.venue_id }}">
           {{ venue.venue_name }}</a><br>
           {{ venue.venue_add }}<br>
           {{ venue.venue_extend_add }}
       </li>
-
     {% endfor %}
     </ul>
+  {% else %}
+    Sorry, no venues found.
+  {% endif %}
 {% endblock %}
 

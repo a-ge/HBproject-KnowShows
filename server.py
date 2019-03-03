@@ -102,10 +102,9 @@ def check_artist():
     if len(artist_options) == 1:
         artist_id = artist_options[0].artist_id
         return redirect("/artist/" + str(artist_id))
-        
+
     else:
         return render_template("check_artist.html", artist_options=artist_options)
-
 
 
 @app.route('/artist/<artist_id>')
@@ -148,15 +147,14 @@ def check_venue():
         ## Still import a venue if they have no upcoming events??
     venue_sg_ids = list_venue_ids(session['user_query'])
 
-    ## What happens when none found???
+    # Get each venue object for each venue_sg_id
+    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
 
-    if venue_sg_ids != []:
-        # Get each venue object for each venue_sg_id
-        venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
-        return render_template("check_venue.html", venue_options=venue_options)
+    if len(venue_options) == 1:
+        venue_id = venue_options[0].venue_id
+        return redirect("/venue/" + str(venue_id))
 
-    else:
-        return "Sorry"
+    return render_template("check_venue.html", venue_options=venue_options)
 
 
 @app.route('/venue/<venue_id>')
