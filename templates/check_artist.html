@@ -2,8 +2,10 @@
 {% block content %}
 
 <h1>Artists</h1>
-<h2>Found a few artists that match your search. Which artist are you looking for?</h2>
 
+  
+  {% if artist_options|length > 0 %}
+  <h2>Found a few artists that match your search. Which artist are you looking for?</h2>
     <ul>
     {% for artist in artist_options %}
 
@@ -13,8 +15,9 @@
           {{ artist.artist_genres }}<br>
         <img src="{{ artist.artist_photo }}">
       </li>
-
     {% endfor %}
     </ul>
-
+  {% else %}
+    Sorry, no artists found.
+  {% endif %}
 {% endblock %}

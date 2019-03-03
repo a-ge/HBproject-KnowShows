@@ -96,22 +96,16 @@ def check_artist():
         ## This means artists with no upcoming events will not appear --change?? create flash message??
     artist_sg_ids = list_artist_ids(session['user_query'])
 
-    ## What happens when none found???
+    # Get each artist object for each artist_sg_id
+    artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
 
-    ## If only one artist found, go directly to artist's page??
-
-    if artist_sg_ids != []:
-        # Get each artist object for each artist_sg_id
-        artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
-
-        if len(artist_options) == 1:
-            artist_id = artist_options[0].artist_id
-            return redirect("/artist/" + str(artist_id))
-        else:
-            return render_template("check_artist.html", artist_options=artist_options)
-
+    if len(artist_options) == 1:
+        artist_id = artist_options[0].artist_id
+        return redirect("/artist/" + str(artist_id))
+        
     else:
-        return "Sorry"
+        return render_template("check_artist.html", artist_options=artist_options)
+
 
 
 @app.route('/artist/<artist_id>')
