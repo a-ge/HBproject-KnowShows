@@ -167,30 +167,23 @@ def display_venue(venue_id):
     # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
     venue_sg_events = list_venue_event_ids(venue_select.venue_sg_id)
 
-    ## What happens when none found???
+    venue_event_dicts = []
+    
+    for event in venue_sg_events:
 
-    if venue_sg_events != "":
+        eve = []
 
-        venue_event_dicts = []
-        
-        for event in venue_sg_events:
+        eve_obj = Event.query.filter(Event.event_sg_id == event).one()
 
-            eve = []
+        # First add event object 
+        eve.append(eve_obj)
 
-            eve_obj = Event.query.filter(Event.event_sg_id == event).one()
+        # Get a list with each artist object
+        eve.append(list_event_artists(eve_obj.event_id))
 
-            # First add event object 
-            eve.append(eve_obj)
+        venue_event_dicts.append(eve)
 
-            # Get a list with each artist object
-            eve.append(list_event_artists(eve_obj.event_id))
-
-            venue_event_dicts.append(eve)
-
-        return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts)
-
-    else:
-        return "Sorry"
+    return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts)
 
 
 @app.route('/check_event')
