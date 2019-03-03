@@ -30,11 +30,25 @@ def list_top_tracks(artist_spot_ids):
 
     for artist in artist_spot_ids:
         # Returns list of artist uri's
-        artist_uri = spotify.artist_top_tracks(artist, country='US')
-        # List only top three
-        artist_tracks = [artist_uri['tracks'][0]['uri'], artist_uri['tracks'][1]['uri'], artist_uri['tracks'][2]['uri']]
-        # Add all three to all tracks list
-        tracks.extend(artist_tracks)
+        try:
+            artist_uri = spotify.artist_top_tracks(artist, country='US')
+            # List only top three
+            artist_tracks = []
+
+            i = 0
+            while i < 3:
+                try:
+                    track = artist_uri['tracks'][i]['uri']
+                except:
+                    break
+
+                artist_tracks.append(track)
+                i += 1
+
+            # Add all three to all tracks list
+            tracks.extend(artist_tracks)
+        except:
+            continue
 
     return tracks
 
