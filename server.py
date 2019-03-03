@@ -193,15 +193,14 @@ def check_event():
     # Search db, then if necessary, call API for events, response is a list of event_sg_ids
     event_sg_ids = list_event_ids(session['user_query'])
 
-    ## What happens when none found???
+    # Get each event object for each event_sg_id
+    event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
 
-    if event_sg_ids != []:
-        # Get each event object for each event_sg_id
-        event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
-        return render_template("check_event.html", event_options=event_options)
-
-    else:
-        return "Sorry"
+    if len(event_options) == 1:
+        event_id = event_options[0].event_id
+        return redirect("/venue/" + str(event_id))
+        
+    return render_template("check_event.html", event_options=event_options)
 
 
 @app.route('/event/<event_id>')
