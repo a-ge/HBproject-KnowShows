@@ -5,8 +5,10 @@ from server import session
 from datetime import datetime
 from utility_seatgeek import *
 from utility_spotify import *
+from utility_lastfm import *
 
 ### To be added later: clean/update db
+import pprint
 
 
 def insert_lineup(event_id, artist_id):
@@ -39,9 +41,7 @@ def insert_artists(artists):
             except:
                 artist_photo = None
 
-            # String genres together for now
             artist_genres = ""
-            
             if 'genres' in artist_dict['performers'][0]:
                 for i in range(len(artist_dict['performers'][0]['genres'])):
 
@@ -54,13 +54,24 @@ def insert_artists(artists):
                         artist_name=artist_dict['performers'][0]['name'],
                         artist_url=artist_url,
                         artist_photo=artist_photo,
-                        artist_genres=artist_genres[:-2])
+                        artist_genres=artist_genres[:-2],
+                        artist_bio=None)
 
             db.session.add(new_art)
             db.session.commit()
 
-    ## How to instantiate if pulling info from more than one API?
-    ## Possibly not needed since spotify id provided in SeatGeek
+            # To make request to Last.FM API for artist's bio
+            art = Artist.query.filter(Artist.artist_sg_id == artist).one()
+            art_sum = get_artist_bio(art.artist_name)
+
+            try:
+                art_sum['artist']['bio']['summary']
+                art_bio, art_url = art_sum['artist']['bio']['summary'].split("<a href=")
+            except:
+                art_bio = ""
+                
+            Artist.query.filter(Artist.artist_id == art.artist_id).update({'artist_bio': str(art_bio)})
+            db.session.commit()
 
 def insert_venues(venues):
 
@@ -148,10 +159,8 @@ def insert_events(events):
                 event_title = None
 
             try:
-                print(event_dict['events'][0]['datetime_local'])
                 d = datetime.strptime(event_dict['events'][0]['datetime_local'], '%Y-%m-%dT%H:%M:%S')
                 event_datetime = d.strftime('%b %d, %Y   %H:%M')
-                print("****", event_datetime)
             except:
                 event_datetime = None
 
@@ -161,11 +170,12 @@ def insert_events(events):
                             event_sg_id=event,
                             event_title=event_title,
                             event_datetime=event_datetime,
-                            event_url=event_url)
+                            event_url=event_url,
+                            event_sp_playlist_id=None)
 
             db.session.add(new_event)
             db.session.commit()
-            
+
             if event_dict['events'][0]['performers']:
                 for i in range(len(event_dict['events'][0]['performers'])):
 
@@ -240,10 +250,8 @@ def list_event_ids(query):
 
         insert_events(event_ids)
 
-        return event_ids
+    return event_ids
 
-    else:
-        return ""
         
 
 
@@ -271,7 +279,6 @@ def list_venue_ids(query):
 
 
 def list_venue_event_ids(venue_id):  
-
 
     results = find_venue_events(venue_id)
 

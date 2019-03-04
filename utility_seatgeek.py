@@ -25,7 +25,7 @@ def get_sg_event(event_id):
     return response.json()
 
 def get_sg_venue(venue_id):
-    """Call to SeatGeek API for a particular event's information. """
+    """Call to SeatGeek API for a particular venue's information. """
 
     payload = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
@@ -129,12 +129,25 @@ def find_sg_events(query):
     #             'type': "concert",
     #             'per_page': 10}
     # else:
+
+    if session['startdate']:
+        start_date = session['startdate']
+    else:
+        start_date  = None
+
+    if session['enddate']:
+        end_date = session['enddate']
+    else:
+        end_date  = None
+
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'q': query,
             'venue.city': session['city'],
             'venue.state': session['state'],
             'venue.country': 'US',
+            'datetime_local.gte': start_date,
+            'datetime_local.lte': end_date,
             'type': "concert",
             'per_page': 10}
     
@@ -142,14 +155,24 @@ def find_sg_events(query):
 
     return response.json()
 # Need to determine how start_date and end_date will be set as arguments
-def find_venue_events(venue_id, start_date=None, end_date=None):
-    """Call to SeatGeek API for all events for given venue."""
+def find_venue_events(venue_id):
+    """Call to SeatGeek API for all events for given user's venue input."""
+
+    if session['startdate']:
+        start_date = session['startdate']
+    else:
+        start_date  = None
+
+    if session['enddate']:
+        end_date = session['enddate']
+    else:
+        end_date  = None
 
     payload = {'client_id': CLIENT_ID,
             'client_secret': CLIENT_SECRET,
             'venue.id': venue_id,
-            'datetime_utc.gte': start_date,
-            'datetime_utc.lte': end_date,
+            'datetime_local.gte': start_date,
+            'datetime_local.lte': end_date,
             'per_page': 10}
 
     response = requests.get(SG_URL + 'events', params=payload)

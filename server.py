@@ -3,10 +3,11 @@
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
+from datetime import datetime
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-import pprint
+
 # For testing with /test
 # from utility_spotify import *
 from utility_lastfm import *
@@ -24,9 +25,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = get_artist_bio()
+    response = reverse_geocode()
 
-    return response.text
+    return response
 
 
 
@@ -35,9 +36,14 @@ def test():
 def index():
     """Homepage."""
 
-    # if request.method == "POST":
-    #     session['lat'] = request.json['lat']
-    #     session['lng'] = request.json['lng']
+    if request.method == "POST":
+        print("************ testing")
+        session['city'] = json.loads(location)
+        session['state'] = request.json[results[0].address_components[5].short_name]
+        print("********", session['city'])
+        # lat = request.json['lat']
+        # lon = request.json['lng']
+        
     # else:
     #     session['lat'] = None
     #     session['lng'] = None
@@ -73,9 +79,20 @@ def search():
         else:
             session['state'] = state
 
-        print(session)
-    # start_date = '2019-03-21'
-    # end_date = '2019-03-23'
+        start_date = request.form['startdate']
+        if start_date == "":
+            session['startdate'] = None
+        else:
+            d = datetime.strptime(start_date, '%m/%d/%Y')
+            session['startdate'] = d.strftime('%Y-%m-%d')
+        
+        end_date = request.form['enddate']
+        if end_date == "":
+            session['enddate'] = None
+        else:
+            d = datetime.strptime(end_date, '%m/%d/%Y')
+            session['enddate'] = d.strftime('%Y-%m-%d')
+        print("session*******",session)
 
     if query_type == "Artist":
         return redirect("/check_artist")
@@ -199,7 +216,7 @@ def check_event():
     if len(event_options) == 1:
         event_id = event_options[0].event_id
         return redirect("/venue/" + str(event_id))
-        
+
     return render_template("check_event.html", event_options=event_options)
 
 
@@ -209,8 +226,6 @@ def display_event(event_id):
     
     # Find event object of event_id
     event_select = Event.query.filter(Event.event_id == event_id).one()
-
-    ## What happens when none found??? ## Maybe return page with just the event info and venue info??
 
     event_dicts = list_event_artists(event_id)
 
