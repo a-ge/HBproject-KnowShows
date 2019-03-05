@@ -29,28 +29,79 @@
 
         <form class="form-inline" action="/search" method="POST">
 
-            <label for="searchType">Select</label>
+            <label for="searchType">Select
                 <select class="form-control" name="searchType" id="searchType">
-                <option value="Event">Event</option>
                 <option value="Venue">Venue</option>
+                <option value="Event">Event</option>
                 <option value="Artist">Artist</option>
                 </select>
+            </label>
 
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" required>
 
-            <label for="userCityInput">City</label>
+            <label for="userCityInput">City
                 <input type="text" class="form-control" name="userCityInput" id="userCityInput" placeholder="">
+            </label>
 
-            <label for="form-control">State</label>
+            <label for="state">State
                 <select class="form-control" name="state" id="state">
                 <option value=""></option>
+                <option value="AL">AL</option>
+                <option value="AK">AK</option>
+                <option value="AR">AR</option>  
+                <option value="AZ">AZ</option>
                 <option value="CA">CA</option>
+                <option value="CO">CO</option>
+                <option value="CT">CT</option>
+                <option value="DC">DC</option>
+                <option value="DE">DE</option>
+                <option value="FL">FL</option>
+                <option value="GA">GA</option>
+                <option value="HI">HI</option>
+                <option value="IA">IA</option>  
+                <option value="ID">ID</option>
+                <option value="IL">IL</option>
+                <option value="IN">IN</option>
+                <option value="KS">KS</option>
+                <option value="KY">KY</option>
+                <option value="LA">LA</option>
+                <option value="MA">MA</option>
+                <option value="MD">MD</option>
+                <option value="ME">ME</option>
+                <option value="MI">MI</option>
+                <option value="MN">MN</option>
+                <option value="MO">MO</option>  
+                <option value="MS">MS</option>
+                <option value="MT">MT</option>
+                <option value="NC">NC</option>  
+                <option value="NE">NE</option>
+                <option value="NH">NH</option>
+                <option value="NJ">NJ</option>
+                <option value="NM">NM</option>          
+                <option value="NV">NV</option>
                 <option value="NY">NY</option>
+                <option value="ND">ND</option>
+                <option value="OH">OH</option>
+                <option value="OK">OK</option>
+                <option value="OR">OR</option>
+                <option value="PA">PA</option>
+                <option value="RI">RI</option>
+                <option value="SC">SC</option>
+                <option value="SD">SD</option>
+                <option value="TN">TN</option>
+                <option value="TX">TX</option>
+                <option value="UT">UT</option>
+                <option value="VT">VT</option>
+                <option value="VA">VA</option>
                 <option value="WA">WA</option>
+                <option value="WI">WI</option>  
+                <option value="WV">WV</option>
+                <option value="WY">WY</option>
                 </select>
+            </label>
 
             <div>
-                <button class="btn btn-sm btn-outline-secondary"id="loc-button">Find my location</button>
+                <button class="btn btn-sm btn-outline-secondary" id="loc-button">Find my location</button>
                 <div id="output"></div>
             </div>
 
@@ -60,6 +111,7 @@
             <label class="control-label " for="enddate" id="endDateLabel">End Date
                 <input class="form-control" id="enddate" name="enddate" placeholder="MM/DD/YYYY" type="text" pattern="(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/\d{4}"/>
                 </label>
+
             <button type="submit">Search</button>
 
         </form>
@@ -70,55 +122,37 @@
         "use strict";
 
         var pos;
-        var location;
-        var city;
+        var getCity = '{{ session['city'] }}';
+        var getState = '{{ session['state'] }}';
         // From Google Maps JavaScript API
         // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
         $('#loc-button').click(function(e){
-            e.preventDefault();
+
+            e.preventDefault()
 
             if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position){
-                pos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            // https://developers.google.com/maps/documentation/geocoding/intro
-            var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en' + '&key=AIzaSyAkptiAE4ZWb1gHEZjFGXB3MwyoaUWOmo0';
-
-            $.getJSON(GEOCODING).done(function(location) {
-                location = {
-                    cityInput: location.results[0].address_components[3].long_name,
-                    stateInput: location.results[0].address_components[5].short_name
-
-                }
-                console.log(location)
-                // console.log(city)
-                // console.log(state)
-                // $('#state').html(location.results[0].address_components[5].short_name);
-                // $('#userCityInput').html(location.results[0].address_components[3].long_name);
-            });
-            $.get("/index", location, (results) =>
-
-                
-                console.log(location));
-
-            // cityInput: location.results[0].address_components[3].long_name,
-            //     stateInput: location.results[0].address_components[5].short_name
-            // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
-            // $.ajax({
-            //     type : "POST",
-            //     url : "{{url_for('index')}}",
-            //     data: JSON.stringify(loc),
-            //     contentType: 'application/json;charset=UTF-8',
-            //     success: function(result) {
-            //         console.log(result);
-            //         }});
-            //         console.log(pos);
-            })}
+                navigator.geolocation.getCurrentPosition(function(position){
+                    pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
+                $.ajax({
+                    type : "POST",
+                    url : "{{url_for('get_location')}}",
+                    data: JSON.stringify(pos),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(result) {
+                        console.log(result);
+                        }});
+                        console.log(pos);
+                    });}
             else {
                 console.log("geolocation is not supported");
-            }})
+            }
+            $('#userCityInput').attr({'value': getCity, 'placeholder': getCity})
+            $('#state').val(getState)
+            })
 
 
         // Dynamic form handling.
@@ -132,6 +166,13 @@
         searchInput.change((e) => {
             inputValue = e.target.value
             
+            if (inputValue === 'Event') {
+                $('#userSearchInput').attr('placeholder', 'Enter a genre or event name')
+            }
+            else {
+                $('#userSearchInput').attr('placeholder', 'Search')
+            }
+
             if (inputValue === 'Artist') {
                 startDate.hide()
                 endDate.hide()
@@ -145,6 +186,7 @@
 
     {% block content %}{% endblock %}
 
+    
     <!-- For Google Maps API -->
     <!--Load the API from the specified URL
     * The async attribute allows the browser to render the page while the API loads
@@ -202,3 +244,58 @@
                 console.log("geolocation is not supported");
             }})
     </script> -->
+
+
+
+
+
+
+   <!-- var p os;
+        var loc;
+        // From Google Maps JavaScript API
+        // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
+        $('#loc-button').click(function(e){
+            e.preventDefault();
+
+            if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position){
+                pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            console.log(pos)
+            // https://developers.google.com/maps/documentation/geocoding/intro
+            // var GEOCODING = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' + position.coords.latitude + '%2C' + position.coords.longitude + '&language=en' + '&key=AIzaSyAkptiAE4ZWb1gHEZjFGXB3MwyoaUWOmo0';
+
+            // $.getJSON(GEOCODING).done(function(location) {
+            //     loc = {
+            //         cityInput: location.results[0].address_components[5].short_name,
+            //         stateInput: location.results[0].address_components[1].long_name
+
+            //     }
+                // console.log(location)
+                // $.get("/", loc, (results) =>
+                // console.log(loc));
+                // console.log(city)
+                // console.log(state)
+                // $('#state').html(location.results[0].address_components[5].short_name);
+                // $('#userCityInput').html(location.results[0].address_components[3].long_name);
+            });
+           
+
+            // cityInput: location.results[0].address_components[3].long_name,
+            //     stateInput: location.results[0].address_components[5].short_name
+            // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
+            $.ajax({
+                type : "POST",
+                url : "{{url_for('index')}}",
+                data: JSON.stringify(pos),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(result) {
+                    console.log(result);
+                    }});
+                    console.log(pos);
+            })}
+            else {
+                console.log("geolocation is not supported");
+            }}) -->

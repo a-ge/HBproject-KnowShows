@@ -1,20 +1,20 @@
 """View functions for Full Concert webapp."""
 
+import os
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime
 
+
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
 
-# For testing with /test
-# from utility_spotify import *
-from utility_lastfm import *
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = os.getenv('secret_key')
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -25,41 +25,49 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = reverse_geocode()
+    response = convert_latlng(37.6250368, -122.41059840000001)
 
-    return response
-
-
+    return jsonify(response[0]['address_components'])
 
 
-@app.route('/', methods=["GET", "POST"])
+
+@app.route('/')
 def index():
     """Homepage."""
 
-    if request.method == "POST":
-        print("************ testing")
-        session['city'] = json.loads(location)
-        session['state'] = request.json[results[0].address_components[5].short_name]
-        print("********", session['city'])
-        # lat = request.json['lat']
-        # lon = request.json['lng']
-        
-    # else:
-    #     session['lat'] = None
-    #     session['lng'] = None
-
-
     return render_template("homepage.html")
+
+
+@app.route('/loc', methods=["GET", "POST"])
+def get_location():
+    """Homepage."""
+
+    if request.method == "POST":
+
+        lat = request.json['lat']
+        lng = request.json['lng']
+
+        results = convert_latlng(lat, lng)
+
+
+        for i in range(len(results[0]['address_components'])):
+
+            if results[0]['address_components'][i]['types'][0] == 'locality':
+
+                session['city'] = results[0]['address_components'][i]['short_name']
+
+            if results[0]['address_components'][i]['types'][0] == 'administrative_area_level_1':
+
+                session['state'] = results[0]['address_components'][i]['short_name']
+
+                break
+
+    return render_template("base.html")
 
 
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
-
-    ## Check if key exists and if they do, pop out OR
-    # if session:
-    #     for key in session.keys():
-    #      session.pop(key)
 
     if request.method == "POST":
 
@@ -92,7 +100,6 @@ def search():
         else:
             d = datetime.strptime(end_date, '%m/%d/%Y')
             session['enddate'] = d.strftime('%Y-%m-%d')
-        print("session*******",session)
 
     if query_type == "Artist":
         return redirect("/check_artist")
