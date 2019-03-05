@@ -40,7 +40,7 @@ def index():
 
 @app.route('/loc', methods=["GET", "POST"])
 def get_location():
-    """Homepage."""
+    """Get lat/lng from GoogleMaps to convert to City/State, then send to populate search form."""
 
     if request.method == "POST":
 
@@ -48,7 +48,6 @@ def get_location():
         lng = request.json['lng']
 
         results = convert_latlng(lat, lng)
-
 
         for i in range(len(results[0]['address_components'])):
 
@@ -100,6 +99,8 @@ def search():
         else:
             d = datetime.strptime(end_date, '%m/%d/%Y')
             session['enddate'] = d.strftime('%Y-%m-%d')
+
+    print(session)
 
     if query_type == "Artist":
         return redirect("/check_artist")
