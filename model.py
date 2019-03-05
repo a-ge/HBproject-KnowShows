@@ -84,6 +84,7 @@ class Artist(db.Model):
 
     artist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     spotify_uri = db.Column(db.String(200))
+    artist_sp_playlist_id = db.Column(db.String(100), nullable=True)
     artist_sg_id = db.Column(db.Integer, unique=True)
     artist_name = db.Column(db.String(100))
     artist_url = db.Column(db.String(1000))

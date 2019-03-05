@@ -2,8 +2,12 @@
 {% block content %}
 
 <h1>{{ artist.artist_name }}</h1>
-<img src="{{ artist.artist_photo }}"><br>
-{{ artist.artist_bio }}
+  <img src="{{ artist.artist_photo }}"><br>
+  {{ artist.artist_bio }}<br>
+
+  <!--  For Spotify player-->
+  <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
+  <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 
   {% if artist_event_dicts|length > 0 %}
     <ul>
@@ -28,4 +32,5 @@
   {% else %}
     Sorry, no events for this artist.
   {% endif %}
+
 {% endblock %}

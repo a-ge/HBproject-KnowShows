@@ -1,21 +1,20 @@
-"""Functions for Concerts Database"""
+"""Functions for Concerts Database and functions call to Last.FM and GoogleMaps APIs."""
 
+import os, requests, json, googlemaps
 from datetime import datetime
-
-import os, requests, json
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
 from utility_seatgeek import *
 from utility_spotify import *
 
-LFM_API_KEY = os.getenv('LFM_API_KEY')
-
-LFM_URL = "http://ws.audioscrobbler.com/2.0/"
-
 
 def get_artist_bio(artist_name):
     """Call to Last.FM API for a particular artist's bio. """
+
+    LFM_API_KEY = os.getenv('LFM_API_KEY')
+
+    LFM_URL = "http://ws.audioscrobbler.com/2.0/"
 
     payload = {'method': 'artist.getinfo',
                 'artist': artist_name,
@@ -25,6 +24,18 @@ def get_artist_bio(artist_name):
     response = requests.get(LFM_URL, params=payload)
 
     return response.json()
+
+
+
+def convert_latlng(lat, lng):
+
+    API_KEY = os.getenv('API_KEY')
+
+    gmaps = googlemaps.Client(API_KEY)
+
+    response = gmaps.reverse_geocode(latlng=(lat, lng))
+
+    return response
 
 
 
@@ -58,12 +69,16 @@ def insert_artists(artists):
             except:
                 artist_photo = None
 
-            artist_genres = ""
-            if 'genres' in artist_dict['performers'][0]:
+            try:
+                artist_dict['performers'][0]['genres']
+
+                artist_genres = ""
                 for i in range(len(artist_dict['performers'][0]['genres'])):
 
                     genre = artist_dict['performers'][0]['genres'][i]['name']
                     artist_genres = artist_genres + genre + ", "
+            except:
+                artist_genres = ""
 
             # insert into db artist
             new_art = Artist(spotify_uri=spotify_uri,
@@ -327,6 +342,20 @@ def list_venue_event_ids(venue_id):
 
 
 
+def modify_artist_playlist_id(artist, artist_spot_id):
+
+    if artist.artist_sp_playlist_id:
+        playlist_id = artist.artist_sp_playlist_id
+        update_playlist(playlist_id, artist_spot_id)
+
+    else:
+        title = artist.artist_name
+        playlist_id = create_playlist(title, artist_spot_id)
+        # Initial playlist created, so add/replace None playlist_id in db
+        Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
+        db.session.commit()
+
+
 def modify_event_playlist_id(event, artist_spot_ids):
 
     if event.event_sp_playlist_id:
@@ -334,7 +363,8 @@ def modify_event_playlist_id(event, artist_spot_ids):
         update_playlist(playlist_id, artist_spot_ids)
 
     else:
-        playlist_id = create_playlist(event, artist_spot_ids)
+        title = event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime)
+        playlist_id = create_playlist(title, artist_spot_ids)
         # Initial playlist created, so add/replace None playlist_id in db
         Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
         db.session.commit()

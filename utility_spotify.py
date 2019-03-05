@@ -25,7 +25,7 @@ token = util.prompt_for_user_token(USERNAME, scope)
 
 def list_top_tracks(artist_spot_ids):
     """Pull an artist's top track URIs from Spotify API"""
-
+    print("**test")
     tracks = []
 
     for artist in artist_spot_ids:
@@ -64,13 +64,13 @@ def add_tracks(playlist_id, artist_spot_ids):
 
     results = requests.post("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", data=json.dumps(data), headers=headers)
 
-    return results
+    return results.json()
 
 
-def create_playlist(event, artist_spot_ids):
+def create_playlist(title, artist_spot_ids):
 
     # https://developer.spotify.com/documentation/web-api/reference/playlists/create-playlist/
-    data = {'name': event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime),
+    data = {'name': title,
                 'public': True,
                 'collaborative': False}
 

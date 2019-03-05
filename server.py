@@ -10,6 +10,7 @@ from datetime import datetime
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
 
+from utility_spotify import *
 
 app = Flask(__name__)
 
@@ -25,9 +26,9 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = convert_latlng(37.6250368, -122.41059840000001)
+    response = add_tracks("11v94SMR6Hif0kt5rTzwoW", ['spotify:artist:2FW1jqwbJgwWT8hTWHgBrq'])
 
-    return jsonify(response[0]['address_components'])
+    return jsonify(response)
 
 
 
@@ -160,7 +161,9 @@ def display_artist(artist_id):
 
         artist_event_dicts.append(eve)
 
-    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts)
+    playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
+
+    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
 
 
 @app.route('/check_venue')
