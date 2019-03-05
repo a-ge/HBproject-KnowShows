@@ -1,14 +1,31 @@
 """Functions for Concerts Database"""
 
+from datetime import datetime
+
+import os, requests, json
+
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from server import session
-from datetime import datetime
 from utility_seatgeek import *
 from utility_spotify import *
-from utility_lastfm import *
 
-### To be added later: clean/update db
-import pprint
+LFM_API_KEY = os.getenv('LFM_API_KEY')
+
+LFM_URL = "http://ws.audioscrobbler.com/2.0/"
+
+
+def get_artist_bio(artist_name):
+    """Call to Last.FM API for a particular artist's bio. """
+
+    payload = {'method': 'artist.getinfo',
+                'artist': artist_name,
+                'api_key': LFM_API_KEY,
+                'format': 'json'}
+
+    response = requests.get(LFM_URL, params=payload)
+
+    return response.json()
+
 
 
 def insert_lineup(event_id, artist_id):
@@ -280,6 +297,16 @@ def list_venue_ids(query):
 
 def list_venue_event_ids(venue_id):  
 
+    if session['startdate']:
+        start_date = session['startdate']
+    else:
+        start_date  = None
+
+    if session['enddate']:
+        end_date = session['enddate']
+    else:
+        end_date  = None
+    print("******", start_date, end_date)
     results = find_venue_events(venue_id)
 
     event_ids = []
