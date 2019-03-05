@@ -1,8 +1,6 @@
 """Functions for Spotify API requests, using Spotipy library"""
-import requests
-import json
+import os, requests, json
 
-import os
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 SPOTIPY_REDIRECT_URI= os.getenv('SPOTIPY_REDIRECT_URI')
@@ -21,11 +19,10 @@ scope = 'playlist-modify-public playlist-modify-private'
 token = util.prompt_for_user_token(USERNAME, scope)
 
 
-### Check if playlist for an event already exists??
 
 def list_top_tracks(artist_spot_ids):
     """Pull an artist's top track URIs from Spotify API"""
-    print("**test")
+
     tracks = []
 
     for artist in artist_spot_ids:

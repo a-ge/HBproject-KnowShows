@@ -349,12 +349,13 @@ def modify_artist_playlist_id(artist, artist_spot_id):
         update_playlist(playlist_id, artist_spot_id)
 
     else:
-        title = artist.artist_name
+        title = "KnowShows- " + artist.artist_name 
         playlist_id = create_playlist(title, artist_spot_id)
         # Initial playlist created, so add/replace None playlist_id in db
         Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
         db.session.commit()
 
+    return playlist_id
 
 def modify_event_playlist_id(event, artist_spot_ids):
 
