@@ -6,11 +6,8 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from datetime import datetime
 
-
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-
-from utility_spotify import *
 
 app = Flask(__name__)
 
@@ -26,7 +23,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = add_tracks("11v94SMR6Hif0kt5rTzwoW", ['spotify:artist:2FW1jqwbJgwWT8hTWHgBrq'])
+    response = create_playlist("testing", ['196lKsA13K3keVXMDFK66q'])
 
     return jsonify(response)
 
@@ -42,7 +39,7 @@ def index():
 @app.route('/loc', methods=["GET", "POST"])
 def get_location():
     """Get lat/lng from GoogleMaps to convert to City/State, then send to populate search form."""
-
+    
     if request.method == "POST":
 
         lat = request.json['lat']
@@ -54,7 +51,7 @@ def get_location():
 
             if results[0]['address_components'][i]['types'][0] == 'locality':
 
-                session['city'] = results[0]['address_components'][i]['short_name']
+                session['city'] = results[0]['address_components'][i]['long_name']
 
             if results[0]['address_components'][i]['types'][0] == 'administrative_area_level_1':
 
@@ -252,7 +249,7 @@ def display_event(event_id):
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
