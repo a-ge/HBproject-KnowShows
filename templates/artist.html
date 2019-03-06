@@ -7,7 +7,10 @@
 
 <a href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" /></a>
 <a href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" /></a>
+<!-- NEED TO INSERT REST OF SEARCH QUERY -->
 
+{% set youtube_query = artist.artist_name.replace(" ", "+") %}
+<a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank"><img src="/static/youtube-icon.png" alt="Watch now on YouTube" /></a>
   <!--  For Spotify player-->
   <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
   <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
@@ -23,8 +26,8 @@
           <ul>
               {% for key in event[1] %}
               <li>
-                <a href="/artist/{{ artist.artist_id }}">
-                  {{ event[1][key].artist_name }}</a><br>
+                <a href="/artist/{{ event[1][key].artist_id }}">
+                  {{ event[1][key].artist_name }}</a>
                   {{ event[1][key].artist_genres }}<br>
               </li>
               {% endfor %}
@@ -35,6 +38,16 @@
   {% else %}
     Sorry, no events for this artist.
   {% endif %}
+
+<nav aria-label="...">
+  <ul class="pagination pagination-sm">
+    <li class="page-item disabled">
+      <a class="page-link" href="#" tabindex="-1">1</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+  </ul>
+</nav>
 
 <script>
     // https://css-tricks.com/simple-social-sharing-links/
