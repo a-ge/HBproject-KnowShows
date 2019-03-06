@@ -9,6 +9,7 @@ from utility_seatgeek import *
 from utility_spotify import *
 
 
+
 def get_artist_bio(artist_name):
     """Call to Last.FM API for a particular artist's bio. """
 
@@ -39,6 +40,38 @@ def convert_latlng(lat, lng):
 
 
 
+def modify_artist_playlist_id(artist, artist_spot_id):
+
+    if artist.artist_sp_playlist_id:
+        playlist_id = artist.artist_sp_playlist_id
+        update_playlist(playlist_id, artist_spot_id)
+
+    else:
+        title = "KnowShows- " + artist.artist_name 
+        playlist_id = create_playlist(title, artist_spot_id)
+        # Initial playlist created, so add/replace None playlist_id in db
+        Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
+        db.session.commit()
+
+    return playlist_id
+
+def modify_event_playlist_id(event, artist_spot_ids):
+
+    if event.event_sp_playlist_id:
+        playlist_id = event.event_sp_playlist_id
+        update_playlist(playlist_id, artist_spot_ids)
+
+    else:
+        title = event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime)
+        playlist_id = create_playlist(title, artist_spot_ids)
+        # Initial playlist created, so add/replace None playlist_id in db
+        Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
+        db.session.commit()
+
+    return playlist_id
+
+
+
 def insert_lineup(event_id, artist_id):
     # Check if lineup already in db??
     new_lineup = Lineup(event_id=event_id, artist_id=artist_id)
@@ -60,6 +93,11 @@ def insert_artists(artists):
                 spotify_uri = None
 
             try:
+                artist_name = artist_dict['performers'][0]['name']
+            except:
+                artist_name = None
+
+            try:
                 artist_url = artist_dict['performers'][0]['links'][0]['url']
             except:
                 artist_url = None
@@ -78,12 +116,12 @@ def insert_artists(artists):
                     genre = artist_dict['performers'][0]['genres'][i]['name']
                     artist_genres = artist_genres + genre + ", "
             except:
-                artist_genres = ""
+                artist_genres = "  "
 
             # insert into db artist
             new_art = Artist(spotify_uri=spotify_uri,
                         artist_sg_id=artist,
-                        artist_name=artist_dict['performers'][0]['name'],
+                        artist_name=artist_name,
                         artist_url=artist_url,
                         artist_photo=artist_photo,
                         artist_genres=artist_genres[:-2],
@@ -237,8 +275,6 @@ def list_event_artists(event_id):
 
     return art
 
-
-
 def list_artist_ids(query):
 
     results = find_sg_artists(query)
@@ -248,18 +284,15 @@ def list_artist_ids(query):
     if results['performers'] != []:
         for i in range(len(results['performers'])):
 
-            artist_id = results['performers'][i]['id']
-            if artist_id not in artist_ids:
-                artist_ids.append(artist_id)
+            if results['performers'][i]['has_upcoming_events'] == True:
+
+                artist_id = results['performers'][i]['id']
+                if artist_id not in artist_ids:
+                    artist_ids.append(artist_id)
 
         insert_artists(artist_ids)
 
         return artist_ids
-
-    else:
-        return ""
-
-
 
 def list_event_ids(query):
 
@@ -284,9 +317,6 @@ def list_event_ids(query):
 
     return event_ids
 
-        
-
-
 def list_venue_ids(query):
 
     results = find_sg_venues(query)
@@ -305,11 +335,6 @@ def list_venue_ids(query):
 
         return set(venue_ids)
 
-    else:
-        return ""
-
-
-
 def list_venue_event_ids(venue_id):  
 
     if session['startdate']:
@@ -321,7 +346,7 @@ def list_venue_event_ids(venue_id):
         end_date = session['enddate']
     else:
         end_date  = None
-    print("******", start_date, end_date)
+
     results = find_venue_events(venue_id)
 
     event_ids = []
@@ -336,38 +361,3 @@ def list_venue_event_ids(venue_id):
         insert_events(event_ids)
 
         return event_ids
-
-    else:
-        return ""
-
-
-
-def modify_artist_playlist_id(artist, artist_spot_id):
-
-    if artist.artist_sp_playlist_id:
-        playlist_id = artist.artist_sp_playlist_id
-        update_playlist(playlist_id, artist_spot_id)
-
-    else:
-        title = "KnowShows- " + artist.artist_name 
-        playlist_id = create_playlist(title, artist_spot_id)
-        # Initial playlist created, so add/replace None playlist_id in db
-        Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
-        db.session.commit()
-
-    return playlist_id
-
-def modify_event_playlist_id(event, artist_spot_ids):
-
-    if event.event_sp_playlist_id:
-        playlist_id = event.event_sp_playlist_id
-        update_playlist(playlist_id, artist_spot_ids)
-
-    else:
-        title = event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime)
-        playlist_id = create_playlist(title, artist_spot_ids)
-        # Initial playlist created, so add/replace None playlist_id in db
-        Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
-        db.session.commit()
-
-    return playlist_id

@@ -9,10 +9,11 @@ from datetime import datetime
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
 
+from utility_seatgeek import *
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = os.getenv('secret_key')
+app.secret_key = "ABC"
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -23,7 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = create_playlist("testing", ['196lKsA13K3keVXMDFK66q'])
+    response = get_artist_bio('cher')
 
     return jsonify(response)
 
@@ -32,19 +33,20 @@ def test():
 @app.route('/')
 def index():
     """Homepage."""
-
+    # session['city'] = ''
+    # session['state'] = ''
     return render_template("homepage.html")
 
 
 @app.route('/loc', methods=["GET", "POST"])
 def get_location():
     """Get lat/lng from GoogleMaps to convert to City/State, then send to populate search form."""
-    
+    print("TESTING", session)
     if request.method == "POST":
 
         lat = request.json['lat']
         lng = request.json['lng']
-
+        print("********", lat, lng)
         results = convert_latlng(lat, lng)
 
         for i in range(len(results[0]['address_components'])):
@@ -58,14 +60,14 @@ def get_location():
                 session['state'] = results[0]['address_components'][i]['short_name']
 
                 break
-
+    print("TESTING**", session)
     return render_template("base.html")
 
 
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
-
+    print("TESTING***", session)
     if request.method == "POST":
 
         query_type = request.form['searchType']
@@ -99,7 +101,6 @@ def search():
             session['enddate'] = d.strftime('%Y-%m-%d')
 
     print(session)
-
     if query_type == "Artist":
         return redirect("/check_artist")
 
@@ -138,13 +139,14 @@ def display_artist(artist_id):
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
 
     # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
-    artist_sg_events = list_event_ids(artist_select.artist_sg_id)
+    artist_sg_info = list_event_ids(artist_select.artist_sg_id)
 
+    total_events = artist_sg_info[0]
     # Create a list with nested lists where event obj in index 0
     # and following indexes are the artist objs for given event
     artist_event_dicts = []
     
-    for event in artist_sg_events:
+    for event in artist_sg_info[1]:
 
         eve = []
 
@@ -160,7 +162,7 @@ def display_artist(artist_id):
 
     playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
 
-    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
+    return render_template("artist.html", artist=artist_select, total_events=total_events, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
 
 
 @app.route('/check_venue')
@@ -249,7 +251,7 @@ def display_event(event_id):
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = False
+    app.debug = True
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
