@@ -261,7 +261,6 @@ def insert_events(events):
 
 def list_event_artists(event_id):
 
-
     event_lineups = Lineup.query.filter(Lineup.event_id == event_id).all()
              
     event_artists = [Artist.query.filter(Artist.artist_id == lineup.artist_id).one() for lineup in event_lineups]
@@ -329,11 +328,12 @@ def list_venue_ids(query):
             if results['venues'][i]['has_upcoming_events'] == True:
 
                 venue_id = results['venues'][i]['id']
-                venue_ids.append(venue_id)
+                if venue_id not in venue_ids:
+                    venue_ids.append(venue_id)
 
         insert_venues(venue_ids)
 
-        return set(venue_ids)
+    return venue_ids
 
 def list_venue_event_ids(venue_id):  
 

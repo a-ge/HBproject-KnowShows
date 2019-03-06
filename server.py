@@ -141,12 +141,11 @@ def display_artist(artist_id):
     # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
     artist_sg_info = list_event_ids(artist_select.artist_sg_id)
 
-    total_events = artist_sg_info[0]
     # Create a list with nested lists where event obj in index 0
     # and following indexes are the artist objs for given event
     artist_event_dicts = []
     
-    for event in artist_sg_info[1]:
+    for event in artist_sg_info:
 
         eve = []
 
@@ -162,7 +161,7 @@ def display_artist(artist_id):
 
     playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
 
-    return render_template("artist.html", artist=artist_select, total_events=total_events, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
+    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
 
 
 @app.route('/check_venue')
