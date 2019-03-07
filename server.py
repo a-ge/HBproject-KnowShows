@@ -24,7 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = get_artist_bio('cher')
+    response = find_artist_events(1768)
 
     return jsonify(response)
 
@@ -33,20 +33,20 @@ def test():
 @app.route('/')
 def index():
     """Homepage."""
-    # session['city'] = ''
-    # session['state'] = ''
+    session['city'] = ''
+    session['state'] = ''
     return render_template("homepage.html")
 
 
 @app.route('/loc', methods=["GET", "POST"])
 def get_location():
     """Get lat/lng from GoogleMaps to convert to City/State, then send to populate search form."""
-    print("TESTING", session)
+
     if request.method == "POST":
 
         lat = request.json['lat']
         lng = request.json['lng']
-        print("********", lat, lng)
+
         results = convert_latlng(lat, lng)
 
         for i in range(len(results[0]['address_components'])):
@@ -60,8 +60,11 @@ def get_location():
                 session['state'] = results[0]['address_components'][i]['short_name']
 
                 break
-    print("TESTING**", session)
+    
     return render_template("base.html")
+
+
+    
 
 
 @app.route('/search', methods=['POST'])
@@ -114,11 +117,11 @@ def search():
 @app.route('/check_artist')
 def check_artist():
     """List artists found that closely match artist entered by user."""
-
+    print("testinggggggggg", session)
     # Search db, then if necessary, call API for artists, response is a list of artist_sg_ids
         ## Currently have request argument has_upcoming_events set to True
         ## This means artists with no upcoming events will not appear --change?? create flash message??
-    artist_sg_ids = list_artist_ids(session['user_query'])
+    artist_sg_ids  = list_artist_ids(session['user_query'])
 
     # Get each artist object for each artist_sg_id
     artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_ids]
@@ -141,11 +144,12 @@ def display_artist(artist_id):
     # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
     artist_sg_info = list_event_ids(artist_select.artist_sg_id)
 
+    total_pages = round(artist_sg_info[0] / 20)
     # Create a list with nested lists where event obj in index 0
     # and following indexes are the artist objs for given event
     artist_event_dicts = []
     
-    for event in artist_sg_info:
+    for event in artist_sg_info[1]:
 
         eve = []
 
@@ -161,7 +165,7 @@ def display_artist(artist_id):
 
     playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
 
-    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id)
+    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages)
 
 
 @app.route('/check_venue')
@@ -250,7 +254,7 @@ def display_event(event_id):
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the
     # point that we invoke the DebugToolbarExtension
-    app.debug = True
+    app.debug = False
     # make sure templates, etc. are not cached in debug mode
     app.jinja_env.auto_reload = app.debug
 
