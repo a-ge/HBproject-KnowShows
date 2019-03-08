@@ -7,6 +7,9 @@
 {{ event.venue.venue_add }}<br>
 {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
 
+{% set gmaps_query = (event.venue.venue_name.replace(" ", "+") + "+" + event.venue.venue_city.replace(" ", "+") + "+" + event.venue.venue_state) %}
+<a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
+
 <a href="{{ event.event_url }}" target="blank"><img src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" /></a>
 
 <!--  For Spotify player-->
