@@ -131,23 +131,24 @@ def check_artist(page):
 
     if len(artist_options) == 1:
         artist_id = artist_options[0].artist_id
-        return redirect("/artist/" + str(artist_id))
+        return redirect("/artist/" + str(artist_id) + "/1")
 
     else:
         return render_template("check_artist.html", artist_options=artist_options, total_pages=total_pages, current_page=page)
 
 
-@app.route('/artist/<artist_id>')
-def display_artist(artist_id):
+@app.route('/artist/<artist_id>/<int:page>')
+def display_artist(artist_id, page):
     """List all events with their lineup artists for artist selected."""
 
     # Find artist object of artist_id
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
 
     # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
-    artist_sg_info = list_event_ids(artist_select.artist_sg_id)
+    artist_sg_info = list_event_ids(artist_select.artist_sg_id, page)
 
-    total_pages = round(artist_sg_info[0] / 20)
+    total_pages = math.ceil(artist_sg_info[0] / 20)
+
     # Create a list with nested lists where event obj in index 0
     # and following indexes are the artist objs for given event
     artist_event_dicts = []
@@ -168,7 +169,7 @@ def display_artist(artist_id):
 
     playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
 
-    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages)
+    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages, current_page=page)
 
 
 @app.route('/check_venue/<int:page>')

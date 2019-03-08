@@ -298,7 +298,7 @@ def list_artist_ids(query, page):
 def list_event_ids(query, page):
 
     if type(query) == int:
-        results = find_artist_events(query)
+        results = find_artist_events(query, page)
 
     else:
         results = find_sg_events(query, page)

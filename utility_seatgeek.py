@@ -89,7 +89,7 @@ def find_sg_venues(query, page):
 
 
  
-def find_artist_events(artist_id):
+def find_artist_events(artist_id, page):
     """Call to SeatGeek API for all events for given artist.""" 
 
     city = session['city']
@@ -109,7 +109,8 @@ def find_artist_events(artist_id):
                 'venue.city': city,
                 'venue.state': state,
                 'venue.country': 'US',
-                'per_page': 20}
+                'per_page': 20,
+                'page': page}
 
     response = requests.get(SG_URL + 'events', params=params)
 
