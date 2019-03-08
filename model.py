@@ -76,7 +76,7 @@ class Lineup(db.Model):
         return "<Lineup lineup_id={} event_id={} artist_id={}>".format(self.lineup_id,
             self.event_id, self.artist_id)
 
-## Need song???
+
 class Artist(db.Model):
     """Artist infomation."""
 

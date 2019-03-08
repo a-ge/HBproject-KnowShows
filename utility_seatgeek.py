@@ -51,7 +51,7 @@ def find_sg_artists(artist_query):
     params = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'q': artist_query,
-                'per_page': 10}
+                'per_page': 100}
 
     response = requests.get(SG_URL + 'performers', params=params)
 
@@ -79,7 +79,7 @@ def find_sg_venues(query):
                 'state': state,          
                 'country': 'US',
                 'q': query,
-                'per_page': 10}
+                'per_page': 100}
 
     response = requests.get(SG_URL + 'venues', params=params)
 
@@ -90,24 +90,24 @@ def find_sg_venues(query):
 def find_artist_events(artist_id):
     """Call to SeatGeek API for all events for given artist.""" 
 
-    # city = session['city']
+    city = session['city']
 
-    # if session['city'] == '':
-    #     city = None
+    if session['city'] == '':
+        city = None
 
-    # state = session['state']
+    state = session['state']
 
-    # if session['state'] == '':
-    #     state = None
-
+    if session['state'] == '':
+        state = None
+    
     params = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'sort': 'datetime_local.asc',
                 'performers.id': artist_id,
-                'venue.city': None,
-                'venue.state': None,
+                'venue.city': city,
+                'venue.state': state,
                 'venue.country': 'US',
-                'per_page': 10}
+                'per_page': 20}
 
     response = requests.get(SG_URL + 'events', params=params)
 
@@ -145,7 +145,7 @@ def find_sg_events(query):
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
                 'type': "concert",
-                'per_page': 10}
+                'per_page': 20}
     
     response = requests.get(SG_URL + 'events', params=params)
 
@@ -169,7 +169,7 @@ def find_venue_events(venue_id):
                 'venue.id': venue_id,
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
-                'per_page': 10}
+                'per_page': 20}
 
     response = requests.get(SG_URL + 'events', params=params)
 

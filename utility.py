@@ -301,6 +301,8 @@ def list_event_ids(query):
     else:
         results = find_sg_events(query)
 
+    total_events = results['meta']['total']
+
     event_ids = []
 
     if results['events']:
@@ -314,7 +316,7 @@ def list_event_ids(query):
 
         insert_events(event_ids)
 
-    return event_ids
+    return (total_events, event_ids)
 
 def list_venue_ids(query):
 

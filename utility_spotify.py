@@ -23,35 +23,54 @@ token = util.prompt_for_user_token(USERNAME, scope)
 def list_top_tracks(artist_spot_ids):
     """Pull an artist's top track URIs from Spotify API"""
 
+    if len(artist_spot_ids) == 1:
+        track_len = 8
+    elif len(artist_spot_ids) == 2:
+        track_len = 5
+    elif len(artist_spot_ids) > 2:
+        track_len = 3
+
     tracks = []
 
-    for artist in artist_spot_ids:
-        # Returns list of artist uri's
+    i = 0
+
+    while i < 6:
+        # List only first five artists
         try:
-            artist_uri = spotify.artist_top_tracks(artist, country='US')
-            # List only top three
-            artist_tracks = []
+            artist = artist_spot_ids[i]
 
-            i = 0
-            while i < 3:
-                try:
-                    track = artist_uri['tracks'][i]['uri']
-                except:
-                    break
+            try:
+                artist_uri = spotify.artist_top_tracks(artist, country='US')
+                # List only top tracks
+                artist_tracks = []
 
-                artist_tracks.append(track)
-                i += 1
+                j = 0
 
-            # Add all three to all tracks list
-            tracks.extend(artist_tracks)
+                while j < track_len:
+
+                    try:
+                        track = artist_uri['tracks'][j]['uri']
+                    except:
+                        break
+
+                    artist_tracks.append(track)
+                    j += 1
+
+                # Add all three to all tracks list
+                tracks.extend(artist_tracks)
+            except:
+                continue
+
         except:
-            continue
+            break
+
+        i += 1
 
     return tracks
 
 
 def add_tracks(playlist_id, artist_spot_ids):
-    
+
     tracks = list_top_tracks(artist_spot_ids)
 
     data = {"uris": tracks}
