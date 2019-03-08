@@ -1,6 +1,6 @@
 """View functions for Full Concert webapp."""
 
-import os
+import os, math
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
@@ -8,13 +8,11 @@ from datetime import datetime
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
-import math
 
-from utility_seatgeek import *
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "ABC"
+app.secret_key = os.getenv("secret_key")
 
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
@@ -22,20 +20,10 @@ app.jinja_env.undefined = StrictUndefined
 
 
 
-@app.route('/test')
-def test():
-
-    response = find_sg_venues("Slim", 1)
-
-    return jsonify(response)
-
-
-
 @app.route('/')
 def index():
     """Homepage."""
-    session['city'] = ''
-    session['state'] = ''
+
     return render_template("homepage.html")
 
 
@@ -45,11 +33,14 @@ def get_location():
 
     if request.method == "POST":
 
+        # When user clicks "Find my location" button, this pulls info from Google Maps Geolocation API response.
         lat = request.json['lat']
         lng = request.json['lng']
 
+        # Call to Google Maps Reverse Geocoding API.
         results = convert_latlng(lat, lng)
 
+        # Find city and state from results and add to session.
         for i in range(len(results[0]['address_components'])):
 
             if results[0]['address_components'][i]['types'][0] == 'locality':
@@ -62,6 +53,7 @@ def get_location():
 
                 break
 
+    # City and state sent to base.html to populate city and state text boxes.          
     data ={'city': session['city'],
             'state': session['state']}
 
@@ -70,10 +62,11 @@ def get_location():
 
 @app.route('/search', methods=['POST'])
 def search():
-    """ Retrieve user's search inputs and redirect to correct page."""
+    """ Retrieve user's search inputs, add them to session, and then redirect to correct page."""
 
     if request.method == "POST":
 
+        # When user clicks "Search" button add information to session.
         query_type = request.form['searchType']
 
         session['user_query'] = request.form['userSearchInput']
@@ -118,14 +111,17 @@ def search():
 def check_artist(page):
     """List artists found that closely match artist entered by user."""
 
-    # Search db, then if necessary, call API for artists, response is a list of artist_sg_ids
+    # Search db, then if necessary, call API for artists,
+    # response is a tuple with total items and a list of artist_sg_ids.
     artist_sg_info  = list_artist_ids(session['user_query'], page)
 
+    # Knowing total items, calculate total pages.
     total_pages = math.ceil(artist_sg_info[0]/100)
 
-    # Get each artist object for each artist_sg_id
+    # Get each artist object for each artist_sg_id.
     artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_info[1]]
 
+    # If only one artist found, go directly to the artist's page.
     if len(artist_options) == 1:
         artist_id = artist_options[0].artist_id
         return redirect("/artist/" + str(artist_id) + "/1")
@@ -138,16 +134,18 @@ def check_artist(page):
 def display_artist(artist_id, page):
     """List all events with their lineup artists for artist selected."""
 
-    # Find artist object of artist_id
+    # Find artist object of artist_id.
     artist_select = Artist.query.filter(Artist.artist_id == artist_id).one()
 
-    # Search db, then if necessary, call API for all events of a particular artist, response is a list of event_sg_ids
+    # Search db, then if necessary, call API for all events of a particular artist,
+    # response is a tuple with total items and a list of event_sg_ids.
     artist_sg_info = list_event_ids(artist_select.artist_sg_id, page)
 
+    # Knowing total items, calculate total pages.
     total_pages = math.ceil(artist_sg_info[0] / 20)
 
     # Create a list with nested lists where event obj in index 0
-    # and following indexes are the artist objs for given event
+    # and following indexes are the artist objs for given event.
     artist_event_dicts = []
     
     for event in artist_sg_info[1]:
@@ -156,10 +154,10 @@ def display_artist(artist_id, page):
 
         eve_obj = Event.query.filter(Event.event_sg_id == event).one()
 
-        # First add event object 
+        # First add event object.
         eve.append(eve_obj)
 
-        # Get dictionary with each artist object
+        # Get dictionary with each artist object.
         eve.append(list_event_artists(eve_obj.event_id))
 
         artist_event_dicts.append(eve)
@@ -173,14 +171,17 @@ def display_artist(artist_id, page):
 def check_venue(page):
     """List venues found that closely match venue entered by user."""
 
-    # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
+    # Search db, then if necessary, call API for venues,
+    # response is a tuple with total items and a list of venue_sg_ids.
     venue_sg_info = list_venue_ids(session['user_query'], page)
 
+    # Knowing total items, calculate total pages.
     total_pages = math.ceil(venue_sg_info[0]/100)
 
-    # Get each venue object for each venue_sg_id
+    # Get each venue object for each venue_sg_id.
     venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_info[1]]
 
+    # If only one venue found, go directly to the venue's page.
     if len(venue_options) == 1:
         venue_id = venue_options[0].venue_id
         return redirect("/venue/" + str(venue_id) + "/1")
@@ -195,13 +196,15 @@ def display_venue(venue_id, page):
     # Find venue object
     venue_select = Venue.query.filter(Venue.venue_id == venue_id).one()
 
-    # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
+    # Search db, then if necessary, call API for all events of a particular venue,
+    # response is a tuple with total items and a list of event_sg_ids.
     venue_sg_info = list_venue_event_ids(venue_select.venue_sg_id, page)
 
+    # Knowing total items, calculate total pages.
     total_pages = math.ceil(venue_sg_info[0] / 20)
 
     # Create a list with nested lists where venue obj in index 0
-    # and following indexes are the event objs for given venue
+    # and following indexes are the event objs for given venue.
     venue_event_dicts = []
     
     for event in venue_sg_info[1]:
@@ -210,10 +213,10 @@ def display_venue(venue_id, page):
 
         eve_obj = Event.query.filter(Event.event_sg_id == event).one()
 
-        # First add event object 
+        # First add event object.
         eve.append(eve_obj)
 
-        # Get a list with each artist object
+        # Get a list with each artist object.
         eve.append(list_event_artists(eve_obj.event_id))
 
         venue_event_dicts.append(eve)
@@ -225,14 +228,17 @@ def display_venue(venue_id, page):
 def check_event(page):
     """List events found that closely match event entered by user."""
 
-    # Search db, then if necessary, call API for events, response is a list of event_sg_ids
+    # Search db, then if necessary, call API for events,
+    # response is a tuple with total items and a list of event_sg_ids.
     event_sg_info = list_event_ids(session['user_query'], page)
 
+    # Knowing total items, calculate total pages.
     total_pages = math.ceil(event_sg_info[0]/20)
 
-    # Get each event object for each event_sg_id
+    # Get each event object for each event_sg_id.
     event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_info[1]]
 
+    # If only one event found, go directly to the event's page.
     if len(event_options) == 1:
         event_id = event_options[0].event_id
         return redirect("/event/" + str(event_id))
@@ -244,13 +250,16 @@ def check_event(page):
 def display_event(event_id):
     """Display event information."""
     
-    # Find event object of event_id
+    # Find event object of event_id.
     event_select = Event.query.filter(Event.event_id == event_id).one()
 
+    # Create a dictionary with each artist in the event.
     event_dicts = list_event_artists(event_id)
 
+    # List all the Spotify id's for each artist.
     artist_spot_ids = [value.spotify_uri for key, value in event_dicts.items()]
 
+    # Create Spotify playlist for the event.
     playlist_id = modify_event_playlist_id(event_select, artist_spot_ids)
  
     return render_template("event.html", event=event_select, event_dicts=event_dicts, playlist_id=playlist_id)
