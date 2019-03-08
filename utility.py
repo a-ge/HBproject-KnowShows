@@ -29,6 +29,7 @@ def get_artist_bio(artist_name):
 
 
 def convert_latlng(lat, lng):
+    """Call to Google Maps Geocoding API to convert lat/lng to city and state of user. """
 
     API_KEY = os.getenv('API_KEY')
 
@@ -41,6 +42,7 @@ def convert_latlng(lat, lng):
 
 
 def modify_artist_playlist_id(artist, artist_spot_id):
+    """Check db if a Spotify playlist already exists for the artist, then create or update a playlist."""
 
     if artist.artist_sp_playlist_id:
         playlist_id = artist.artist_sp_playlist_id
@@ -56,6 +58,7 @@ def modify_artist_playlist_id(artist, artist_spot_id):
     return playlist_id
 
 def modify_event_playlist_id(event, artist_spot_ids):
+    """Check db if a Spotify playlist already exists for the event, then create or update a playlist."""
 
     if event.event_sp_playlist_id:
         playlist_id = event.event_sp_playlist_id
@@ -73,18 +76,21 @@ def modify_event_playlist_id(event, artist_spot_ids):
 
 
 def insert_lineup(event_id, artist_id):
-    # Check if lineup already in db??
+    """Instantiate into db Lineup table a lineup record with given event_id and artist_id."""
     new_lineup = Lineup(event_id=event_id, artist_id=artist_id)
     db.session.add(new_lineup)
     db.session.commit()
 
 def insert_artists(artists):
+    """Instantiate into db Artists table an artist record."""
 
     for artist in artists:
         
         try:
+            # Check if artist's SeatGeek id is already in db.
             Artist.query.filter(Artist.artist_sg_id == artist).one()
         except: 
+            # If not in db, create artist record with SeatGeek response.
             artist_dict = get_sg_artist(artist)
 
             try:
@@ -118,7 +124,7 @@ def insert_artists(artists):
             except:
                 artist_genres = "  "
 
-            # insert into db artist
+            # Insert into db.
             new_art = Artist(spotify_uri=spotify_uri,
                         artist_sg_id=artist,
                         artist_name=artist_name,
@@ -130,7 +136,7 @@ def insert_artists(artists):
             db.session.add(new_art)
             db.session.commit()
 
-            # To make request to Last.FM API for artist's bio
+            # Add artist's bio with Last.FM response.
             art = Artist.query.filter(Artist.artist_sg_id == artist).one()
             art_sum = get_artist_bio(art.artist_name)
 
@@ -144,12 +150,15 @@ def insert_artists(artists):
             db.session.commit()
 
 def insert_venues(venues):
+    """Instantiate into db Venues table a venue record."""
 
     for venue in venues:
         
         try:
+            # Check if venue's SeatGeek id is already in db.
             Venue.query.filter(Venue.venue_sg_id == venue).one()
         except:
+            # If not in db, create venue record with SeatGeek response.
             venue_dict = get_sg_venue(venue)
 
             if venue_dict['venues'][0]['name'] == None:
@@ -177,7 +186,7 @@ def insert_venues(venues):
             else:
                 venue_zip = venue_dict['venues'][0]['postal_code']
 
-            # insert into db
+            # Insert into db.
             new_venue = Venue(venue_sg_id=venue,
                             venue_name=venue_name,
                             venue_add=venue_add,
@@ -189,12 +198,14 @@ def insert_venues(venues):
             db.session.commit()
 
 def insert_events(events):
-
+    """Instantiate into db Events table an event record."""
     for event in events:
 
         try:
+            # Check if event's SeatGeek id is already in db.
             Event.query.filter(Event.event_sg_id == event).one()
         except:
+            # If not in db, create event record with SeatGeek response.
             event_dict = get_sg_event(event)
 
             try:
@@ -223,7 +234,7 @@ def insert_events(events):
                 event_datetime = None
 
             
-            # insert event into db
+            # Insert into db.
             new_event = Event(venue_id=venue_id,
                             event_sg_id=event,
                             event_title=event_title,
@@ -234,6 +245,7 @@ def insert_events(events):
             db.session.add(new_event)
             db.session.commit()
 
+            # Add each arttist in event to the db and then create their lineup record.
             if event_dict['events'][0]['performers']:
                 for i in range(len(event_dict['events'][0]['performers'])):
 
@@ -248,9 +260,12 @@ def insert_events(events):
 
 
 def list_event_artists(event_id):
+    """Create a dictionary with all artist_ids for a particular event."""
 
+    # Query db for all lineup records for event.
     event_lineups = Lineup.query.filter(Lineup.event_id == event_id).all()
-             
+    
+    # Query db for each artist object.     
     event_artists = [Artist.query.filter(Artist.artist_id == lineup.artist_id).one() for lineup in event_lineups]
     
     art = {}
@@ -263,7 +278,10 @@ def list_event_artists(event_id):
     return art
 
 def list_artist_ids(query, page):
+    """Create tuple with total number of artists found in SeatGeek
+    and a list of the artist_ids found on page number argument."""
 
+    # Response from SeatGeek call.
     results = find_sg_artists(query, page)
 
     total_artists = results['meta']['total']
@@ -284,7 +302,11 @@ def list_artist_ids(query, page):
         return (total_artists, artist_ids)
 
 def list_event_ids(query, page):
+    """Create tuple with total number of events found in SeatGeek
+    and a list of the event_ids found on page number argument."""
 
+    # Query passed in will either be an integer for a particular artist's SG id
+    # or a string for user's input in search textbox.
     if type(query) == int:
         results = find_artist_events(query, page)
 
@@ -309,7 +331,10 @@ def list_event_ids(query, page):
     return (total_events, event_ids)
 
 def list_venue_ids(query, page):
+    """Create tuple with total number of venues found in SeatGeek
+    and a list of the venue_ids found on page number argument."""
 
+    # Response from SeatGeek call.
     results = find_sg_venues(query, page)
 
     total_venues = results['meta']['total']
@@ -330,7 +355,11 @@ def list_venue_ids(query, page):
     return (total_venues, venue_ids)
 
 def list_venue_event_ids(venue_id, page):  
+    """Create tuple with total number of events found in SeatGeek for a particular venue
+    and a list of the event_ids found on page number argument."""
 
+    # User has option to enter a start/end date range.
+    # If session has date(s), include in call to SeatGeek API.
     if session['startdate']:
         start_date = session['startdate']
     else:
@@ -341,10 +370,11 @@ def list_venue_event_ids(venue_id, page):
     else:
         end_date  = None
 
+    # Response from SeatGeek call.
     results = find_venue_events(venue_id, page)
 
     total_events = results['meta']['total']
-    print(total_events)
+
     event_ids = []
 
     if results['events']:
