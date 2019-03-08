@@ -155,7 +155,7 @@ def find_sg_events(query, page):
 
     return response.json()
 
-def find_venue_events(venue_id):
+def find_venue_events(venue_id, page):
     """Call to SeatGeek API for all events for given user's venue input."""
 
     if session['startdate']:
@@ -173,7 +173,8 @@ def find_venue_events(venue_id):
                 'venue.id': venue_id,
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
-                'per_page': 20}
+                'per_page': 20,
+                'page': page}
 
     response = requests.get(SG_URL + 'events', params=params)
 

@@ -186,24 +186,28 @@ def check_venue(page):
 
     if len(venue_options) == 1:
         venue_id = venue_options[0].venue_id
-        return redirect("/venue/" + str(venue_id))
+        return redirect("/venue/" + str(venue_id) + "/1")
 
     return render_template("check_venue.html", venue_options=venue_options, total_pages=total_pages, current_page=page)
 
 
-@app.route('/venue/<venue_id>')
-def display_venue(venue_id):
+@app.route('/venue/<venue_id>/<int:page>')
+def display_venue(venue_id, page):
     """List all events with lineups artists for venue selected."""
     
     # Find venue object
     venue_select = Venue.query.filter(Venue.venue_id == venue_id).one()
 
     # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
-    venue_sg_events = list_venue_event_ids(venue_select.venue_sg_id)
+    venue_sg_info = list_venue_event_ids(venue_select.venue_sg_id, page)
 
+    total_pages = math.ceil(venue_sg_info[0] / 20)
+
+    # Create a list with nested lists where venue obj in index 0
+    # and following indexes are the event objs for given venue
     venue_event_dicts = []
     
-    for event in venue_sg_events:
+    for event in venue_sg_info[1]:
 
         eve = []
 
@@ -217,7 +221,7 @@ def display_venue(venue_id):
 
         venue_event_dicts.append(eve)
 
-    return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts)
+    return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts, total_pages=total_pages, current_page=page)
 
 
 @app.route('/check_event/<int:page>')

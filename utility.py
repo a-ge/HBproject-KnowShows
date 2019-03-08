@@ -339,7 +339,7 @@ def list_venue_ids(query, page):
 
     return (total_venues, venue_ids)
 
-def list_venue_event_ids(venue_id):  
+def list_venue_event_ids(venue_id, page):  
 
     if session['startdate']:
         start_date = session['startdate']
@@ -351,7 +351,9 @@ def list_venue_event_ids(venue_id):
     else:
         end_date  = None
 
-    results = find_venue_events(venue_id)
+    results = find_venue_events(venue_id, page)
+
+    total_events = results['meta']['total']
 
     event_ids = []
 
@@ -364,4 +366,4 @@ def list_venue_event_ids(venue_id):
 
         insert_events(event_ids)
 
-        return event_ids
+        return (total_events, event_ids)
