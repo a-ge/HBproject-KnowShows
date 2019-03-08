@@ -113,7 +113,7 @@ def find_artist_events(artist_id):
 
     return response.json()
 
-def find_sg_events(query):
+def find_sg_events(query, page):
     """Call to SeatGeek API for all events given user's event input."""
 
     city = session['city']
@@ -145,7 +145,8 @@ def find_sg_events(query):
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
                 'type': "concert",
-                'per_page': 20}
+                'per_page': 20,
+                'page': page}
     
     response = requests.get(SG_URL + 'events', params=params)
 

@@ -8,6 +8,7 @@ from datetime import datetime
 
 from model import Event, Artist, Lineup, Venue, connect_to_db, db
 from utility import *
+import math
 
 from utility_seatgeek import *
 app = Flask(__name__)
@@ -116,7 +117,7 @@ def search():
         return redirect("/check_venue")
 
     elif query_type == "Event":
-        return redirect("/check_event")
+        return redirect("/check_event/1")
 
 
 @app.route('/check_artist')
@@ -221,21 +222,38 @@ def display_venue(venue_id):
     return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts)
 
 
-@app.route('/check_event')
-def check_event():
+# def next_pg_check_event(page_num):
+
+#     event_sg_info = list_event_ids(session['user_query'], page_num)
+
+#         # Get each event object for each event_sg_id
+#     event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
+
+#     if len(event_options) == 1:
+#         event_id = event_options[0].event_id
+#         return redirect("/venue/" + str(event_id))
+
+#     return render_template("check_event.html", event_options=event_options)
+
+
+# @app.route('/check_event', defaults={'page': 1})
+@app.route('/check_event/<int:page>')
+def check_event(page):
     """List events found that closely match event entered by user."""
 
     # Search db, then if necessary, call API for events, response is a list of event_sg_ids
-    event_sg_ids = list_event_ids(session['user_query'])
+    event_sg_info = list_event_ids(session['user_query'], page)
+
+    total_pages = math.ceil(event_sg_info[0]/20)
 
     # Get each event object for each event_sg_id
-    event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_ids]
+    event_options = [Event.query.filter(Event.event_sg_id == event).one() for event in event_sg_info[1]]
 
     if len(event_options) == 1:
         event_id = event_options[0].event_id
         return redirect("/venue/" + str(event_id))
 
-    return render_template("check_event.html", event_options=event_options)
+    return render_template("check_event.html", event_options=event_options, total_pages=total_pages, current_page=page)
 
 
 @app.route('/event/<event_id>')

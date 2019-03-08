@@ -293,13 +293,13 @@ def list_artist_ids(query):
 
         return artist_ids
 
-def list_event_ids(query):
+def list_event_ids(query, page):
 
     if type(query) == int:
         results = find_artist_events(query)
 
     else:
-        results = find_sg_events(query)
+        results = find_sg_events(query, page)
 
     total_events = results['meta']['total']
 
@@ -315,7 +315,7 @@ def list_event_ids(query):
                     event_ids.append(event_id)
 
         insert_events(event_ids)
-
+    print("********tuple", (total_events, event_ids))
     return (total_events, event_ids)
 
 def list_venue_ids(query):
