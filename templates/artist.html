@@ -21,14 +21,15 @@
     <ul>
       {% for event in artist_event_dicts %}
         <li>
-          {{ event[0].event_datetime }}
           <a href="/event/{{ event[0].event_id }}">
-          {{ event[0].venue.venue_name }}</a>
+          {{ event[0].event_title }}</a>
+          {{ event[0].event_datetime }}
+          {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
            <br>
           <ul>
               {% for key in event[1] %}
               <li>
-                <a href="/artist/{{ event[1][key].artist_id }}">
+                <a href="/artist/{{ event[1][key].artist_id }}/1">
                   {{ event[1][key].artist_name }}</a>
                   {{ event[1][key].artist_genres }}<br>
               </li>

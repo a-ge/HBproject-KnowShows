@@ -3,7 +3,8 @@
 
 <h2>{{ event.event_title }}</h2>
 <h4>{{ event.event_datetime }}</h4><br>
-{{ event.venue.venue_name }}<br>
+<a href="/venue/{{ event.venue.venue_id }}/1">
+{{ event.venue.venue_name }}<br></a>
 {{ event.venue.venue_add }}<br>
 {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
 
@@ -21,7 +22,7 @@
     <ul>
         {% for key in event_dicts %}
         <li>
-            <a href="/artist/{{ event_dicts[key].artist_id }}">
+            <a href="/artist/{{ event_dicts[key].artist_id }}/1">
             {{ event_dicts[key].artist_name }}</a>
             {{ event_dicts[key].artist_genres }}<br>
             {{ event_dicts[key].artist_bio }}<br>
