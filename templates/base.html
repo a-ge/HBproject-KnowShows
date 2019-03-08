@@ -87,7 +87,7 @@
     <script>
         "use strict";
 
-        var pos;
+        let pos;
 
         // From Google Maps JavaScript API
         // https://developers.google.com/maps/documentation/javascript/examples/map-geolocation
@@ -103,19 +103,23 @@
                     };
                     // https://stackoverflow.com/questions/14908864/how-can-i-use-data-posted-from-ajax-in-flask
                     $.ajax({
-                        type : "POST",
-                        url: "{{url_for('get_location')}}",
+                        type: 'POST',
+                        url: '{{ url_for("get_location") }}',
                         data: JSON.stringify(pos),
                         contentType: 'application/json;charset=UTF-8',
                         success: function(result) {
                             console.log(result);
-                            };
+                            console.log(pos);
+                    
+                            let getCity = result.city;
+                            let getState = result.state;
+                            console.log(getCity);
+                            console.log(getState);
+                            $('#userCityInput').attr({'value': getCity, 'placeholder': getCity});
+                            $('#state').val(getState);
+                        	}
                     });
-                    console.log(pos);
-                    var getCity = '{{ session['city'] }}';
-                    var getState = '{{ session['state'] }}';
-                    $('#userCityInput').attr({'value': getCity, 'placeholder': getCity});
-                    $('#state').val(getState);
+
                 });
             }
                     
@@ -130,7 +134,7 @@
         const startDate = $('#startDateLabel')
         const endDate = $('#endDateLabel')
 
-        var inputValue = searchInput.val()
+        let inputValue = searchInput.val()
 
         // Handle change event on search input.
         searchInput.change((e) => {
@@ -161,9 +165,9 @@ Share this page:
 
     <script>
         function socialWindow(url) {
-        var left = (screen.width - 570) / 2;
-        var top = (screen.height - 570) / 2;
-        var params = "menubar=no,toolbar=no,status=no,width=570,height=570,top=" + top + ",left=" + left;
+        let left = (screen.width - 570) / 2;
+        let top = (screen.height - 570) / 2;
+        let params = "menubar=no,toolbar=no,status=no,width=570,height=570,top=" + top + ",left=" + left;
         window.open(url,"NewWindow",params);
     }
 
