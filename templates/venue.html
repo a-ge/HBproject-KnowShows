@@ -5,10 +5,10 @@
 <h1>{{ venue.venue_name }}</h1>
 
     {{ venue.venue_add }}<br>
-    {{ venue.venue_extend_add }}
+    {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}
 
-    {% set gmaps_query = (venue.venue_name.replace(" ", "+") + "," + venue.venue_extend_add.replace(" ", "+")).replace("-", "") %}
-    <a href="https://www.google.com/maps/place/gmaps_query" target="blank"><img src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
+    {% set gmaps_query = (venue.venue_name.replace(" ", "+") + venue.venue_city.replace(" ", "+") + venue.venue_state) %}
+    <a href="https://www.google.com/maps/place/2001+Gayley+Road+Berkeley+CA" target="blank"><img src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
 
   {% if venue_event_dicts|length > 0 %}
     <ul>

@@ -19,11 +19,9 @@ class Venue(db.Model):
     venue_sg_id = db.Column(db.Integer, unique=True)
     venue_name = db.Column(db.String(100))
     venue_add = db.Column(db.String(100))
-    venue_extend_add = db.Column(db.String(100))
-    venue_lat = db.Column(db.DECIMAL)
-    venue_lng = db.Column(db.DECIMAL)
-    venue_url = db.Column(db.String(1000))
-    venue_upcoming = db.Column(db.Boolean)
+    venue_city = db.Column(db.String(100))
+    venue_state = db.Column(db.String(100))
+    venue_zip = db.Column(db.String(1000))
 
     def __repr__(self):
         """Print helpful venue information"""

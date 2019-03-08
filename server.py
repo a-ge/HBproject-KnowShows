@@ -25,7 +25,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/test')
 def test():
 
-    response = find_artist_events(1768)
+    response = find_sg_venues("Slim", 1)
 
     return jsonify(response)
 

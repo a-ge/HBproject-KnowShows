@@ -95,7 +95,7 @@ def insert_artists(artists):
             try:
                 artist_name = artist_dict['performers'][0]['name']
             except:
-                artist_name = None
+                artist_name = "Artist Name"
 
             try:
                 artist_url = artist_dict['performers'][0]['links'][0]['url']
@@ -105,7 +105,7 @@ def insert_artists(artists):
             try:
                 artist_photo = artist_dict['performers'][0]['image']
             except:
-                artist_photo = None
+                artist_photo = "https://seatgeek.com/images/performers-landscape/trippin-billies-e69c14/1947/huge.jpg"
 
             try:
                 artist_dict['performers'][0]['genres']
@@ -138,7 +138,7 @@ def insert_artists(artists):
                 art_sum['artist']['bio']['summary']
                 art_bio, art_url = art_sum['artist']['bio']['summary'].split("<a href=")
             except:
-                art_bio = ""
+                art_bio = "Artist bio not found. Just give 'em a listen and enjoy."
                 
             Artist.query.filter(Artist.artist_id == art.artist_id).update({'artist_bio': str(art_bio)})
             db.session.commit()
@@ -152,50 +152,38 @@ def insert_venues(venues):
         except:
             venue_dict = get_sg_venue(venue)
 
-            try:
+            if venue_dict['venues'][0]['name'] == None:
+                venue_name = "Venue name"
+            else:
                 venue_name = venue_dict['venues'][0]['name']
-            except:
-                venue_name = None
 
-            try:
+            if venue_dict['venues'][0]['address'] == None:
+                venue_add = "Address"
+            else:
                 venue_add = venue_dict['venues'][0]['address']
-            except:
-                venue_add = None
 
-            try:
-                venue_extend_add = venue_dict['venues'][0]['extended_address']
-            except:
-                venue_extend_add = None
+            if venue_dict['venues'][0]['city'] == None:
+                venue_city = "Venue City"
+            else:
+                venue_city = venue_dict['venues'][0]['city']
 
-            try:
-                venue_lat = venue_dict['venues'][0]['location']['lat']
-            except:
-                venue_lat = None
+            if venue_dict['venues'][0]['state'] == None:
+                venue_state = "ST"
+            else:
+                venue_state = venue_dict['venues'][0]['state']
 
-            try:
-                venue_lng = venue_dict['venues'][0]['location']['lon']
-            except:
-                venue_lng = None
-
-            try:
-                venue_url = venue_dict['venues'][0]['url']
-            except:
-                venue_url = None
-
-            try:
-                venue_upcoming = venue_dict['venues'][0]['has_upcoming_events']
-            except:
-                venue_upcoming = None
+            if venue_dict['venues'][0]['postal_code'] == None:
+                venue_zip = "12492"
+            else:
+                venue_zip = venue_dict['venues'][0]['postal_code']
 
             # insert into db
             new_venue = Venue(venue_sg_id=venue,
                             venue_name=venue_name,
                             venue_add=venue_add,
-                            venue_extend_add=venue_extend_add,
-                            venue_lat=venue_lat,
-                            venue_lng=venue_lng,
-                            venue_url=venue_url,
-                            venue_upcoming=venue_upcoming)
+                            venue_city=venue_city,
+                            venue_state=venue_state,
+                            venue_zip=venue_zip)
 
             db.session.add(new_venue)
             db.session.commit()
@@ -221,12 +209,12 @@ def insert_events(events):
             try:
                 event_url = event_dict['events'][0]['url']
             except:
-                event_url = None
+                event_url = "https://seatgeek.com/"
 
             try:
                 event_title = event_dict['events'][0]['title']
             except:
-                event_title = None
+                event_title = "Concert Title"
 
             try:
                 d = datetime.strptime(event_dict['events'][0]['datetime_local'], '%Y-%m-%dT%H:%M:%S')

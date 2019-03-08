@@ -10,7 +10,7 @@
         <a href="/venue/{{ venue.venue_id }}/1">
           {{ venue.venue_name }}</a><br>
           {{ venue.venue_add }}<br>
-          {{ venue.venue_extend_add }}
+          {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}
       </li>
     {% endfor %}
     </ul>
