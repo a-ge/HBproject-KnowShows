@@ -274,9 +274,11 @@ def list_event_artists(event_id):
 
     return art
 
-def list_artist_ids(query):
+def list_artist_ids(query, page):
 
-    results = find_sg_artists(query)
+    results = find_sg_artists(query, page)
+
+    total_artists = results['meta']['total']
 
     artist_ids = []
 
@@ -291,7 +293,7 @@ def list_artist_ids(query):
 
         insert_artists(artist_ids)
 
-        return artist_ids
+        return (total_artists, artist_ids)
 
 def list_event_ids(query, page):
 
@@ -315,7 +317,7 @@ def list_event_ids(query, page):
                     event_ids.append(event_id)
 
         insert_events(event_ids)
-    print("********tuple", (total_events, event_ids))
+
     return (total_events, event_ids)
 
 def list_venue_ids(query):

@@ -45,13 +45,14 @@ def get_sg_artist(artist_id):
 
 
 
-def find_sg_artists(artist_query):
+def find_sg_artists(artist_query, page):
     """Call to SeatGeek API for all artists given user's artist input."""  
 
     params = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'q': artist_query,
-                'per_page': 100}
+                'per_page': 100,
+                'page': page}
 
     response = requests.get(SG_URL + 'performers', params=params)
 
