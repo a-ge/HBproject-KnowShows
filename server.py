@@ -46,6 +46,7 @@ def get_location():
 
         lat = request.json['lat']
         lng = request.json['lng']
+        print("***********", lat, lng)
 
         results = convert_latlng(lat, lng)
 
@@ -60,8 +61,12 @@ def get_location():
                 session['state'] = results[0]['address_components'][i]['short_name']
 
                 break
-    
-    return render_template("base.html")
+    print(session['city'], session['state'])
+
+    data ={'city': session['city'],
+            'state': session['state']}
+
+    return jsonify(data)
 
 
     
