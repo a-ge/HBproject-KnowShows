@@ -319,9 +319,11 @@ def list_venue_ids(query, page):
     if results['venues']:
         for i in range(len(results['venues'])):
 
-            venue_id = results['venues'][i]['id']
-            if venue_id not in venue_ids:
-                venue_ids.append(venue_id)
+            if results['venues'][i]['has_upcoming_events'] == True:
+                
+                venue_id = results['venues'][i]['id']
+                if venue_id not in venue_ids:
+                    venue_ids.append(venue_id)
 
         insert_venues(venue_ids)
 
