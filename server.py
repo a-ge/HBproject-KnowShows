@@ -171,23 +171,23 @@ def display_artist(artist_id):
     return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages)
 
 
-@app.route('/check_venue')
-def check_venue():
+@app.route('/check_venue/<int:page>')
+def check_venue(page):
     """List venues found that closely match venue entered by user."""
 
     # Search db, then if necessary, call API for venues, response is a list of venue_sg_ids
-        ## The Greek Berkeley has a few venue_ids, how to correct this??
-        ## Still import a venue if they have no upcoming events??
-    venue_sg_ids = list_venue_ids(session['user_query'])
+    venue_sg_info = list_venue_ids(session['user_query'], page)
+
+    total_pages = math.ceil(venue_sg_info[0]/100)
 
     # Get each venue object for each venue_sg_id
-    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_ids]
+    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_info[1]]
 
     if len(venue_options) == 1:
         venue_id = venue_options[0].venue_id
         return redirect("/venue/" + str(venue_id))
 
-    return render_template("check_venue.html", venue_options=venue_options)
+    return render_template("check_venue.html", venue_options=venue_options, total_pages=total_pages, current_page=page)
 
 
 @app.route('/venue/<venue_id>')

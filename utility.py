@@ -320,24 +320,24 @@ def list_event_ids(query, page):
 
     return (total_events, event_ids)
 
-def list_venue_ids(query):
+def list_venue_ids(query, page):
 
-    results = find_sg_venues(query)
+    results = find_sg_venues(query, page)
+
+    total_venues = results['meta']['total']
 
     venue_ids = []
 
     if results['venues']:
         for i in range(len(results['venues'])):
 
-            if results['venues'][i]['has_upcoming_events'] == True:
-
-                venue_id = results['venues'][i]['id']
-                if venue_id not in venue_ids:
-                    venue_ids.append(venue_id)
+            venue_id = results['venues'][i]['id']
+            if venue_id not in venue_ids:
+                venue_ids.append(venue_id)
 
         insert_venues(venue_ids)
 
-    return venue_ids
+    return (total_venues, venue_ids)
 
 def list_venue_event_ids(venue_id):  
 
