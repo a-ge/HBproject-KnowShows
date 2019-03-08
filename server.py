@@ -47,7 +47,6 @@ def get_location():
 
         lat = request.json['lat']
         lng = request.json['lng']
-        print("***********", lat, lng)
 
         results = convert_latlng(lat, lng)
 
@@ -62,7 +61,6 @@ def get_location():
                 session['state'] = results[0]['address_components'][i]['short_name']
 
                 break
-    print(session['city'], session['state'])
 
     data ={'city': session['city'],
             'state': session['state']}
@@ -73,7 +71,7 @@ def get_location():
 @app.route('/search', methods=['POST'])
 def search():
     """ Retrieve user's search inputs and redirect to correct page."""
-    print("TESTING***", session)
+
     if request.method == "POST":
 
         query_type = request.form['searchType']
@@ -106,7 +104,6 @@ def search():
             d = datetime.strptime(end_date, '%m/%d/%Y')
             session['enddate'] = d.strftime('%Y-%m-%d')
 
-    print(session)
     if query_type == "Artist":
         return redirect("/check_artist/1")
 
