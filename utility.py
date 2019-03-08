@@ -342,7 +342,7 @@ def list_venue_event_ids(venue_id, page):
     results = find_venue_events(venue_id, page)
 
     total_events = results['meta']['total']
-
+    print(total_events)
     event_ids = []
 
     if results['events']:
@@ -354,4 +354,4 @@ def list_venue_event_ids(venue_id, page):
 
         insert_events(event_ids)
 
-        return (total_events, event_ids)
+    return (total_events, event_ids)

@@ -5,7 +5,9 @@
 <h4>{{ event.event_datetime }}</h4><br>
 {{ event.venue.venue_name }}<br>
 {{ event.venue.venue_add }}<br>
-{{ event.venue.venue_extend_add }}<br>
+{{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
+
+<a href="{{ event.event_url }}" target="blank"><img src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" /></a>
 
 <!--  For Spotify player-->
 <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
