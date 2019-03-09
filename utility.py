@@ -41,19 +41,19 @@ def convert_latlng(lat, lng):
 
 
 
-def modify_artist_playlist_id(artist, artist_spot_id):
+def modify_artist_playlist_id(artist):
     """Check db if a Spotify playlist already exists for the artist, then create or update a playlist."""
 
     if artist.artist_sp_playlist_id:
 
         playlist_id = artist.artist_sp_playlist_id
 
-        update_playlist(playlist_id, artist_spot_id)
+        update_playlist(playlist_id, [artist.spotify_uri])
 
     else:
         title = "KnowShows- " + artist.artist_name 
 
-        playlist_id = create_playlist(title, artist_spot_id)
+        playlist_id = create_playlist(title, [artist.spotify_uri])
 
         # Initial playlist created, so add/replace None playlist_id in db
         Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
@@ -118,7 +118,7 @@ def insert_artists(artists):
             try:
                 artist_url = artist_dict['performers'][0]['links'][0]['url']
             except:
-                artist_url = None
+                artist_url = "https://open.spotify.com/browse/featured"
 
             try:
                 artist_photo = artist_dict['performers'][0]['image']
@@ -174,10 +174,14 @@ def insert_venues(venues):
             # If not in db, create venue record with SeatGeek response.
             venue_dict = get_sg_venue(venue)
 
-            if venue_dict['venues'][0]['name'] == None:
-                venue_name = "Venue name"
-            else:
+            try:
                 venue_name = venue_dict['venues'][0]['name']
+
+                if venue_name == None:
+                    venue_name = "Venue name"
+
+            except:
+                venue_name = "Venue name"
 
             if venue_dict['venues'][0]['address'] == None:
                 venue_add = "Address"
@@ -227,7 +231,6 @@ def insert_events(events):
                 insert_venues([venue_sg_id])
                 venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
                 venue_id = venue_obj.venue_id
-
             except:
                 venue_id = None
 
@@ -347,7 +350,7 @@ def list_event_ids(query, page):
 
                 if event_id not in event_ids:
                     event_ids.append(event_id)
-                    
+
             except:
                 continue
 

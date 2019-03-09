@@ -96,6 +96,7 @@ def create_playlist(title, artist_spot_ids):
     results = requests.post("https://api.spotify.com/v1/users/" + USERNAME + "/playlists", data=json.dumps(data), headers=headers)
 
     json_data = json.loads(results.text)
+    
     playlist_id = json_data['id']
 
     add_tracks(playlist_id, artist_spot_ids)

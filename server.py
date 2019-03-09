@@ -162,7 +162,7 @@ def display_artist(artist_id, page):
 
         artist_event_dicts.append(eve)
 
-    playlist_id = modify_artist_playlist_id(artist_select, [artist_select.spotify_uri])
+    playlist_id = modify_artist_playlist_id(artist_select)
 
     return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages, current_page=page)
 
