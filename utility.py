@@ -183,25 +183,41 @@ def insert_venues(venues):
             except:
                 venue_name = "Venue name"
 
-            if venue_dict['venues'][0]['address'] == None:
-                venue_add = "Address"
-            else:
+            try:
                 venue_add = venue_dict['venues'][0]['address']
 
-            if venue_dict['venues'][0]['city'] == None:
-                venue_city = "Venue City"
-            else:
+                if venue_add == None:
+                    venue_add = "345 Address"
+
+            except:
+                venue_add = "345 Address"
+
+            try:
                 venue_city = venue_dict['venues'][0]['city']
 
-            if venue_dict['venues'][0]['state'] == None:
-                venue_state = "ST"
-            else:
+                if venue_city  == None:
+                    venue_city = "Venue City"
+
+            except:
+                venue_city = "Venue City"
+
+            try:
                 venue_state = venue_dict['venues'][0]['state']
 
-            if venue_dict['venues'][0]['postal_code'] == None:
-                venue_zip = "12492"
-            else:
+                if venue_state  == None:
+                    venue_state = "ST"
+
+            except:
+                venue_state = "ST"
+
+            try:
                 venue_zip = venue_dict['venues'][0]['postal_code']
+
+                if venue_zip == None:
+                    venue_zip = "12492"
+
+            except:
+                venue_zip = "12492"
 
             # Insert into db.
             new_venue = Venue(venue_sg_id=venue,
