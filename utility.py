@@ -100,6 +100,7 @@ def insert_artists(artists):
         try:
             # Check if artist's SeatGeek id is already in db.
             Artist.query.filter(Artist.artist_sg_id == artist).one()
+
         except: 
             # If not in db, create artist record with SeatGeek response.
             artist_dict = get_sg_artist(artist)
@@ -168,6 +169,7 @@ def insert_venues(venues):
         try:
             # Check if venue's SeatGeek id is already in db.
             Venue.query.filter(Venue.venue_sg_id == venue).one()
+
         except:
             # If not in db, create venue record with SeatGeek response.
             venue_dict = get_sg_venue(venue)
@@ -215,6 +217,7 @@ def insert_events(events):
         try:
             # Check if event's SeatGeek id is already in db.
             Event.query.filter(Event.event_sg_id == event).one()
+
         except:
             # If not in db, create event record with SeatGeek response.
             event_dict = get_sg_event(event)
@@ -333,17 +336,20 @@ def list_event_ids(query, page):
 
     total_events = results['meta']['total']
 
-    event_ids = []
-
     if results['events']:
+
+        event_ids = []
+
         for i in range(len(results['events'])):
 
-            if results['events'][i]['id']:
-
+            try:
                 event_id = results['events'][i]['id']
 
                 if event_id not in event_ids:
                     event_ids.append(event_id)
+                    
+            except:
+                continue
 
         insert_events(event_ids)
 

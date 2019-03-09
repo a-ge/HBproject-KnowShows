@@ -148,6 +148,7 @@ def find_sg_events(query, page):
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
                 'type': "concert",
+                'sort': 'datetime_local.asc',
                 'per_page': 20,
                 'page': page}
     
