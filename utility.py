@@ -45,14 +45,19 @@ def modify_artist_playlist_id(artist, artist_spot_id):
     """Check db if a Spotify playlist already exists for the artist, then create or update a playlist."""
 
     if artist.artist_sp_playlist_id:
+
         playlist_id = artist.artist_sp_playlist_id
+
         update_playlist(playlist_id, artist_spot_id)
 
     else:
         title = "KnowShows- " + artist.artist_name 
+
         playlist_id = create_playlist(title, artist_spot_id)
+
         # Initial playlist created, so add/replace None playlist_id in db
         Artist.query.filter(Artist.artist_id == artist.artist_id).update({'artist_sp_playlist_id': playlist_id})
+
         db.session.commit()
 
     return playlist_id
@@ -61,14 +66,19 @@ def modify_event_playlist_id(event, artist_spot_ids):
     """Check db if a Spotify playlist already exists for the event, then create or update a playlist."""
 
     if event.event_sp_playlist_id:
+
         playlist_id = event.event_sp_playlist_id
+
         update_playlist(playlist_id, artist_spot_ids)
 
     else:
         title = event.event_title + "\n" + event.venue.venue_name + "\n" + str(event.event_datetime)
+
         playlist_id = create_playlist(title, artist_spot_ids)
+
         # Initial playlist created, so add/replace None playlist_id in db
         Event.query.filter(Event.event_id == event.event_id).update({'event_sp_playlist_id': playlist_id})
+
         db.session.commit()
 
     return playlist_id
@@ -77,6 +87,7 @@ def modify_event_playlist_id(event, artist_spot_ids):
 
 def insert_lineup(event_id, artist_id):
     """Instantiate into db Lineup table a lineup record with given event_id and artist_id."""
+
     new_lineup = Lineup(event_id=event_id, artist_id=artist_id)
     db.session.add(new_lineup)
     db.session.commit()
@@ -245,16 +256,21 @@ def insert_events(events):
             db.session.add(new_event)
             db.session.commit()
 
-            # Add each arttist in event to the db and then create their lineup record.
+            # Add each artist in event to the db and then create their lineup record.
             if event_dict['events'][0]['performers']:
+
+                artists = []
+
                 for i in range(len(event_dict['events'][0]['performers'])):
 
-                    artists = []
                     artists.append(event_dict['events'][0]['performers'][i]['id'])
-                    insert_artists(artists)
+                
+                insert_artists(artists)
 
-                    eve_obj = Event.query.filter(Event.event_sg_id == event).one()
-                    art_obj = Artist.query.filter(Artist.artist_sg_id == event_dict['events'][0]['performers'][i]['id']).one()
+                eve_obj = Event.query.filter(Event.event_sg_id == event).one()
+
+                for artist in artists:
+                    art_obj = Artist.query.filter(Artist.artist_sg_id == artist).one()
                     insert_lineup(eve_obj.event_id, art_obj.artist_id)
 
 
@@ -273,6 +289,7 @@ def list_event_artists(event_id):
     for i, art_obj in enumerate(event_artists):
 
         art_obj = Artist.query.filter(Artist.artist_id == art_obj.artist_id).one()
+
         art['artist' + str(i + 1)] = art_obj
 
     return art
@@ -294,6 +311,7 @@ def list_artist_ids(query, page):
             if results['performers'][i]['has_upcoming_events'] == True:
 
                 artist_id = results['performers'][i]['id']
+
                 if artist_id not in artist_ids:
                     artist_ids.append(artist_id)
 
@@ -323,6 +341,7 @@ def list_event_ids(query, page):
             if results['events'][i]['id']:
 
                 event_id = results['events'][i]['id']
+
                 if event_id not in event_ids:
                     event_ids.append(event_id)
 
@@ -347,6 +366,7 @@ def list_venue_ids(query, page):
             if results['venues'][i]['has_upcoming_events'] == True:
                 
                 venue_id = results['venues'][i]['id']
+
                 if venue_id not in venue_ids:
                     venue_ids.append(venue_id)
 
@@ -381,6 +401,7 @@ def list_venue_event_ids(venue_id, page):
         for i in range(len(results['events'])):
 
             event_id = results['events'][i]['id']
+
             if event_id not in event_ids:
                 event_ids.append(event_id)
 
