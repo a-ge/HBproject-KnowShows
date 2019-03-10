@@ -112,27 +112,43 @@ def insert_artists(artists):
 
             try:
                 artist_name = artist_dict['performers'][0]['name']
+
+                if artist_name == None:
+                    artist_name = "Artist Name"
+
             except:
                 artist_name = "Artist Name"
 
             try:
                 artist_url = artist_dict['performers'][0]['links'][0]['url']
+
+                if artist_url == None:
+                    artist_url = "https://open.spotify.com/browse/featured"
+
             except:
                 artist_url = "https://open.spotify.com/browse/featured"
 
             try:
                 artist_photo = artist_dict['performers'][0]['image']
+
+                if artist_photo == None:
+                    artist_photo = "https://seatgeek.com/images/performers-landscape/trippin-billies-e69c14/1947/huge.jpg"
+
             except:
                 artist_photo = "https://seatgeek.com/images/performers-landscape/trippin-billies-e69c14/1947/huge.jpg"
 
             try:
-                artist_dict['performers'][0]['genres']
+                artist_genres = artist_dict['performers'][0]['genres']
 
-                artist_genres = ""
-                for i in range(len(artist_dict['performers'][0]['genres'])):
+                if artist_genres == None:
+                    artist_genres = "  "
 
-                    genre = artist_dict['performers'][0]['genres'][i]['name']
-                    artist_genres = artist_genres + genre + ", "
+                else:
+                    artist_genres = ""
+                    for i in range(len(artist_dict['performers'][0]['genres'])):
+
+                        genre = artist_dict['performers'][0]['genres'][i]['name']
+                        artist_genres = artist_genres + genre + ", "
             except:
                 artist_genres = "  "
 
@@ -155,6 +171,7 @@ def insert_artists(artists):
             try:
                 art_sum['artist']['bio']['summary']
                 art_bio, art_url = art_sum['artist']['bio']['summary'].split("<a href=")
+
             except:
                 art_bio = "Artist bio not found. Just give 'em a listen and enjoy."
                 
@@ -247,6 +264,7 @@ def insert_events(events):
                 insert_venues([venue_sg_id])
                 venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
                 venue_id = venue_obj.venue_id
+                
             except:
                 venue_id = None
 

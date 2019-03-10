@@ -116,7 +116,7 @@ def check_artist(page):
     artist_sg_info  = list_artist_ids(session['user_query'], page)
 
     # Knowing total items, calculate total pages.
-    total_pages = math.ceil(artist_sg_info[0]/100)
+    total_pages = math.ceil(artist_sg_info[0]/10)
 
     # Get each artist object for each artist_sg_id.
     artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_info[1]]
