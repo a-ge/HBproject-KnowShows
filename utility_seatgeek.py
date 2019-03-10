@@ -10,6 +10,7 @@ CLIENT_ID = os.getenv('CLIENT_ID')
 SG_URL = "https://api.seatgeek.com/2/"
 
 
+
 def get_sg_event(event_id):
     """Call to SeatGeek API for a particular event's information. """
 
@@ -72,7 +73,6 @@ def find_sg_venues(query, page):
 
     if session['state'] == '':
         state = None
-
 
     params = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,

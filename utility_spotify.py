@@ -1,4 +1,5 @@
 """Functions for Spotify API requests, using Spotipy library"""
+
 import os, requests, json
 
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
@@ -11,6 +12,7 @@ import spotipy
 import spotipy.util as util
 # Spotipy provides a class SpotifyClientCredentials that can be used to authenticate requests
 from spotipy.oauth2 import SpotifyClientCredentials
+
 client_credentials_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
 spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
@@ -23,6 +25,7 @@ token = util.prompt_for_user_token(USERNAME, scope)
 def list_top_tracks(artist_spot_ids):
     """Pull an artist's top track URIs from Spotify API"""
 
+    # Determine how many songs to add to playlist
     if len(artist_spot_ids) == 1:
         track_len = 8
     elif len(artist_spot_ids) == 2:
@@ -34,13 +37,15 @@ def list_top_tracks(artist_spot_ids):
 
     i = 0
 
+    # List only first five artists of lineup
     while i < 6:
-        # List only first five artists
+        
         try:
             artist = artist_spot_ids[i]
 
             try:
                 artist_uri = spotify.artist_top_tracks(artist, country='US')
+
                 # List only top tracks
                 artist_tracks = []
 
@@ -50,6 +55,7 @@ def list_top_tracks(artist_spot_ids):
 
                     try:
                         track = artist_uri['tracks'][j]['uri']
+
                     except:
                         break
 
@@ -58,6 +64,7 @@ def list_top_tracks(artist_spot_ids):
 
                 # Add all three to all tracks list
                 tracks.extend(artist_tracks)
+
             except:
                 continue
 
@@ -70,6 +77,7 @@ def list_top_tracks(artist_spot_ids):
 
 
 def add_tracks(playlist_id, artist_spot_ids):
+    """Post request to Spotify API to add tracks in list to Spotify playlist."""
 
     tracks = list_top_tracks(artist_spot_ids)
 
@@ -84,8 +92,8 @@ def add_tracks(playlist_id, artist_spot_ids):
 
 
 def create_playlist(title, artist_spot_ids):
+    """Post request to Spotify API to create a new playlist."""
 
-    # https://developer.spotify.com/documentation/web-api/reference/playlists/create-playlist/
     data = {'name': title,
                 'public': True,
                 'collaborative': False}
@@ -97,6 +105,7 @@ def create_playlist(title, artist_spot_ids):
 
     json_data = json.loads(results.text)
     
+    # Grab playlist id from response.
     playlist_id = json_data['id']
 
     add_tracks(playlist_id, artist_spot_ids)
@@ -105,6 +114,7 @@ def create_playlist(title, artist_spot_ids):
 
 
 def update_playlist(playlist_id, artist_spot_ids):
+    """Post request to Spotify API to clear then add tracks in list to Spotify playlist."""
 
     tracks = list_top_tracks(artist_spot_ids)
 
@@ -113,5 +123,4 @@ def update_playlist(playlist_id, artist_spot_ids):
     headers = {'Authorization': "Bearer " + token,
                 'Content-Type': 'application/json'}
 
-    # Put will replace, vs post in add_tracks
     results = requests.put("https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks", data=json.dumps(data), headers=headers)
