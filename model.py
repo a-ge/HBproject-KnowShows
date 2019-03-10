@@ -1,4 +1,4 @@
-"""Models for Full Concert webapp."""
+"""Models for KnowShows webapp."""
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -9,6 +9,8 @@ from datetime import datetime
 # object, where we do most of our interactions (like committing, etc.)
 
 db = SQLAlchemy()
+
+
 
 class Venue(db.Model):
     """Venue information."""
@@ -106,6 +108,7 @@ def connect_to_db(app):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
+
 
 
 if __name__ == "__main__":

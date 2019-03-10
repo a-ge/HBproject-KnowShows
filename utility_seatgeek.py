@@ -1,4 +1,4 @@
-"""Functions for SeatGeek API"""
+"""Functions for SeatGeek API requests."""
 
 import os, requests, json
 

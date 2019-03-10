@@ -1,4 +1,4 @@
-"""View functions for Full Concert webapp."""
+"""View functions for KnowShows webapp."""
 
 import os, math
 from jinja2 import StrictUndefined

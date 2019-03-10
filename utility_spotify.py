@@ -1,4 +1,4 @@
-"""Functions for Spotify API requests, using Spotipy library"""
+"""Functions for Spotify API requests."""
 
 import os, requests, json
 
