@@ -176,7 +176,7 @@ def check_venue(page):
     venue_sg_info = list_venue_ids(session['user_query'], page)
 
     # Knowing total items, calculate total pages.
-    total_pages = math.ceil(venue_sg_info[0]/100)
+    total_pages = math.ceil(venue_sg_info[0]/10)
 
     # Get each venue object for each venue_sg_id.
     venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_info[1]]

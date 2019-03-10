@@ -264,17 +264,25 @@ def insert_events(events):
                 insert_venues([venue_sg_id])
                 venue_obj = Venue.query.filter(Venue.venue_sg_id == venue_sg_id).one()
                 venue_id = venue_obj.venue_id
-                
+
             except:
                 venue_id = None
 
             try:
                 event_url = event_dict['events'][0]['url']
+
+                if event_url == None:
+                    event_url = "https://seatgeek.com/"
+
             except:
                 event_url = "https://seatgeek.com/"
 
             try:
                 event_title = event_dict['events'][0]['title']
+
+                if event_title == None:
+                    event_title = "Concert Title"
+
             except:
                 event_title = "Concert Title"
 
@@ -373,9 +381,9 @@ def list_event_ids(query, page):
 
     total_events = results['meta']['total']
 
-    if results['events']:
+    event_ids = []
 
-        event_ids = []
+    if results['events']:
 
         for i in range(len(results['events'])):
 

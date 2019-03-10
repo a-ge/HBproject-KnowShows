@@ -80,7 +80,7 @@ def find_sg_venues(query, page):
                 'state': state,          
                 'country': 'US',
                 'q': query,
-                'per_page': 100,
+                'per_page': 10,
                 'page': page}
 
     response = requests.get(SG_URL + 'venues', params=params)
