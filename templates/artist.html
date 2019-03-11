@@ -6,11 +6,11 @@
   {{ artist.artist_bio }}<br>
 
 {% set youtube_query = artist.artist_name.replace(" ", "+") %}
-<a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank"><img src="/static/youtube-icon.png" alt="Watch now on YouTube" /></a>
+<a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank"><img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 75px;" /></a>
 <br>
 
 {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
-<a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank"><img src="/static/spotify-icon.png" alt="Find the artist on Spotify" /></a>
+<a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank"><img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px;" /></a>
 
 <br>
   <!--  For Spotify player-->
