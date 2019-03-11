@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- For jQuery -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
     <!-- For Bootstrap -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,7 +23,8 @@
     <style>
         
         body {
-          background: url(/static/IMG1.jpg) no-repeat;
+          background: url(/static/IMG2-2.jpg) no-repeat center center fixed
+          ;
           background-size: cover;
           height: 100%;
           color: #000;
@@ -28,85 +32,87 @@
           -webkit-font-smoothing: antialiased;
         }
 
-        nav {
-            /*background: url(/static/IMG1.jpg) no-repeat;*/
-        }
     </style>
-
-    <!-- For jQuery -->
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
     </head>
 
 <body>
-    <!-- Navigation bar to display on every page -->
-    <nav class="navbar sticky-top navbar-light navrbar-left">
 
-        <form class="form-inline" action="/search" method="POST">
+        <div class="navbar sticky-top navbar-light navrbar-left">
 
-            <label for="searchType">Find
-                <select class="form-control" name="searchType" id="searchType">
-                <option value="Venue">Venue</option>
-                <option value="Event">Event</option>
-                <option value="Artist">Artist</option>
-                </select>
-            </label>
+            <nav class="container-fluid">
 
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" required>
+                <form class="form-inline" action="/search" method="POST">
 
-            <label for="userCityInput">City
-                <input type="text" class="form-control" name="userCityInput" id="userCityInput">
-            </label>
+                    <label for="searchType">Find &nbsp
+                        <select class="form-control" name="searchType" id="searchType">
+                        <option value="Venue">Venue</option>
+                        <option value="Event">Event</option>
+                        <option value="Artist">Artist</option>
+                        </select>
+                    </label>
 
-            <label for="state">State
-                <select class="form-control" name="state" id="state">
-                <option value=""></option>
-                <option value="AL">AL</option><option value="AK">AK</option><option value="AR">AR</option>  
-                <option value="AZ">AZ</option><option value="CA">CA</option><option value="CO">CO</option>
-                <option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option>
-                <option value="GA">GA</option><option value="HI">HI</option><option value="IA">IA</option>
-                <option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option>
-                <option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option>
-                <option value="MA">MA</option><option value="MD">MD</option><option value="ME">ME</option>
-                <option value="MI">MI</option><option value="MN">MN</option><option value="MO">MO</option>
-                <option value="MS">MS</option><option value="MT">MT</option><option value="NC">NC</option>
-                <option value="NE">NE</option><option value="NH">NH</option><option value="NJ">NJ</option>
-                <option value="NM">NM</option><option value="NV">NV</option><option value="NY">NY</option>
-                <option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option>
-                <option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option>
-                <option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option>
-                <option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option>
-                <option value="VA">VA</option><option value="WA">WA</option><option value="WI">WI</option>
-                <option value="WV">WV</option><option value="WY">WY</option>
-                </select>
-            </label>
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" style="width: 240.992188px;" required>
 
-            <div>
-                <button class="btn btn-sm btn-outline-secondary" id="loc-button">Find my location</button>
-                <div id="output"></div>
-            </div>
+                    <label for="userCityInput"> City
+                        <input type="text" class="form-control" name="userCityInput" id="userCityInput">
+                    </label>
 
-            <label class="control-label " for="startdate" id="startDateLabel">Start Date
-                <input class="form-control" id="startdate" name="startdate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"/>
-                </label>
+                    <label for="state"> State
+                        <select class="form-control" name="state" id="state">
+                        <option value=""></option>
+                        <option value="AL">AL</option><option value="AK">AK</option><option value="AR">AR</option>  
+                        <option value="AZ">AZ</option><option value="CA">CA</option><option value="CO">CO</option>
+                        <option value="CT">CT</option><option value="DE">DE</option><option value="FL">FL</option>
+                        <option value="GA">GA</option><option value="HI">HI</option><option value="IA">IA</option>
+                        <option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option>
+                        <option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option>
+                        <option value="MA">MA</option><option value="MD">MD</option><option value="ME">ME</option>
+                        <option value="MI">MI</option><option value="MN">MN</option><option value="MO">MO</option>
+                        <option value="MS">MS</option><option value="MT">MT</option><option value="NC">NC</option>
+                        <option value="NE">NE</option><option value="NH">NH</option><option value="NJ">NJ</option>
+                        <option value="NM">NM</option><option value="NV">NV</option><option value="NY">NY</option>
+                        <option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option>
+                        <option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option>
+                        <option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option>
+                        <option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option>
+                        <option value="VA">VA</option><option value="WA">WA</option><option value="WI">WI</option>
+                        <option value="WV">WV</option><option value="WY">WY</option>
+                        </select>
+                    </label>
 
-            <label class="control-label " for="enddate" id="endDateLabel">End Date
-                <input class="form-control" id="enddate" name="enddate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d"/>
-                </label>
+                    <div>
+                        <button class="btn btn-sm btn-outline-secondary" id="loc-button">Find my location</button>
+                        <div id="output"></div>
+                    </div>
 
-            <button type="submit">Search</button>
+                    <label class="control-label " for="startdate" id="startDateLabel">&nbsp Start Date
+                        <input class="form-control" id="startdate" name="startdate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
+                        </label>
 
-        </form>
+                    <label class="control-label " for="enddate" id="endDateLabel"> End Date
+                        <input class="form-control" id="enddate" name="enddate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
+                        </label>
 
-        <div>
-            <h2><span class="navbar-title mr-auto">KnowShows</span></h2>
-            Share this page:
-            <!-- https://css-tricks.com/simple-social-sharing-links/ -->
-            <a href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" style="width: 30px; height: 30px;" /></a>
-            <a href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" style="width: 30px; height: 30px;" /></a>
-        </div>
+                    &nbsp <button type="submit">Search</button>
 
-    </nav>
+                </form>
+
+                <div>
+                    <h3><span class="navbar-title mr-auto">KnowShows</span></h3>
+                    Share this page:
+                    <!-- https://css-tricks.com/simple-social-sharing-links/ -->
+                    <a href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" style="width: 30px; height: 30px;" /></a>
+                    <a href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" style="width: 30px; height: 30px;" /></a>
+                </div>
+
+            </nav>
+        </div>         
+            
+
+    <div class="container-fluid" style="position: fixed; padding-left: 100px; padding-right: 200px;">
+        {% block content %}{% endblock %}
+    </div>
 
     <script>
         "use strict";
@@ -151,8 +157,9 @@
                 console.log("geolocation is not supported");
             }
         });
+    </script>
 
-
+    <script>
         // Dynamic form handling.
         const searchInput = $('#searchType')
         const startDate = $('#startDateLabel')
@@ -160,7 +167,6 @@
 
         let inputValue = searchInput.val()
 
-        // Handle change event on search input.
         searchInput.change((e) => {
             inputValue = e.target.value
             
@@ -183,30 +189,29 @@
     </script>
 
     <script>
+        // Share page links
         function socialWindow(url) {
         let left = (screen.width - 570) / 2;
         let top = (screen.height - 570) / 2;
         let params = "menubar=no,toolbar=no,status=no,width=570,height=570,top=" + top + ",left=" + left;
         window.open(url,"NewWindow",params);
-    }
+        }
 
-    function setShareLinks() {
-        var pageUrl = encodeURIComponent(document.URL);
-        var tweet = encodeURIComponent(jQuery("meta[property='og:description']").attr("content"));
-        
-        jQuery(".social-share-facebook").on("click", function() {
-            url = "https://www.facebook.com/sharer.php?u=" + pageUrl;
-            socialWindow(url);
-        });
+        function setShareLinks() {
+            let pageUrl = encodeURIComponent(document.URL);
+            let tweet = encodeURIComponent(jQuery("meta[property='og:description']").attr("content"));
+            
+            jQuery(".social-share-facebook").on("click", function() {
+                url = "https://www.facebook.com/sharer.php?u=" + pageUrl;
+                socialWindow(url);
+            });
 
-        jQuery(".social-share-twitter").on("click", function() {
-            url = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + tweet;
-            socialWindow(url);
-        });
-    }
+            jQuery(".social-share-twitter").on("click", function() {
+                url = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + tweet;
+                socialWindow(url);
+            });
+        }
     </script>
-
-{% block content %}{% endblock %}
 
     <!-- For Google Maps API -->
     <!--Load the API from the specified URL
