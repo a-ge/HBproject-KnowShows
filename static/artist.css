@@ -7,7 +7,6 @@
     height: 100vh;
     overflow: hidden;
     width: 100%;
-
 }
 
 .grid-sidebar {
@@ -16,9 +15,22 @@
 
 .grid-header {
     grid-area: header;
+    font-size: large;
 }
 
 .grid-body {
     grid-area: body;
     overflow-y: auto;
+    height: 545px;
+    padding-bottom: 10px;
+}
+
+.img-youtube {
+    width: 90px;
+    padding-left: 10px;
+}
+
+.img-spotify {
+    width: 75px;
+    padding-top: 3px;
 }

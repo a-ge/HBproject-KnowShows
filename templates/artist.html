@@ -20,24 +20,25 @@
     <div class="row">
       {% set youtube_query = artist.artist_name.replace(" ", "+") %}
       <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
-        <img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 80px;" />
+        <img class="img-youtube" src="/static/youtube-icon.png" alt="Watch now on YouTube" />
       </a>
 
       {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
       <a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank">
-        <img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px; padding-top: 3px;" />
+        <img class="img-spotify"src="/static/spotify-icon.png" alt="Find the artist on Spotify" />
       </a>
     </div>
   </div>
   
-  <div class="grid-header" style="font-size: large; padding-bottom: 10px">
+  <div class="grid-header">
+    <br>
     {{ artist.artist_bio }}
   </div>
 
-  <div class="grid-body" style="height: 545px;">
+  <div class="grid-body">
     <br>
     {% if artist_event_dicts|length > 0 %}
-      <ul style="font-size: larger;">
+      <ul>
         {% for event in artist_event_dicts %}
           <li>
             <a href="/event/{{ event[0].event_id }}">
