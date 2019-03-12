@@ -46,14 +46,13 @@ def get_sg_artist(artist_id):
 
 
 
-def find_sg_artists(artist_query, page):
+def find_sg_artists(artist_query):
     """Call to SeatGeek API for all artists given user's artist input."""  
 
     params = {'client_id': CLIENT_ID,
                 'client_secret': CLIENT_SECRET,
                 'q': artist_query,
-                'per_page': 10,
-                'page': page}
+                'per_page': 20}
 
     response = requests.get(SG_URL + 'performers', params=params)
 
@@ -61,7 +60,7 @@ def find_sg_artists(artist_query, page):
 
 
 
-def find_sg_venues(query, page):
+def find_sg_venues(query):
     """Call to SeatGeek API for all venues given user's venue input."""
 
     city = session['city']
@@ -80,8 +79,7 @@ def find_sg_venues(query, page):
                 'state': state,          
                 'country': 'US',
                 'q': query,
-                'per_page': 10,
-                'page': page}
+                'per_page': 20}
 
     response = requests.get(SG_URL + 'venues', params=params)
 

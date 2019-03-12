@@ -132,6 +132,7 @@ def insert_artists(artists):
                 artist_photo = artist_dict['performers'][0]['image']
 
                 if artist_photo == None:
+
                     artist_photo = "https://seatgeek.com/images/performers-landscape/trippin-billies-e69c14/1947/huge.jpg"
 
             except:
@@ -342,18 +343,16 @@ def list_event_artists(event_id):
 
     return art
 
-def list_artist_ids(query, page):
+def list_artist_ids(query):
     """Create tuple with total number of artists found in SeatGeek
     and a list of the artist_ids found on page number argument."""
 
-    # Response from SeatGeek call.
-    results = find_sg_artists(query, page)
-
-    total_artists = results['meta']['total']
+    results = find_sg_artists(query)
 
     artist_ids = []
 
     if results['performers'] != []:
+
         for i in range(len(results['performers'])):
 
             if results['performers'][i]['has_upcoming_events'] == True:
@@ -365,7 +364,7 @@ def list_artist_ids(query, page):
 
         insert_artists(artist_ids)
 
-        return (total_artists, artist_ids)
+        return artist_ids
 
 def list_event_ids(query, page):
     """Create tuple with total number of events found in SeatGeek
@@ -400,18 +399,17 @@ def list_event_ids(query, page):
 
     return (total_events, event_ids)
 
-def list_venue_ids(query, page):
+def list_venue_ids(query):
     """Create tuple with total number of venues found in SeatGeek
     and a list of the venue_ids found on page number argument."""
 
     # Response from SeatGeek call.
-    results = find_sg_venues(query, page)
-
-    total_venues = results['meta']['total']
+    results = find_sg_venues(query)
 
     venue_ids = []
 
     if results['venues']:
+
         for i in range(len(results['venues'])):
 
             if results['venues'][i]['has_upcoming_events'] == True:
@@ -423,7 +421,7 @@ def list_venue_ids(query, page):
 
         insert_venues(venue_ids)
 
-    return (total_venues, venue_ids)
+    return venue_ids
 
 def list_venue_event_ids(venue_id, page):  
     """Create tuple with total number of events found in SeatGeek for a particular venue

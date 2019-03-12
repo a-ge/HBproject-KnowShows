@@ -98,28 +98,25 @@ def search():
             session['enddate'] = d.strftime('%Y-%m-%d')
 
     if query_type == "Artist":
-        return redirect("/check_artist/1")
+        return redirect("/check_artist")
 
     elif query_type == "Venue":
-        return redirect("/check_venue/1")
+        return redirect("/check_venue")
 
     elif query_type == "Event":
         return redirect("/check_event/1")
 
 
-@app.route('/check_artist/<int:page>')
-def check_artist(page):
+@app.route('/check_artist')
+def check_artist():
     """List artists found that closely match artist entered by user."""
 
     # Search db, then if necessary, call API for artists,
-    # response is a tuple with total items and a list of artist_sg_ids.
-    artist_sg_info  = list_artist_ids(session['user_query'], page)
-
-    # Knowing total items, calculate total pages.
-    total_pages = math.ceil(artist_sg_info[0]/10)
+    # response is a list of artist_sg_ids.
+    artist_sg_info  = list_artist_ids(session['user_query'])
 
     # Get each artist object for each artist_sg_id.
-    artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_info[1]]
+    artist_options = [Artist.query.filter(Artist.artist_sg_id == artist).one() for artist in artist_sg_info]
 
     # If only one artist found, go directly to the artist's page.
     if len(artist_options) == 1:
@@ -127,7 +124,7 @@ def check_artist(page):
         return redirect("/artist/" + str(artist_id) + "/1")
 
     else:
-        return render_template("check_artist.html", artist_options=artist_options, total_pages=total_pages, current_page=page)
+        return render_template("check_artist.html", artist_options=artist_options)
 
 
 @app.route('/artist/<artist_id>/<int:page>')
@@ -164,29 +161,28 @@ def display_artist(artist_id, page):
 
     playlist_id = modify_artist_playlist_id(artist_select)
 
-    return render_template("artist.html", artist=artist_select, artist_event_dicts=artist_event_dicts, playlist_id=playlist_id, total_pages=total_pages, current_page=page)
+    return render_template("artist.html", artist=artist_select,
+                                            artist_event_dicts=artist_event_dicts,
+                                            playlist_id=playlist_id)
 
 
-@app.route('/check_venue/<int:page>')
-def check_venue(page):
+@app.route('/check_venue')
+def check_venue():
     """List venues found that closely match venue entered by user."""
 
     # Search db, then if necessary, call API for venues,
-    # response is a tuple with total items and a list of venue_sg_ids.
-    venue_sg_info = list_venue_ids(session['user_query'], page)
-
-    # Knowing total items, calculate total pages.
-    total_pages = math.ceil(venue_sg_info[0]/10)
+    # response is a list of venue_sg_ids.
+    venue_sg_info = list_venue_ids(session['user_query'])
 
     # Get each venue object for each venue_sg_id.
-    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_info[1]]
+    venue_options = [Venue.query.filter(Venue.venue_sg_id == venue).one() for venue in venue_sg_info]
 
     # If only one venue found, go directly to the venue's page.
     if len(venue_options) == 1:
         venue_id = venue_options[0].venue_id
         return redirect("/venue/" + str(venue_id) + "/1")
 
-    return render_template("check_venue.html", venue_options=venue_options, total_pages=total_pages, current_page=page)
+    return render_template("check_venue.html", venue_options=venue_options)
 
 
 @app.route('/venue/<venue_id>/<int:page>')
@@ -243,7 +239,9 @@ def check_event(page):
         event_id = event_options[0].event_id
         return redirect("/event/" + str(event_id))
 
-    return render_template("check_event.html", event_options=event_options, total_pages=total_pages, current_page=page)
+    return render_template("check_event.html", event_options=event_options,
+                                                total_pages=total_pages,
+                                                current_page=page)
 
 
 @app.route('/event/<event_id>')
