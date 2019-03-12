@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Artists</h1>
+<!--Check artist page css -->
+<link rel="stylesheet" href="/static/check_artist.css" />
 
-  
   {% if artist_options|length > 0 %}
   <h2>Found a few artists that match your search. Which artist are you looking for?</h2>
+  <br>
+  <div class="grid">
     <ul>
     {% for artist in artist_options %}
 
@@ -21,5 +23,5 @@
   {% else %}
     Sorry, no artists found.
   {% endif %}
-
+</div>
 {% endblock %}
