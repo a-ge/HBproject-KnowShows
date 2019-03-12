@@ -30,11 +30,8 @@
 
 <body>
     <div class="flex-wrapper">
-
         <div class="navbar sticky-top navbar-light navrbar-left flex-none">
-
             <nav class="container-fluid">
-
                 <form class="form-inline" action="/search" method="POST">
 
                     <label for="searchType">
@@ -91,23 +88,22 @@
 
                 </form>
 
-                <div>
-                    
-                    Share page:
+                <div>                    
+                    Share this page:
                     <br>
                     <!-- https://css-tricks.com/simple-social-sharing-links/ -->
                     <a href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" style="width: 30px; height: 30px;" /></a>
                     <a href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" style="width: 30px; height: 30px;" /></a>
                 </div>
-
             </nav>
         </div>         
             
 
-    <div class="container-fluid flex-container" style="">
-        {% block content %}{% endblock %}
+        <div class="container-fluid flex-container">
+            {% block content %}{% endblock %}
+        </div>
     </div>
-
+    
     <script>
         "use strict";
 
