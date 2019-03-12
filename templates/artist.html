@@ -4,31 +4,35 @@
 
 <h1>{{ artist.artist_name }}</h1>
 
-<div style="width: 20%; height: 400px; float: left;">
+<div style="width: 25%; height: 400px; float: left; padding-left: 20px;">
   <!--  For Spotify player-->
   <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
   <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
 </div>
 
-<div style="width: 15%; height: 400px; float: left;">
+<div style="width: 75%; height: 400px; float: right;">
 
-  <img src="{{ artist.artist_photo }}">
+    <div style=" height: 25%; float: right;">
+      {{ artist.artist_bio }}
+    </div>
 
-  {% set youtube_query = artist.artist_name.replace(" ", "+") %}
-  <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
-    <img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 80px;" />
-  </a>
+    <div style="height: 75%; float: left;">
 
-  {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
-  <a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank">
-    <img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px;" />
-  </a>
+      <img src="{{ artist.artist_photo }}">
 
+      {% set youtube_query = artist.artist_name.replace(" ", "+") %}
+      <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
+        <img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 80px;" />
+      </a>
+
+      {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
+      <a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank">
+        <img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px;" />
+      </a>
+
+    </div>
 </div>
 
-<div style="width: 60%; height: 400px; float: right;">
-  {{ artist.artist_bio }}
-</div>
 
 
 
