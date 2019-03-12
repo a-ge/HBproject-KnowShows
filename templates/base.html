@@ -22,8 +22,12 @@
 
     <style>
         
+        a {
+            color: black;
+        }
+
         body {
-          background: url(/static/IMG2-2.jpg) no-repeat center center fixed
+          background: url(/static/IMG_20180922_164805-4.jpg) no-repeat center center fixed
           ;
           background-size: cover;
           height: 100%;
@@ -44,7 +48,7 @@
 
                 <form class="form-inline" action="/search" method="POST">
 
-                    <label for="searchType">Find &nbsp
+                    <label for="searchType">
                         <select class="form-control" name="searchType" id="searchType">
                         <option value="Venue">Venue</option>
                         <option value="Event">Event</option>
@@ -99,8 +103,9 @@
                 </form>
 
                 <div>
-                    <h3><span class="navbar-title mr-auto">KnowShows</span></h3>
-                    Share this page:
+                    
+                    Share page:
+                    <br>
                     <!-- https://css-tricks.com/simple-social-sharing-links/ -->
                     <a href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" style="width: 30px; height: 30px;" /></a>
                     <a href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" style="width: 30px; height: 30px;" /></a>
@@ -110,7 +115,7 @@
         </div>         
             
 
-    <div class="container-fluid" style="position: fixed; padding-left: 100px; padding-right: 200px;">
+    <div class="container-fluid" style="position: fixed; background-color: rgba(255, 255, 255, 0.49); padding-left: 100px; padding-right: 200px;">
         {% block content %}{% endblock %}
     </div>
 
