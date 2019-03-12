@@ -39,7 +39,7 @@
       <div class="row" style="float: right;">
         <br>
         {% if artist_event_dicts|length > 0 %}
-          <ul style="list-style-type:none; font-size: larger;">
+          <ul style="font-size: larger;">
             {% for event in artist_event_dicts %}
               <li>
                 <a href="/event/{{ event[0].event_id }}">
@@ -47,7 +47,7 @@
                 {{ event[0].event_title }}
                 {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
                  <br>
-                <ul style="list-style-type:none;">
+                <ul>
                     {% for key in event[1] %}
                     <li>
                       <a href="/artist/{{ event[1][key].artist_id }}/1">
