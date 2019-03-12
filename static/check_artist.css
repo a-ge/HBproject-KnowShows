@@ -1,0 +1,7 @@
+.grid {
+    display: grid;
+    grid-template-areas: "body";
+    height: 100vh;
+    overflow: auto;
+    width: 100%;
+}

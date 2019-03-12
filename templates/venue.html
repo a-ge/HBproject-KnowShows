@@ -1,46 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!--Venue page css -->
+<link rel="stylesheet" href="/static/venue.css" />
 
 <h1>{{ venue.venue_name }}</h1>
 
-    {{ venue.venue_add }}<br>
-    {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}
-
-    {% set gmaps_query = (venue.venue_name.replace(" ", "+") + venue.venue_city.replace(" ", "+") + venue.venue_state) %}
-    <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
-
-  {% if venue_event_dicts|length > 0 %}
-    <ul>
-      {% for item in venue_event_dicts %}
-        <li>
-          <a href="/event/{{ item[0].event_id }}">
-          {{ item[0].event_title }}</a>
-          {{ item[0].event_datetime }}  <br>
-        <ul>
-            {% for key in item[1] %}
-            <li>
-              <a href="/artist/{{ item[1][key].artist_id }}">
-              {{ item[1][key].artist_name }}</a><br>
-              {{ item[1][key].artist_genres }}<br>
-            </li>
+<div class="grid">
+  <div class="grid-sidebar">
+    <div class="row">
+      {% set gmaps_query = (venue.venue_name.replace(" ", "+") + venue.venue_city.replace(" ", "+") + venue.venue_state) %}
+      <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img class="img-map"src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
+      {{ venue.venue_add }}<br>
+      {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}<br>
+    </div>
+  </div> 
+  <div class="grid-body">    
+    {% if venue_event_dicts|length > 0 %}
+      <ul>
+        {% for item in venue_event_dicts %}
+          <li>
+            <a class="event" href="/event/{{ item[0].event_id }}">
+            {{ item[0].event_datetime }}</a><br>
+            <ul>
+                {% for key in item[1] %}
+                <li>
+                  <a href="/artist/{{ item[1][key].artist_id }}">
+                  {{ item[1][key].artist_name }}</a>
+                  {{ item[1][key].artist_genres }}<br>
+                </li>
+                {% endfor %}
+            </ul>
+            <br>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      Sorry, no events for this venue.
+    {% endif %}
+    
+        <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% for i in range(total_pages) %}
+              {% set page = i + 1 %}
+              <li class="page-item"><a class="page-link" href="/venue/{{ venue.venue_id }}/{{ page }}">{{ page }}</a></li>
             {% endfor %}
-        </ul>
-      </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    Sorry, no events for this venue.
-  {% endif %}
-  
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          {% for i in range(total_pages) %}
-            {% set page = i + 1 %}
-            <li class="page-item"><a class="page-link" href="/venue/{{ venue.venue_id }}/{{ page }}">{{ page }}</a></li>
-          {% endfor %}
-        </ul>
-      </nav>
-
+          </ul>
+        </nav>
+  </div>
+</div>
 {% endblock %}
 

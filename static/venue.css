@@ -1,0 +1,34 @@
+.container-fluid.flex-container {
+    margin-left: 200px;
+    margin-right: 200px;
+    width: 1120px;
+}
+
+.grid {
+    display: grid;
+    grid-template-areas: "sidebar body";
+    grid-template-columns: 350px 1fr;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.grid-sidebar {
+    grid-area: sidebar;
+}
+
+.grid-body {
+    grid-area: body;
+    overflow-y: auto;
+    height: 710px;
+    padding-bottom: 10px;
+}
+
+.img-map {
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
+.event {
+    font-size: larger;
+}
