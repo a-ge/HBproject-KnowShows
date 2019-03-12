@@ -1,0 +1,24 @@
+.grid {
+    display: grid;
+    grid-template-areas: "sidebar header"
+                         "sidebar body";
+    grid-template-columns: 350px 1fr;
+    grid-template-rows: 200px 1fr;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+
+}
+
+.grid-sidebar {
+    grid-area: sidebar;
+}
+
+.grid-header {
+    grid-area: header;
+}
+
+.grid-body {
+    grid-area: body;
+    overflow-y: auto;
+}

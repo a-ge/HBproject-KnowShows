@@ -5,66 +5,62 @@
 <h1>{{ artist.artist_name }}</h1>
 
 
-<div class="row">
-  <div class="col-3">
-      <div class="row">
-        <!--  For Spotify player-->
-        <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
-        <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-      </div>
-      
-      <div class="row">
-        <img src="{{ artist.artist_photo }}">
-      </div>
+<div class="grid">
+  <div class="grid-sidebar">
+    <div class="row">
+      <!--  For Spotify player-->
+      <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
+      <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    </div>
+    
+    <div class="row">
+      <img src="{{ artist.artist_photo }}">
+    </div>
 
-      <div class="row">
-        {% set youtube_query = artist.artist_name.replace(" ", "+") %}
-        <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
-          <img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 80px;" />
-        </a>
+    <div class="row">
+      {% set youtube_query = artist.artist_name.replace(" ", "+") %}
+      <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
+        <img src="/static/youtube-icon.png" alt="Watch now on YouTube" style="width: 80px;" />
+      </a>
 
-        {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
-        <a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank">
-          <img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px; padding-top: 3px;" />
-        </a>
-      </div>
+      {% set spot, art, artist_uri = artist.spotify_uri.split(":") %}
+      <a href="https://open.spotify.com/artist/{{ artist_uri }}" target="blank">
+        <img src="/static/spotify-icon.png" alt="Find the artist on Spotify" style="width: 75px; padding-top: 3px;" />
+      </a>
+    </div>
   </div>
   
-  <div class="col">
+  <div class="grid-header" style="font-size: large; padding-bottom: 10px">
+    {{ artist.artist_bio }}
+  </div>
 
-      <div class="row" style="float: right; font-size: large; padding-bottom: 10px">
-        {{ artist.artist_bio }}
-      </div>
+  <div class="grid-body" style="height: 545px;">
+    <br>
+    {% if artist_event_dicts|length > 0 %}
+      <ul style="font-size: larger;">
+        {% for event in artist_event_dicts %}
+          <li>
+            <a href="/event/{{ event[0].event_id }}">
+            {{ event[0].event_datetime }}</a>
+            {{ event[0].event_title }}
+            {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
+             <br>
+            <ul>
+                {% for key in event[1] %}
+                <li>
+                  <a href="/artist/{{ event[1][key].artist_id }}/1">
+                    {{ event[1][key].artist_name }}</a>
+                    {{ event[1][key].artist_genres }}<br>
+                </li>
+                {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
 
-      <div class="row" style="float: right;">
-        <br>
-        {% if artist_event_dicts|length > 0 %}
-          <ul style="font-size: larger;">
-            {% for event in artist_event_dicts %}
-              <li>
-                <a href="/event/{{ event[0].event_id }}">
-                {{ event[0].event_datetime }}</a>
-                {{ event[0].event_title }}
-                {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
-                 <br>
-                <ul>
-                    {% for key in event[1] %}
-                    <li>
-                      <a href="/artist/{{ event[1][key].artist_id }}/1">
-                        {{ event[1][key].artist_name }}</a>
-                        {{ event[1][key].artist_genres }}<br>
-                    </li>
-                    {% endfor %}
-                </ul>
-              </li>
-            {% endfor %}
-          </ul>
-
-        {% else %}
-          Sorry, no events for this artist.
-        {% endif %}
-      </div>
-
+    {% else %}
+      Sorry, no events for this artist.
+    {% endif %}
   </div>
 </div>
 {% endblock %}
