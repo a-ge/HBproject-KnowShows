@@ -12,11 +12,11 @@
 
 <div style="width: 75%; height: 400px; float: right;">
 
-    <div style=" height: 25%; float: right;">
+    <div style="float: right; font-size: larger; padding-bottom: 10px">
       {{ artist.artist_bio }}
     </div>
 
-    <div style="height: 75%; float: left;">
+    <div style="float: left;">
 
       <img src="{{ artist.artist_photo }}">
 
@@ -33,12 +33,9 @@
     </div>
 </div>
 
-
-
-
-
+<div style="font-size: x-large;">
   {% if artist_event_dicts|length > 0 %}
-    <ul>
+    <ul style="list-style-type:none;">
       {% for event in artist_event_dicts %}
         <li>
           <a href="/event/{{ event[0].event_id }}">
@@ -46,7 +43,7 @@
           {{ event[0].event_datetime }}
           {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
            <br>
-          <ul>
+          <ul style="list-style-type:none;">
               {% for key in event[1] %}
               <li>
                 <a href="/artist/{{ event[1][key].artist_id }}/1">
@@ -72,4 +69,5 @@
         </ul>
       </nav>
   {% endif %}
+</div>
 {% endblock %}
