@@ -41,11 +41,9 @@
       <ul>
         {% for event in artist_event_dicts %}
           <li>
-            <a href="/event/{{ event[0].event_id }}">
-            {{ event[0].event_datetime }}</a><br>
-
-            {{ event[0].venue.venue_name }}<br>
-            {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}<br>
+            <b><a href="/event/{{ event[0].event_id }}">{{ event[0].event_datetime }}</a></b>
+            &nbsp &nbsp {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}<br>
+            &nbsp &nbsp {{ event[0].venue.venue_name }}<br>
             <br>
           </li>
         {% endfor %}
