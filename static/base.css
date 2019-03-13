@@ -29,6 +29,7 @@ body {
   margin-bottom: 30px;
   height: 800px;
 }
+
 .flex-wrapper {
   display: flex;
   flex-direction: column;
@@ -50,4 +51,9 @@ body {
     padding-top: 5px;
     margin-left: 50px;
     border-radius: 10px;
+}
+
+td {
+    font-size: larger;
+    height: 60px;
 }
