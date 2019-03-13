@@ -3,20 +3,19 @@
 
 <!--Artist page css -->
 <link rel="stylesheet" href="/static/artist.css" />
-    
-<h1>{{ artist.artist_name }}</h1>
 
+  <h1>{{ artist.artist_name }}</h1> 
 
 <div class="grid">
   <div class="grid-sidebar">
-    <div class="row">
+    <div class="row-spot">
       <!--  For Spotify player-->
       <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
-      <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+      <iframe class="player" src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
     </div>
     
     <div class="row">
-      <img src="{{ artist.artist_photo }}">
+      <img class="img-photo" src="{{ artist.artist_photo }}">
     </div>
 
     <div class="row">
@@ -33,7 +32,6 @@
   </div>
   
   <div class="grid-header">
-    <br>
     {{ artist.artist_bio }}
   </div>
 
@@ -44,19 +42,11 @@
         {% for event in artist_event_dicts %}
           <li>
             <a href="/event/{{ event[0].event_id }}">
-            {{ event[0].event_datetime }}</a>
-            {{ event[0].event_title }}
-            {{ event[0].venue.venue_name }}  {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}
-             <br>
-            <ul>
-                {% for key in event[1] %}
-                <li>
-                  <a href="/artist/{{ event[1][key].artist_id }}/1">
-                    {{ event[1][key].artist_name }}</a>
-                    {{ event[1][key].artist_genres }}<br>
-                </li>
-                {% endfor %}
-            </ul>
+            {{ event[0].event_datetime }}</a><br>
+
+            {{ event[0].venue.venue_name }}<br>
+            {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}<br>
+            <br>
           </li>
         {% endfor %}
       </ul>
@@ -64,6 +54,14 @@
     {% else %}
       Sorry, no events for this artist.
     {% endif %}
+    <nav aria-label="Page navigation">
+          <ul class="pagination">
+            {% for i in range(total_pages) %}
+              {% set page = i + 1 %}
+              <li class="page-item"><a class="page-link" href="/artist/{{ artist.artist_id }}/{{ page }}">{{ page }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
   </div>
 </div>
 {% endblock %}

@@ -163,7 +163,9 @@ def display_artist(artist_id, page):
 
     return render_template("artist.html", artist=artist_select,
                                             artist_event_dicts=artist_event_dicts,
-                                            playlist_id=playlist_id)
+                                            playlist_id=playlist_id,
+                                            total_pages=total_pages,
+                                            current_page=page)
 
 
 @app.route('/check_venue')
@@ -217,7 +219,10 @@ def display_venue(venue_id, page):
 
         venue_event_dicts.append(eve)
 
-    return render_template("venue.html", venue=venue_select, venue_event_dicts=venue_event_dicts, total_pages=total_pages, current_page=page)
+    return render_template("venue.html", venue=venue_select,
+                                            venue_event_dicts=venue_event_dicts,
+                                            total_pages=total_pages,
+                                            current_page=page)
 
 
 @app.route('/check_event/<int:page>')
@@ -260,7 +265,9 @@ def display_event(event_id):
     # Create Spotify playlist for the event.
     playlist_id = modify_event_playlist_id(event_select, artist_spot_ids)
  
-    return render_template("event.html", event=event_select, event_dicts=event_dicts, playlist_id=playlist_id)
+    return render_template("event.html", event=event_select,
+                                            event_dicts=event_dicts,
+                                            playlist_id=playlist_id)
 
 
 
