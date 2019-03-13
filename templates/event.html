@@ -40,14 +40,12 @@
         <table>
             {% for key in event_dicts %}
             <tr>
-                <br>
-            </tr>
-            <tr>
                 <td>
                     <a href="/artist/{{ event_dicts[key].artist_id }}/1"><h4>{{ event_dicts[key].artist_name }}</h4></a>
                 </td>
                 <td>
-                    {{ event_dicts[key].artist_genres }}                </td>
+                    {{ event_dicts[key].artist_genres }}
+                </td>
             </tr>
             <tr>
                 <td class="td-bio">
