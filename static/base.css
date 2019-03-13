@@ -47,6 +47,11 @@ body {
   overflow: hidden;
 }
 
+.share {
+  width: 30px;
+  height: 30px;
+}
+
 .img-photo {
     padding-top: 5px;
     margin-left: 50px;

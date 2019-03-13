@@ -7,7 +7,7 @@
 <h1>{{ venue.venue_name }}</h1>
 
 <div class="grid">
-  <div class="grid-sidebar">
+  <div class="grid-header">
     <div class="row">
       {% set gmaps_query = (venue.venue_name.replace(" ", "+") + venue.venue_city.replace(" ", "+") + venue.venue_state) %}
       <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img class="img-map"src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a><br>
@@ -17,24 +17,25 @@
   </div> 
   <div class="grid-body">    
     {% if venue_event_dicts|length > 0 %}
-      <ul>
-        {% for item in venue_event_dicts %}
-          <li>
-            <a class="event" href="/event/{{ item[0].event_id }}">
-            {{ item[0].event_datetime }}</a><br>
-            <ul>
+      <table>
+        <tr>
+          {% for item in venue_event_dicts %}
+            <td>
+              <b><a class="event" href="/event/{{ item[0].event_id }}">{{ item[0].event_datetime }}</a></b>
+            </td>
                 {% for key in item[1] %}
-                <li>
-                  <a href="/artist/{{ item[1][key].artist_id }}/1">
-                  {{ item[1][key].artist_name }}</a>
-                  {{ item[1][key].artist_genres }}<br>
-                </li>
+                <tr>
+                    <td>
+                      &nbsp &nbsp <a href="/artist/{{ item[1][key].artist_id }}/1">{{ item[1][key].artist_name }}</a>
+                    </td>
+                    <td>
+                      &nbsp {{ item[1][key].artist_genres }}<br>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
-            <br>
-        </li>
-        {% endfor %}
-      </ul>
+          {% endfor %}
+        </tr>
+      </table>
     {% else %}
       Sorry, no events for this venue.
     {% endif %}

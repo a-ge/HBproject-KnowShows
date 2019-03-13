@@ -6,21 +6,27 @@
 
 .grid {
     display: grid;
-    grid-template-areas: "sidebar body";
+    grid-template-areas: "header"
+                         "body";
     grid-template-columns: 350px 1fr;
     height: 100vh;
     overflow: hidden;
     width: 100%;
 }
 
-.grid-sidebar {
-    grid-area: sidebar;
+.grid-header {
+    grid-area: header;
+    font-size: large;
+    height: 100px;
+    width: 860px;
 }
 
 .grid-body {
     grid-area: body;
     overflow-y: auto;
     height: 710px;
+    width: 710px;
+    margin-left: 200px;
     padding-bottom: 10px;
 }
 
@@ -31,4 +37,8 @@
 
 .event {
     font-size: larger;
+}
+
+td {
+    height: 30px;
 }
