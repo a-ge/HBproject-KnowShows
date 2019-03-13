@@ -18,14 +18,14 @@
     grid-area: header;
     font-size: large;
     padding-top: 10px;
-    height: 170px;
+    height: 80px;
     width: 860px;
 }
 
 .grid-body {
     grid-area: body;
     overflow-y: auto;
-    height: 700px;
+    height: 610px;
     width: 860px;
     padding-bottom: 10px;
 }
@@ -44,7 +44,7 @@
 }
 
 .img-sg {
-    width: 70px;
+    width: 65px;
 }
 
 .img-photo {

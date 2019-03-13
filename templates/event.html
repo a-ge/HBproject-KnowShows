@@ -3,10 +3,10 @@
 
 <!--Event page css -->
 <link rel="stylesheet" href="/static/event.css" />
+<h1>{{ event.event_title }}</h1>
 <div class="grid">
     <div class="grid-sidebar">
         <div class="row">
-            <h2>{{ event.event_title }}</h2>
         </div>
         <div class="row-title">
             <h3>{{ event.event_datetime }}</h3>
@@ -53,6 +53,11 @@
                 </td>
                 <td class="td-photo">
                     <img class="img-photo" src="{{ event_dicts[key].artist_photo }}">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <br>
                 </td>
             </tr>
             {% endfor %}
