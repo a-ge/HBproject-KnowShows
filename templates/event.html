@@ -1,44 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="row">
-    <div class="col-3">
+<!--Event page css -->
+<link rel="stylesheet" href="/static/event.css" />
+<div class="grid">
+    <div class="grid-sidebar">
         <div class="row">
-            <h2>{{ event.event_title }}</h2><br>
+            <h2>{{ event.event_title }}</h2>
+        </div>
+        <div class="row-title">
             <h3>{{ event.event_datetime }}</h3>
         </div>
-        <div class="row">
-            {% set gmaps_query = (event.venue.venue_name.replace(" ", "+") + "+" + event.venue.venue_city.replace(" ", "+") + "+" + event.venue.venue_state) %}
-            <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Watch now on YouTube" /></a>
-            <a href="/venue/{{ event.venue.venue_id }}/1">
-            {{ event.venue.venue_name }}<br>
-            {{ event.venue.venue_add }}<br>
-            {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br></a>
+        <div class="row-title">
+            <a href="{{ event.event_url }}" target="blank"><img class="img-sg" src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" /></a>
         </div>
-        <div class="row">
-            <a href="{{ event.event_url }}" target="blank"><img src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" style="width: 70px;" /></a>
-        </div>
-        <div class="row">
+        <div class="row-spot">
             <!--  For Spotify player-->
             <!-- https://developer.spotify.com/documentation/widgets/generate/play-button/ -->
-            <iframe src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            <iframe class="player" src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         </div>
-    </div>        
-
-    <div class="col">
-        <h5>Concert Lineup</h5>
-            <ul>
-                {% for key in event_dicts %}
-                <li>
-                    <a href="/artist/{{ event_dicts[key].artist_id }}/1">
-                    {{ event_dicts[key].artist_name }}</a>
-                    {{ event_dicts[key].artist_genres }}<br>
-                    {{ event_dicts[key].artist_bio }}<br>
-                    <img src="{{ event_dicts[key].artist_photo }}">
-                </li>
-                <br>
-                {% endfor %}
-            </ul>
+    </div>
+    <div class="grid-header">
+        <table>
+            <tr>
+                <td>
+                    {% set gmaps_query = (event.venue.venue_name.replace(" ", "+") + "+" + event.venue.venue_city.replace(" ", "+") + "+" + event.venue.venue_state) %}
+                    <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Find venue on Google Maps" /></a>
+                </td>
+                <td>
+                    <a href="/venue/{{ event.venue.venue_id }}/1">
+                    {{ event.venue.venue_name }}<br></a>
+                    {{ event.venue.venue_add }}<br>
+                    {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="grid-body">
+        <ul>
+            {% for key in event_dicts %}
+            <li>
+                <a href="/artist/{{ event_dicts[key].artist_id }}/1">
+                {{ event_dicts[key].artist_name }}</a>
+                {{ event_dicts[key].artist_genres }}<br>
+                {{ event_dicts[key].artist_bio }}<br>
+                <img src="{{ event_dicts[key].artist_photo }}">
+            </li>
+            {% endfor %}
+        </ul>
     </div> 
 </div>
 

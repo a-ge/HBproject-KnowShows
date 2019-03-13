@@ -1,0 +1,58 @@
+.grid {
+    display: grid;
+    grid-template-areas: "sidebar header"
+                         "sidebar body";
+    grid-template-columns: 400px 1fr;
+    grid-template-rows: 140px 1fr;
+    height: 100vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.grid-sidebar {
+    grid-area: sidebar;
+    padding-left: 20px;
+}
+
+.grid-header {
+    grid-area: header;
+    font-size: large;
+    padding-top: 10px;
+    height: 170px;
+    width: 860px;
+}
+
+.grid-body {
+    grid-area: body;
+    overflow-y: auto;
+    height: 510px;
+    width: 860px;
+    padding-bottom: 10px;
+}
+
+.player {
+    padding-left: 10px;
+}
+
+.row-title {
+    padding-left: 25px;
+}
+
+.row-spot {
+    padding-top: 15px;
+    margin-left: 20px
+}
+
+.img-sg {
+    width: 70px;
+}
+.img-photo {
+    padding-top: 5px;
+    margin-left: 50px;
+    border-radius: 10px;
+}
+
+td {
+    font-size: medium;
+    height: 60px;
+}
