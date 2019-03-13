@@ -36,18 +36,16 @@
   </div>
 
   <div class="grid-body">
-    <br>
     {% if artist_event_dicts|length > 0 %}
-      <ul>
+      <table>
         {% for event in artist_event_dicts %}
-          <li>
-            <b><a href="/event/{{ event[0].event_id }}">{{ event[0].event_datetime }}</a></b>
-            &nbsp &nbsp {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}<br>
-            &nbsp &nbsp {{ event[0].venue.venue_name }}<br>
-            <br>
-          </li>
+          <tr>
+            <td><b><a href="/event/{{ event[0].event_id }}">{{ event[0].event_datetime }}</a></b><br></td>
+            <td>&nbsp &nbsp {{ event[0].venue.venue_city }}, {{ event[0].venue.venue_state }}</td>
+            <td>&nbsp &nbsp {{ event[0].venue.venue_name }}</td>
+          </tr>
         {% endfor %}
-      </ul>
+      </table>
 
     {% else %}
       Sorry, no events for this artist.

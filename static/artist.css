@@ -3,7 +3,7 @@
     grid-template-areas: "sidebar header"
                          "sidebar body";
     grid-template-columns: 400px 1fr;
-    grid-template-rows: 150px 1fr;
+    grid-template-rows: 170px 1fr;
     height: 100vh;
     overflow: hidden;
     width: 100%;
@@ -16,14 +16,15 @@
 .grid-header {
     grid-area: header;
     font-size: large;
-    height: 150px;
+    padding-top: 10px;
+    height: 170px;
     width: 860px;
 }
 
 .grid-body {
     grid-area: body;
     overflow-y: auto;
-    height: 545px;
+    height: 510px;
     width: 860px;
     padding-bottom: 10px;
 }
@@ -33,12 +34,14 @@
 }
 
 .row-spot {
+    padding-top: 15px;
     margin-left: 20px
 }
 
 .img-photo {
     padding-top: 5px;
     margin-left: 50px;
+    border-radius: 10px;
 }
 
 .img-youtube {
@@ -50,4 +53,13 @@
 .img-spotify {
     width: 75px;
     padding-top: 3px;
+}
+
+td {
+    font-size: larger;
+    height: 60px;
+}
+
+.pagination {
+    padding-left: 40px;
 }
