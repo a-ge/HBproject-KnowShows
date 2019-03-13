@@ -20,21 +20,26 @@
       <table>
         <tr>
           {% for item in venue_event_dicts %}
-            <td>
-              <b><a class="event" href="/event/{{ item[0].event_id }}">{{ item[0].event_datetime }}</a></b>
-            </td>
-                {% for key in item[1] %}
-                <tr>
-                    <td>
-                      &nbsp &nbsp <a href="/artist/{{ item[1][key].artist_id }}/1">{{ item[1][key].artist_name }}</a>
-                    </td>
-                    <td>
-                      &nbsp {{ item[1][key].artist_genres }}<br>
-                    </td>
-                </tr>
-                {% endfor %}
-          {% endfor %}
+          <td>
+            <b><a class="event" href="/event/{{ item[0].event_id }}">{{ item[0].event_datetime }}</a></b>
+          </td>
         </tr>
+        {% for key in item[1] %}
+        <tr>
+            <td>
+              &nbsp &nbsp <a href="/artist/{{ item[1][key].artist_id }}/1">{{ item[1][key].artist_name }}</a>
+            </td>
+            <td>
+              &nbsp {{ item[1][key].artist_genres }}<br>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td>
+            <br>
+          </td>
+        </tr>
+        {% endfor %}
       </table>
     {% else %}
       Sorry, no events for this venue.

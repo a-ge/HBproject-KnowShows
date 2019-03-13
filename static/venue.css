@@ -9,7 +9,7 @@
     grid-template-areas: "header"
                          "body";
     grid-template-columns: 350px 1fr;
-    height: 100vh;
+    height: 85vh;
     overflow: hidden;
     width: 100%;
 }
@@ -17,14 +17,14 @@
 .grid-header {
     grid-area: header;
     font-size: large;
-    height: 100px;
+    height: 85px;
     width: 860px;
 }
 
 .grid-body {
     grid-area: body;
     overflow-y: auto;
-    height: 710px;
+    height: 610px;
     width: 710px;
     margin-left: 200px;
     padding-bottom: 10px;
