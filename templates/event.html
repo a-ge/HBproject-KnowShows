@@ -12,7 +12,20 @@
             <h3>{{ event.event_datetime }}</h3>
         </div>
         <div class="row-title">
-            <a href="{{ event.event_url }}" target="blank"><img class="img-sg" src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" /></a>
+            <table>
+                <tr>
+                    <td>
+                        {% set gmaps_query = (event.venue.venue_name.replace(" ", "+") + "+" + event.venue.venue_city.replace(" ", "+") + "+" + event.venue.venue_state) %}
+                        <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Find venue on Google Maps" /></a>
+                    </td>
+                    <td>
+                        <a href="/venue/{{ event.venue.venue_id }}/1">
+                        {{ event.venue.venue_name }}<br></a>
+                        {{ event.venue.venue_add }}<br>
+                        {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
+                    </td>
+                </tr>
+            </table>
         </div>
         <div class="row-spot">
             <!--  For Spotify player-->
@@ -21,33 +34,31 @@
         </div>
     </div>
     <div class="grid-header">
-        <table>
-            <tr>
-                <td>
-                    {% set gmaps_query = (event.venue.venue_name.replace(" ", "+") + "+" + event.venue.venue_city.replace(" ", "+") + "+" + event.venue.venue_state) %}
-                    <a href="https://www.google.com/maps/search/{{ gmaps_query }}" target="blank"><img src="/static/gmaps-icon.png" alt="Find venue on Google Maps" /></a>
-                </td>
-                <td>
-                    <a href="/venue/{{ event.venue.venue_id }}/1">
-                    {{ event.venue.venue_name }}<br></a>
-                    {{ event.venue.venue_add }}<br>
-                    {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br>
-                </td>
-            </tr>
-        </table>
+        <a href="{{ event.event_url }}" target="blank"><img class="img-sg" src="/static/seatgeek-icon.png" alt="Find tickets on SeatGeek" /></a>
     </div>
     <div class="grid-body">
-        <ul>
+        <table>
             {% for key in event_dicts %}
-            <li>
-                <a href="/artist/{{ event_dicts[key].artist_id }}/1">
-                {{ event_dicts[key].artist_name }}</a>
-                {{ event_dicts[key].artist_genres }}<br>
-                {{ event_dicts[key].artist_bio }}<br>
-                <img src="{{ event_dicts[key].artist_photo }}">
-            </li>
+            <tr>
+                <br>
+            </tr>
+            <tr>
+                <td>
+                    <a href="/artist/{{ event_dicts[key].artist_id }}/1"><h4>{{ event_dicts[key].artist_name }}</h4></a>
+                </td>
+                <td>
+                    {{ event_dicts[key].artist_genres }}                </td>
+            </tr>
+            <tr>
+                <td class="td-bio">
+                    {{ event_dicts[key].artist_bio }}
+                </td>
+                <td class="td-photo">
+                    <img class="img-photo" src="{{ event_dicts[key].artist_photo }}">
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
     </div> 
 </div>
 
