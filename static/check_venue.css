@@ -1,0 +1,45 @@
+.container-fluid.flex-container {
+    margin-left: 300px;
+    margin-right: 300px;
+    width: 890px;
+}
+
+.grid {
+    display: grid;
+    grid-template-areas: "header"
+                         "body";
+    grid-template-columns: 350px 1fr;
+    height: 85vh;
+    overflow: hidden;
+    width: 100%;
+}
+
+.grid-header {
+    grid-area: header;
+    font-size: large;
+    margin-top: 10px;
+    height: 150px;
+    width: 860px;
+}
+
+.grid-body {
+    grid-area: body;
+    overflow-y: auto;
+    height: 610px;
+    width: 650px;
+    margin-left: 200px;
+    padding-bottom: 10px;
+}
+
+.img-map {
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
+.event {
+    font-size: larger;
+}
+
+td {
+    height: 30px;
+}

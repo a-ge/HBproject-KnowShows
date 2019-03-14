@@ -1,9 +1,3 @@
-.container-fluid.flex-container {
-    margin-left: 300px;
-    margin-right: 300px;
-    width: 890px;
-}
-
 .grid {
     display: grid;
     grid-template-areas: "sidebar header"
@@ -23,9 +17,11 @@
 .grid-header {
     grid-area: header;
     font-size: large;
-    padding-top: 10px;
+    padding-top: 20px;
     height: 80px;
-    width: 860px;
+    width: 825px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .grid-body {
