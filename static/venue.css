@@ -1,7 +1,7 @@
 .container-fluid.flex-container {
-    margin-left: 200px;
-    margin-right: 200px;
-    width: 1120px;
+    margin-left: 300px;
+    margin-right: 300px;
+    width: 890px;
 }
 
 .grid {
@@ -25,7 +25,7 @@
     grid-area: body;
     overflow-y: auto;
     height: 610px;
-    width: 710px;
+    width: 650px;
     margin-left: 200px;
     padding-bottom: 10px;
 }
