@@ -1,24 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!--Check event page css -->
+<link rel="stylesheet" href="/static/check_event.css" />
+
+<div class="grid">
   {% if event_options|length > 0 %}
-  <h2>Found a few events that match your search. Which one are you looking for?</h2>
+  <div class="grid-header">
+    <h2>Found a few events that match your search.<br>
+    Which one are you looking for?</h2>
+  </div>
+  <div class="grid-body"> 
     <ul>
       {% for event in event_options %}
-        <li>
-          <a href="/event/{{ event.event_id }}">
-            {{ event.event_title }}</a><br>
-            {{ event.event_datetime }}<br>
-            {{ event.venue.venue_name }}<br>
-            {{ event.venue.venue_add }}
-            {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}<br><br>
-        </li>
+        <table>
+          <tr>
+            <td class="td-left">
+              <b><a href="/event/{{ event.event_id }}">
+            {{ event.event_datetime }}</a></b>
+            </td>
+              <td>
+              &nbsp {{ event.event_title }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              &nbsp {{ event.venue.venue_name }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              &nbsp {{ event.venue.venue_add }}
+          <tr>
+            <td>
+              &nbsp {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <br>
+            </td>
+          </tr>
+        </table>
       {% endfor %}
     </ul>
-  {% else %}
-    Sorry, no events found.
-  {% endif %}
-
+    {% if total_pages > 1 %}
       <nav aria-label="Page navigation">
         <ul class="pagination">
           {% for i in range(total_pages) %}
@@ -27,6 +53,12 @@
           {% endfor %}
         </ul>
       </nav>
+    {% endif %}
+  </div>
+</div>
+  {% else %}
+    Sorry, no events found.
+  {% endif %}
 
 {% endblock %}
 
