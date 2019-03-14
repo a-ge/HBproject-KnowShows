@@ -30,7 +30,6 @@
         <div class="navbar sticky-top navbar-light navrbar-left flex-none">
             <nav class="container-fluid">
                 <form class="form-inline" action="/search" method="POST">
-
                     <label for="searchType">
                         <select class="form-control" name="searchType" id="searchType">
                         <option value="Venue">Venue</option>
@@ -38,14 +37,11 @@
                         <option value="Artist">Artist</option>
                         </select>
                     </label>
-
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" style="width: 240.992188px;" required>
-
                     <label for="userCityInput"> City
                         <input type="text" class="form-control" name="userCityInput" id="userCityInput">
                     </label>
-
-                    <label for="state"> State
+                    <label for="state">&nbsp State
                         <select class="form-control" name="state" id="state">
                         <option value=""></option>
                         <option value="AL">AL</option><option value="AK">AK</option><option value="AR">AR</option>  
@@ -67,30 +63,25 @@
                         <option value="WV">WV</option><option value="WY">WY</option>
                         </select>
                     </label>
-
+                    &nbsp 
                     <div>
                         <button class="btn btn-sm btn-outline-secondary" id="loc-button">Find my location</button>
                         <div id="output"></div>
                     </div>
-
                     <label class="control-label " for="startdate" id="startDateLabel">&nbsp Start Date
                         <input class="form-control" id="startdate" name="startdate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
-                        </label>
-
-                    <label class="control-label " for="enddate" id="endDateLabel"> End Date
+                    </label>
+                    <label class="control-label " for="enddate" id="endDateLabel">&nbsp  End Date
                         <input class="form-control" id="enddate" name="enddate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
-                        </label>
-
+                    </label>
                     &nbsp <button type="submit">Search</button>
-
                 </form>
-
-                <div>                    
+                <div class="share">                    
                     Share this page:
                     <br>
                     <!-- https://css-tricks.com/simple-social-sharing-links/ -->
-                    <a class="share" href="https://www.facebook.com/sharer.php?..." target="blank"><img src="/static/facebook-icon.png" alt="Share Page on Facebook" /></a>
-                    <a class="share" href="https://twitter.com/intent/tweet?..." target="blank"><img src="/static/twitter-icon.png" alt="Share Page on Twitter" /></a>
+                    <a href="https://www.facebook.com/sharer.php?..." target="blank"><img class="img-share" src="/static/facebook-icon.png" alt="Share Page on Facebook" /></a>
+                    <a href="https://twitter.com/intent/tweet?..." target="blank"><img class="img-share" src="/static/twitter-icon.png" alt="Share Page on Twitter" /></a>
                 </div>
             </nav>
         </div>         

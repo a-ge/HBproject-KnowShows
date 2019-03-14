@@ -48,6 +48,10 @@ body {
 }
 
 .share {
+  font-size: small;
+}
+
+.img-share {
   width: 30px;
   height: 30px;
 }
