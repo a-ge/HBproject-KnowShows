@@ -145,7 +145,7 @@ def find_sg_events(query, page):
                 'venue.country': 'US',
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
-                'type': "concert",
+                'type': 'concert',
                 'sort': 'datetime_local.asc',
                 'per_page': 20,
                 'page': page}
@@ -172,6 +172,7 @@ def find_venue_events(venue_id, page):
                 'venue.id': venue_id,
                 'datetime_local.gte': start_date,
                 'datetime_local.lte': end_date,
+                'type': 'concert',
                 'per_page': 20,
                 'page': page}
 
