@@ -1,20 +1,48 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!--Check venue page css -->
+<link rel="stylesheet" href="/static/check_venue.css" />
+
+<div class="grid">
   {% if venue_options|length > 0 %}
-    <h2>Found a few venues that match your search. Which one are you looking for?</h2>
-    <ul>
-    {% for venue in venue_options %}
-      <li>
-        <a href="/venue/{{ venue.venue_id }}/1">
-          {{ venue.venue_name }}</a><br>
-          {{ venue.venue_add }}<br>
-          {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}<br><br>
-      </li>
-    {% endfor %}
-    </ul>
+    <div class="grid-header">
+      <h2>Found a few venues that match your search.<br>
+      Which one are you looking for?</h2>
+    </div>
+    <div class="grid-body"> 
+      <ul>
+        {% for venue in venue_options %}
+          <table>
+            <tr>
+              <td>
+                <b><a href="/venue/{{ venue.venue_id }}/1">{{ venue.venue_name }}</a></b>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                &nbsp {{ venue.venue_add }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                &nbsp {{ venue.venue_city + ", " + venue.venue_state + " " + venue.venue_zip }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br>
+              </td>
+            </tr>
+          </table>
+        {% endfor %}
+      </ul>
+    </div>
+</div>
   {% else %}
-    Sorry, no venues found.
+    <div class="grid-header">
+      Sorry, no venues found.
+    </div>
   {% endif %}
 
 {% endblock %}
