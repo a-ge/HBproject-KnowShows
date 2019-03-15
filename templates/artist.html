@@ -18,7 +18,7 @@
       <img class="img-photo" src="{{ artist.artist_photo }}">
     </div>
     <div class="row">
-      {% set youtube_query = artist.artist_name.replace(" ", "+") %}
+      {% set youtube_query = artist.artist_name.replace(" ", "+").replace('&', '') %}
       <a href="https://www.youtube.com/results?search_query=music+{{ youtube_query }}" target="blank">
         <img class="img-youtube" src="/static/youtube-icon.png" alt="Watch now on YouTube" />
       </a>
