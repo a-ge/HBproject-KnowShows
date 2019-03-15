@@ -176,7 +176,7 @@ def insert_artists(artists):
             except:
                 art_bio = "Artist bio not found. Just give 'em a listen and enjoy."
                 
-            Artist.query.filter(Artist.artist_id == art.artist_id).update({'artist_bio': str(art_bio)})
+            Artist.query.filter(Artist.artist_id == art.artist_id).update({'artist_bio': str(art_bio) + "."})
             db.session.commit()
 
 def insert_venues(venues):
