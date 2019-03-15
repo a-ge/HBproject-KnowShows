@@ -139,7 +139,7 @@ def display_artist(artist_id, page):
     artist_sg_info = list_event_ids(artist_select.artist_sg_id, page)
 
     # Knowing total items, calculate total pages.
-    total_pages = math.ceil(artist_sg_info[0] / 20)
+    total_pages = math.ceil(artist_sg_info[0] / 50)
 
     # Create a list with nested lists where event obj in index 0
     # and following indexes are the artist objs for given event.

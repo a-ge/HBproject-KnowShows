@@ -107,7 +107,7 @@ def find_artist_events(artist_id, page):
                 'venue.city': city,
                 'venue.state': state,
                 'venue.country': 'US',
-                'per_page': 20,
+                'per_page': 50,
                 'page': page}
 
     response = requests.get(SG_URL + 'events', params=params)
