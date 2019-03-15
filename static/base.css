@@ -17,6 +17,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+nav {
+  padding-top: 10px;
+}
+
 .container-fluid.flex-container {
   position: fixed;
   background-color: rgba(255, 255, 255, 0.75);
@@ -48,7 +52,7 @@ body {
 }
 
 .share {
-  font-size: small;
+  font-size: smaller;
 }
 
 .img-share {

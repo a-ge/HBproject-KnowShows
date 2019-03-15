@@ -31,17 +31,17 @@
             <nav class="container-fluid">
                 <form class="form-inline" action="/search" method="POST">
                     <label for="searchType">
-                        <select class="form-control" name="searchType" id="searchType">
+                        <select class="form-control" name="searchType" id="searchType" color="black">
                         <option value="Venue">Venue</option>
                         <option value="Event">Event</option>
                         <option value="Artist">Artist</option>
                         </select>
                     </label>
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="userSearchInput" id="userSearchInput" style="width: 240.992188px;" required>
-                    <label for="userCityInput"> City
+                    <label for="userCityInput"> Optional<br/>&nbsp &nbsp &nbsp &nbsp City
                         <input type="text" class="form-control" name="userCityInput" id="userCityInput">
                     </label>
-                    <label for="state">&nbsp State
+                    <label for="state">&nbsp Optional<br/>&nbsp &nbsp &nbsp &nbsp State
                         <select class="form-control" name="state" id="state">
                         <option value=""></option>
                         <option value="AL">AL</option><option value="AK">AK</option><option value="AR">AR</option>  
@@ -68,14 +68,15 @@
                         <button class="btn btn-sm btn-outline-secondary" id="loc-button">Find my location</button>
                         <div id="output"></div>
                     </div>
-                    <label class="control-label " for="startdate" id="startDateLabel">&nbsp Start Date
+                    <label class="control-label " for="startdate" id="startDateLabel">&nbsp &nbsp Optional<br/>&nbsp Start Date
                         <input class="form-control" id="startdate" name="startdate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
                     </label>
-                    <label class="control-label " for="enddate" id="endDateLabel">&nbsp  End Date
+                    <label class="control-label " for="enddate" id="endDateLabel">&nbsp Optional<br/>&nbsp End Date
                         <input class="form-control" id="enddate" name="enddate" placeholder="MM/DD/YYYY" type="text" pattern="(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d" style="width: 125.992188px;"/>
                     </label>
                     &nbsp <button type="submit">Search</button>
                 </form>
+                &nbsp 
                 <div class="share">                    
                     Share this page:
                     <br>
