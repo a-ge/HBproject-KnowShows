@@ -15,25 +15,14 @@
       {% for event in event_options %}
         <table>
           <tr>
-            <td class="td-left">
-              <b><a href="/event/{{ event.event_id }}">
-            {{ event.event_datetime }}</a></b>
+            <td>
+              <b><a href="/event/{{ event.event_id }}">{{ event.event_datetime }}</a></b>
+              &nbsp &nbsp {{ event.venue.venue_name }}
             </td>
-              <td>
+          </tr>
+          <tr>
+            <td>
               &nbsp {{ event.event_title }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              &nbsp {{ event.venue.venue_name }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              &nbsp {{ event.venue.venue_add }}
-          <tr>
-            <td>
-              &nbsp {{ event.venue.venue_city + ", " + event.venue.venue_state + " " + event.venue.venue_zip }}
             </td>
           </tr>
           <tr>

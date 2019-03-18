@@ -26,8 +26,8 @@
     grid-area: body;
     overflow-y: auto;
     height: 610px;
-    width: 650px;
-    margin-left: 150px;
+    width: 720px;
+    margin-left: 75px;
     padding-bottom: 10px;
 }
 
@@ -40,10 +40,11 @@
     font-size: larger;
 }
 
-td {
+.th-left {
     height: 30px;
+    width: 280px;
 }
 
-.td-left {
-    width: 280px;
+td {
+    height: 30px;
 }
