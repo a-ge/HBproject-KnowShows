@@ -16,7 +16,7 @@
 
 <p align="center">
 	<!-- Tech Stacks -->
-    <img src="https://img.shields.io/npm/v/spaceship-prompt.svg?style=flat-square"/>
+    <img src="/static/README/python-original-wordmark"/>
 <!-- 
 **Frontend:** Javascript, AJAX, JSON, jQuery, Jinja, HTML, CSS, Bootstrap</br>
 **Backend:** Python, Flask, SQLAlchemy, PostgreSQL<br/>
@@ -56,12 +56,12 @@ KnowShows will do the research for you!
 	- event information
 	- artist information
 	- Spotify playlist with each artist's top tracks
-- Provides for list of events for a venue
+- Provides list of events for a venue
 
 <a name="requirements"/></a>
 ## Requirements
 
-Obtain API keys from the following APIs and save in secrets.sh file:
+* Obtain API keys from the following APIs and save in secrets.sh file:
     - Spotify (https://developer.spotify.com/dashboard/applications)
     - SeatGeek (https://platform.seatgeek.com/)
     - Google Maps Geocoding and Maps Embed (https://developers.google.com/maps/documentation/)
