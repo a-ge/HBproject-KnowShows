@@ -15,8 +15,8 @@
 </h1>
 
 <p align="center">
-    <img src="/static/README/python-original-wordmark.png" style=""
-      alt="NPM Version" />
+    <img src="/static/README/python-original-wordmark.png"/>
+    <img src="/static/README/python-original-wordmark.png"
 </p>
 
 <div align="center">
