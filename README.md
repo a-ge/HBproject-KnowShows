@@ -16,7 +16,7 @@
 
 <p align="center">
 	<!-- Tech Stacks -->
-    <img src="/static/README/python-original-wordmark.svg"/>
+    <img src="https://img.shields.io/pypi/pyversions/3.svg?style=flat-square"/>
 <!-- 
 **Frontend:** Javascript, AJAX, JSON, jQuery, Jinja, HTML, CSS, Bootstrap</br>
 **Backend:** Python, Flask, SQLAlchemy, PostgreSQL<br/>
