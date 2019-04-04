@@ -15,16 +15,16 @@
 </h1>
 
 <p align="center">
-    <img src="/static/README/python-original-wordmark.png" style="width: 70px;"/>
-    <img src="/static/README/flask.png" style="width: 70px;"/>
-    <img src="/static/README/sqlalchemy.jpg" style="width: 70px;"/>
-    <img src="/static/README/postgresql-original-wordmark.png" style="width: 70px;"/>
-    <img src="/static/README/ajax.png" style="width: 70px;"/>
+    <img src="/static/README/python-original-wordmark.png" width="70px"/>
+    <img src="/static/README/flask.png" width="70px"/>
+    <img src="/static/README/sqlalchemy.jpg" width="70px"/>
+    <img src="/static/README/postgresql-original-wordmark.png" width="70px"/>
+    <img src="/static/README/ajax.png" width="70px"/>
     <img src="/static/README/logo-json.png"/>
-    <img src="/static/README/jquery-original-wordmark.png" style="width: 70px;"/>
-    <img src="/static/README/jinja2.png" style="width: 70px;"/>
-    <img src="/static/README/html5-css-javascript-logos.png" style="width: 70px;"/>
-    <img src="/static/README/bootstrap-plain-wordmark.png" style="width: 70px;"/>
+    <img src="/static/README/jquery-original-wordmark.png" width="70px"/>
+    <img src="/static/README/jinja2.png" width="70px"/>
+    <img src="/static/README/html5-css-javascript-logos.png" width="70px"/>
+    <img src="/static/README/bootstrap-plain-wordmark.png" width="70px"/>
 </p>
 
 <div align="center">
