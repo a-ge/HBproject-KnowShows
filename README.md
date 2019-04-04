@@ -15,17 +15,11 @@
 </h1>
 
 <p align="center">
-	<!-- Tech Stacks -->
-    <img src="https://img.shields.io/pypi/pyversions/3.svg?style=flat-square"/>
-<!-- 
-**Frontend:** Javascript, AJAX, JSON, jQuery, Jinja, HTML, CSS, Bootstrap</br>
-**Backend:** Python, Flask, SQLAlchemy, PostgreSQL<br/>
-**APIs:** SeatGeek, Spotify, Google Maps, Last.FM<br/>
--->
+    <img src="/static/README/python-original-wordmark.png" style=""
+      alt="NPM Version" />
 </p>
 
 <div align="center">
-	<!-- Table of Contents -->
   <h4>
     <a href="#overview">Overview</a> |
     <a href="#features">Features</a> |
@@ -34,6 +28,12 @@
     <a href="#futurefeature">Future Feature</a> |
   </h4>
 </div>
+
+<a name="techstack"/></a>
+## Tech Stack
+**Frontend:** Javascript, AJAX, JSON, jQuery, Jinja, HTML, CSS, Bootstrap</br>
+**Backend:** Python, Flask, SQLAlchemy, PostgreSQL<br/>
+**APIs:** Google, Yelp<br/>
 
 <a name="overview"/></a>
 ## Overview
