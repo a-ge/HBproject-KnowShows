@@ -31,7 +31,7 @@
     <a href="#features">Features</a> |
     <a href="#requirements">Requirements</a> |
     <a href="#installation">Installation</a> |
-    <a href="#features">Future Features</a> |
+    <a href="#futurefeature">Future Feature</a> |
   </h4>
 </div>
 
@@ -61,20 +61,16 @@ KnowShows will do the research for you!
 <a name="requirements"/></a>
 ## Requirements
 
+Obtain API keys from the following APIs and save in secrets.sh file:
+    - Spotify (https://developer.spotify.com/dashboard/applications)
+    - SeatGeek (https://platform.seatgeek.com/)
+    - Google Maps Geocoding and Maps Embed (https://developers.google.com/maps/documentation/)
+    - Last.FM (https://www.last.fm/api)
+
 <a name="installation"/></a>
 ## Installation
-Get Client ID and Key from [Yelp](https://www.yelp.com/fusion) and save them to a file `secrets.sh`:
 ```
-export yelp_client_id="YOUR_CLIENT_ID"
-export yelp_api_key="YOUR_KEY"
-```
-Get Key from [Google Maps](https://cloud.google.com/maps-platform/?apis=maps) and save them to the same file `secrets.sh`:
-```
-export google_api_key="YOUR_KEY"
-``` web application for users to find music concerts and to become familiarized with all the artists in the concert lineup by providing artist information and a Spotify playlist for each of the artists’ top tracks.
-On local machine, go to directory where you want to work and clone Discover San Francisco repository:
-```
-$ git clone https://github.com/jessicahojh/San_Francisco_Webpage_Project.git
+$ git clone https://github.com/a-ge/HBproject-KnowShows.git
 ```
 Create a virtual environment in the directory:
 ```
@@ -87,14 +83,6 @@ $ source env/bin/activate
 Install dependencies:
 ```
 $ pip install -r requirements.txt
-```
-Create database:
-```
-$ createdb sanfrancisco
-```
-Seed data into the database tables:
-```
-$ python3 seed.py
 ```
 Create .gitignore file:
 ```
@@ -112,47 +100,22 @@ Activate secrets.sh:
 ```
 $ source secrets.sh
 ```
+Create database:
+```
+$ createdb concerts
+```
+Insert model:
+```
+$ python3 -i model.py
+>>> db.create_all()
+```
 Run the app:
 ```
 $ python3 server.py
 ```
 Open localhost:5000 on browser.
 
-<a name="demo"/></a>
-## Demo
-**Homepage:**
-<br/><br/>
-![Homepage](/static/README/homepage.png)
-<br/>
 
-**List of Neighborhoods:**
-<br/><br/>
-![Neighborhoods](/static/README/neighborhoods.gif)
-<br/>
-
-**View a specific neighborhood:**
-<br/><br/>
-![View specific neighborhood](/static/README/specific_neighborhood.png)
-<br/>
-
-**View a specific neighborhood's list of "things-to-do/see":**
-<br/><br/>
-![View list of "things-to-do/see"](/static/README/list_places.gif)
-<br/>
-
-**Specific place ("things-to-see") in a specific neighborhood:**
-<br/><br/>
-![View a specific place in a neighborhood](/static/README/specific_place.gif)
-<br/>
-
-
-**Top 5 Most Popular Restaurants for a specific neighborhood:**
-<br/><br/>
-![Top 5 Restaurants](/static/README/restaurants.gif)
-<br/> 
-
-<a name="features"/></a>
-## Future Features
-* Using various APIs such as Zillow, weather, and Eventbright to provide housing, weather, and event info 
-* Marketplace for users to buy/sell or exchange services
-* Page for residents of specific neighborhoods to communicate with each other
+<a name="futurefeature"/></a>
+## Future Feature
+* Include other music event APIs like Eventful or Eventbrite
