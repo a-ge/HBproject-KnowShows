@@ -16,7 +16,15 @@
 
 <p align="center">
     <img src="/static/README/python-original-wordmark.png"/>
-    <img src="/static/README/postgresql-original-wordmark.png"
+    <img src="/static/README/flask.png" style="width: 70px; height: 70px;"/>
+    <img src="/static/README/sqlalchemy.jpg" style="width: 70px; height: 70px;"/>
+    <img src="/static/README/postgresql-original-wordmark.png"/>
+    <img src="/static/README/ajax.png"/>
+    <img src="/static/README/logo-json.png"/>
+    <img src="/static/README/jquery-original-wordmark.png"/>
+    <img src="/static/README/jinja2.png"/>
+    <img src="/static/README/html5-css-javascript-logos.png"/>
+    <img src="/static/README/bootstrap-plain-wordmark.png"/>
 </p>
 
 <div align="center">
@@ -28,12 +36,6 @@
     <a href="#futurefeature">Future Feature</a> |
   </h4>
 </div>
-
-<a name="techstack"/></a>
-## Tech Stack
-**Frontend:** Javascript, AJAX, JSON, jQuery, Jinja, HTML, CSS, Bootstrap</br>
-**Backend:** Python, Flask, SQLAlchemy, PostgreSQL<br/>
-**APIs:** Google, Yelp<br/>
 
 <a name="overview"/></a>
 ## Overview
