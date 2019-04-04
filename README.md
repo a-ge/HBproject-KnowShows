@@ -16,7 +16,7 @@
 
 <p align="center">
     <img src="/static/README/python-original-wordmark.png"/>
-    <img src="/static/README/python-original-wordmark.png"
+    <img src="/static/README/postgresql-original-wordmark.png"
 </p>
 
 <div align="center">
