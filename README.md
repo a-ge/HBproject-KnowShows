@@ -20,7 +20,7 @@
     <img src="/static/README/sqlalchemy.jpg" width="70px"/>
     <img src="/static/README/postgresql-original-wordmark.png" width="70px"/>
     <img src="/static/README/ajax.png" width="70px"/>
-    <img src="/static/README/logo-json.png"/>
+    <img src="/static/README/logo-json.png" width="70px"/>
     <img src="/static/README/jquery-original-wordmark.png" width="70px"/>
     <img src="/static/README/jinja2.png" width="70px"/>
     <img src="/static/README/html5-css-javascript-logos.png" width="70px"/>
