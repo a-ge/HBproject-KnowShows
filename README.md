@@ -6,6 +6,14 @@
     KnowShows is a web application that makes searching for concert events a better experience
 </h4>
 
+<h1 align="center">
+    <img src="/static/README/event.gif">
+</h1>
+
+<h1 align="center">
+    <img src="/static/README/artist.gif">
+</h1>
+
 <p align="center">
 	<!-- Tech Stacks -->
     <img src="https://img.shields.io/npm/v/spaceship-prompt.svg?style=flat-square"/>
