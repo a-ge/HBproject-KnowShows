@@ -39,8 +39,7 @@
 
 <a name="overview"/></a>
 ## Overview
-Have you ever looked up a concert lineup and said to yourself, “I don’t know who these bands are” and then went on to google each of them? Or say you’d like to get tickets for you and a friend who loves the Avett Brothers (nudge-nudge, that friend is me) but you’re not familiar with the music of the Avett Brothers.
-KnowShows will do the research for you!
+Have you ever looked up a concert lineup and said to yourself, “I don’t know who these artists are” and then went on to google each of them? KnowShows will do the research all at once!
 
 <a name="features"/></a>
 ## Features
@@ -56,7 +55,7 @@ KnowShows will do the research for you!
 	- list of events for the artist
 - Provides for each event:
 	- event information
-    - link to SeakGeek for event tickets
+    - link to SeakGeek event tickets
 	- information on each artist in lineup
 	- Spotify playlist with each artist's top tracks
 - Provides list of events for a venue
