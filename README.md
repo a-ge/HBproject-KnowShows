@@ -56,7 +56,8 @@ KnowShows will do the research for you!
 	- list of events for the artist
 - Provides for each event:
 	- event information
-	- artists information
+    - link to SeakGeek for event tickets
+	- information on each artist in lineup
 	- Spotify playlist with each artist's top tracks
 - Provides list of events for a venue
 
