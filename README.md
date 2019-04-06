@@ -67,7 +67,7 @@ KnowShows will do the research for you!
 * Obtain API keys from the following APIs and save in secrets.sh file:
     - Spotify (https://developer.spotify.com/dashboard/applications)
     - SeatGeek (https://platform.seatgeek.com/)
-    - Google Maps Geocoding and Maps Embed (https://developers.google.com/maps/documentation/)
+    - Google Maps Geocoding (https://developers.google.com/maps/documentation/)
     - Last.FM (https://www.last.fm/api)
 
 <a name="installation"/></a>
