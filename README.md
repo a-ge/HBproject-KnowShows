@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="/static/README/home.gif">
+    <img src="/static/README/homepage.png">
 </h1>
 
 <h4 align="center">
@@ -44,9 +44,9 @@ KnowShows will do the research for you!
 
 <a name="features"/></a>
 ## Features
-- Search by artist, event, or artist name
-- Optional fields for city/state and date range
-- Option to have Google Maps find user's current location and populate city/state field for user
+- Search by artist name, event name/genre, or venue name
+- Optional filters for city/state and date range
+- Option to have Google Maps find user's current location and populate city/state fields for user
 - Links to share page through Facebook or Twitter
 - Provides for each artist:
 	- bio summary
@@ -56,7 +56,7 @@ KnowShows will do the research for you!
 	- list of events for the artist
 - Provides for each event:
 	- event information
-	- artist information
+	- artists information
 	- Spotify playlist with each artist's top tracks
 - Provides list of events for a venue
 
